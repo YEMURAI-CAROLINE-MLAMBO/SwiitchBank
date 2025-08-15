@@ -1,30 +1,43 @@
-// Placeholder for cardService.js
-const { query } = require('../config/database');
+const db = require('./database');
 const logger = require('../utils/logger');
+const mastercardService = require('./mastercardService'); // This is still a mock
+const { encrypt, decrypt } = require('../utils/encryption');
 
 class CardService {
   async issueVirtualCard(userId, cardDetails) {
-    // In a real implementation, this would call the Mastercard API
-    logger.info(`Issuing virtual card for user ${userId}`);
-    // For now, we'll just simulate creating a card record in the DB
-    const { card_type, currency } = cardDetails;
-    const result = await query(
-      `INSERT INTO cards (user_id, card_type, currency, status)
-       VALUES ($1, $2, $3, 'ACTIVE')
-       RETURNING id, card_number, cvv, expiry_date`,
-      [userId, card_type, currency]
-    );
-    return result.rows[0];
+    const { currency } = cardDetails;
+
+    const wallets = db.find('wallets', { userId, currency });
+    if (wallets.length === 0) {
+      throw new Error(`No ${currency} wallet found for this user.`);
+    }
+    const walletId = wallets[0].id;
+
+    const mastercardResponse = await mastercardService.issueVirtualCard(cardDetails);
+    if (!mastercardResponse.success) {
+      throw new Error('Failed to issue card with provider.');
+    }
+
+    const { card, provider_token } = mastercardResponse;
+
+    const newCard = db.insert('cards', {
+      userId,
+      walletId,
+      card_type: 'VIRTUAL',
+      last_four: card.lastFour,
+      provider_token,
+      card_number_encrypted: encrypt(card.number),
+      cvv_encrypted: encrypt(card.cvv),
+      expiry_date_encrypted: encrypt(card.expiryDate),
+    });
+
+    return newCard;
   }
 
   async getCardsByUserId(userId) {
-    const result = await query(
-      `SELECT id, card_type, currency, status, last_four
-       FROM cards
-       WHERE user_id = $1`,
-      [userId]
-    );
-    return result.rows;
+    const cards = db.find('cards', { userId });
+    // In a real app, we would join with wallets to get currency
+    return cards.map(c => ({ ...c, currency: 'USD' })); // Placeholder currency
   }
 }
 

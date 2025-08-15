@@ -1,21 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="SwiitchBank - AI-powered banking for explosive growth"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>SwiitchBank</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <div id="modal-root"></div>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>SwiitchBank</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    /* Include all CSS here */
+    body { font-family: Arial, sans-serif; }
+    .card { border: 1px solid #ddd; padding: 20px; margin: 10px; border-radius: 8px; }
+    .wallet { display: flex; gap: 15px; flex-wrap: wrap; }
+    .balance { background: #f0f8ff; padding: 10px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // Main App Component
+    function App() {
+      const [page, setPage] = React.useState('dashboard');
+      const [user, setUser] = React.useState(null);
+      const [cards, setCards] = React.useState([]);
+      const [wallets, setWallets] = React.useState([]);
+
+      // Mock API calls
+      const fetchData = async () => {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Mock user data
+        setUser({
+          id: 'user_123',
+          email: 'user@swiitchbank.com',
+          firstName: 'Demo',
+          lastName: 'User'
+        });
+
+        // Mock cards
+        setCards([
+          { id: 'card_1', lastFour: '1234', currency: 'USD', type: 'virtual' },
+          { id: 'card_2', lastFour: '5678', currency: 'EUR', type: 'virtual' }
+        ]);
+
+        // Mock wallets
+        setWallets([
+          { currency: 'USD', balance: 150.75 },
+          { currency: 'EUR', balance: 85.20 }
+        ]);
+      };
+
+      React.useEffect(() => {
+        fetchData();
+      }, []);
+
+      return (
+        <div>
+          <header>
+            <h1>SwiitchBank</h1>
+            <nav>
+              <button onClick={() => setPage('dashboard')}>Dashboard</button>
+              <button onClick={() => setPage('cards')}>Cards</button>
+              <button onClick={() => setPage('wallet')}>Wallet</button>
+            </nav>
+          </header>
+
+          {page === 'dashboard' && (
+            <div className="dashboard">
+              <h2>Welcome, {user?.firstName || 'User'}</h2>
+              <div className="wallet">
+                {wallets.map(wallet => (
+                  <div key={wallet.currency} className="balance">
+                    {wallet.balance.toFixed(2)} {wallet.currency}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {page === 'cards' && (
+            <div className="cards">
+              <h2>Your Virtual Cards</h2>
+              <div className="card-list">
+                {cards.map(card => (
+                  <div key={card.id} className="card">
+                    <div>**** **** **** {card.lastFour}</div>
+                    <div>{card.currency} • {card.type}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {page === 'wallet' && (
+            <div className="wallet-page">
+              <h2>Wallet Management</h2>
+              <button onClick={() => alert('Top-up functionality would go here')}>
+                Add Funds
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Render the app
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
 </html>
