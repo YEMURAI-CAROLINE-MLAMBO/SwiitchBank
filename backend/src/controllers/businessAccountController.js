@@ -69,5 +69,142 @@ class BusinessAccountController {
       res.status(500).json({ error: 'Failed to fetch business accounts' });
     }
   }
+
+  /**
+   * Get details of a specific business account by ID
+   */
+  async getBusinessAccountById(req, res) {
+    try {
+      const accountId = req.params.id;
+      const userId = req.user.id; // Assuming user ID is available from authentication middleware
+
+      const result = await query(
+        `SELECT
+           ba.id,
+           ba.name,
+           ba.owner_id,
+           ba.created_at,
+           ba.updated_at,
+           bau.role
+         FROM business_accounts ba
+         JOIN business_account_users bau ON ba.id = bau.business_account_id
+         WHERE ba.id = $1 AND bau.user_id = $2`,
+        [accountId, userId]
+      );
+
+      if (result.rows.length > 0) {
+        res.status(200).json({ businessAccount: result.rows[0] });
+      } else {
+        // Return 404 if the account is not found OR the user is not associated with it
+        res.status(404).json({ error: 'Business account not found or unauthorized' });
+      }
+    } catch (error) {
+      logger.error(`Error fetching business account with ID ${accountId}:`, error);
+      res.status(500).json({ error: 'Failed to fetch business account' });
+    }
+  }
+}
+
+  /**
+   * Add a user to a business account
+   */
+  async addUserToBusinessAccount(req, res) {
+    try {
+      const accountId = req.params.id;
+      const { userId, role } = req.body;
+      const requestingUserId = req.user.id; // Assuming user ID is available from authentication middleware
+
+      // 1. Verify requesting user has 'owner' role for this account
+      const ownerCheck = await query(
+        `SELECT role FROM business_account_users WHERE business_account_id = $1 AND user_id = $2`,
+        [accountId, requestingUserId]
+      );
+
+      if (ownerCheck.rows.length === 0 || ownerCheck.rows[0].role !== 'owner') {
+        return res.status(403).json({ error: 'Unauthorized to add users to this business account' });
+      }
+
+      // 2. Check if the user is already a member of this account
+      const existingMemberCheck = await query(
+        `SELECT * FROM business_account_users WHERE business_account_id = $1 AND user_id = $2`,
+        [accountId, userId]
+      );
+
+      if (existingMemberCheck.rows.length > 0) {
+        return res.status(409).json({ error: 'User is already a member of this business account' });
+      }
+
+      // 3. Insert new user into business_account_users table
+      await query(
+        `INSERT INTO business_account_users (business_account_id, user_id, role)
+         VALUES ($1, $2, $3)`,
+        [accountId, userId, role]
+      );
+
+      res.status(200).json({
+        message: `User ${userId} added to business account ${accountId} with role ${role} successfully`,
+      });
+
+    } catch (error) {
+      logger.error(`Error adding user to business account ${req.params.id}:`, error);
+      // Consider checking for specific database errors (e.g., foreign key constraints for userId or accountId)
+      res.status(500).json({ error: 'Failed to add user to business account' });
+    }
+  }
+
+  /**
+   * Remove a user from a business account
+   */
+  async removeUserFromBusinessAccount(req, res) {
+    try {
+      const accountId = req.params.accountId;
+      const userIdToRemove = parseInt(req.params.userIdToRemove, 10);
+      const requestingUserId = req.user.id; // Assuming user ID is available from authentication middleware
+
+      if (isNaN(userIdToRemove)) {
+        return res.status(400).json({ error: 'Invalid user ID to remove' });
+      }
+
+      // 1. Verify requesting user has 'owner' role for this account
+      const ownerCheck = await query(
+        `SELECT role FROM business_account_users WHERE business_account_id = $1 AND user_id = $2`,
+        [accountId, requestingUserId]
+      );
+
+      if (ownerCheck.rows.length === 0 || ownerCheck.rows[0].role !== 'owner') {
+        return res.status(403).json({ error: 'Unauthorized to remove users from this business account' });
+      }
+
+      // 2. Prevent removing the owner
+      const businessAccount = await query(
+        `SELECT owner_id FROM business_accounts WHERE id = $1`,
+        [accountId]
+      );
+
+      if (businessAccount.rows.length === 0) {
+        return res.status(404).json({ error: 'Business account not found' });
+      }
+
+      if (businessAccount.rows[0].owner_id === userIdToRemove) {
+        return res.status(400).json({ error: 'Cannot remove the business account owner' });
+      }
+
+      // 3. Delete the user's association with the business account
+      const deleteResult = await query(
+        `DELETE FROM business_account_users WHERE business_account_id = $1 AND user_id = $2`,
+        [accountId, userIdToRemove]
+      );
+
+      if (deleteResult.rowCount === 0) {
+        return res.status(404).json({ error: 'User not found in this business account' });
+      }
+
+      res.status(200).json({ message: `User ${userIdToRemove} removed from business account ${accountId} successfully` });
+
+    } catch (error) {
+      logger.error(`Error removing user ${req.params.userIdToRemove} from business account ${req.params.accountId}:`, error);
+      res.status(500).json({ error: 'Failed to remove user from business account' });
+    }
+  }
 }
 module.exports = new BusinessAccountController();

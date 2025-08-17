@@ -89,6 +89,33 @@ class ReferralService {
       return false;
     }
   }
+
+  /**
+   * Get referral details for a user
+   */
+  async getReferralDetails(userId) {
+    try {
+      // Get user's referral code
+      const userResult = await query(
+        `SELECT referral_code FROM users WHERE id = $1`,
+        [userId]
+      );
+      const referralCode = userResult.rows[0]?.referral_code || null;
+
+      // Get completed referrals for this user
+      const completedReferralsResult = await query(
+        `SELECT id, referred_id, reward_amount, reward_currency, created_at
+         FROM referrals
+         WHERE referrer_id = $1 AND status = 'completed'`,
+        [userId]
+      );
+
+      return { referralCode, completedReferrals: completedReferralsResult.rows };
+    } catch (error) {
+      logger.error('Error fetching referral details:', error);
+      throw new Error('Failed to fetch referral details');
+    }
+  }
 }
 
 module.exports = new ReferralService();

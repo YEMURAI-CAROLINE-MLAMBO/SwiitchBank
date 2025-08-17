@@ -4,6 +4,7 @@ const { query } = require('../config/database');
 const config = require('../config/environment');
 const logger = require('../utils/logger');
 const { encrypt } = require('../utils/encryption');
+const referralService = require('../services/referral service'); // Import the referral service
 
 class AuthController {
   /**
@@ -43,6 +44,12 @@ class AuthController {
         [newUser.id]
       );
       
+      // Check for and process referral code
+      if (req.body.referralCode) {
+        // Process referral - reward referrer if code is valid
+        await referralService.processReferral(req.body.referralCode, newUser.id);
+      }
+
       // Generate JWT
       const token = this.generateToken(newUser.id);
       

@@ -34,4 +34,25 @@ router.get('/:id',
  businessAccountController.getBusinessAccountById
 );
 
+/**
+ * POST /api/business-accounts/:id/users
+ * Add a user to a business account
+ */
+router.post('/:id/users',
+  authenticate, // Ensure user is authenticated
+  [
+    body('userId').notEmpty().withMessage('User ID is required').isInt().withMessage('User ID must be an integer'),
+    body('role').notEmpty().withMessage('Role is required').isIn(['admin', 'member', 'owner']).withMessage('Invalid role'),
+  ],
+  validate, // Validate request body
+  businessAccountController.addUserToBusinessAccount
+);
+
+/**
+ * DELETE /api/business-accounts/:accountId/users/:userIdToRemove
+ * Remove a user from a business account
+ */
+router.delete('/:accountId/users/:userIdToRemove',
+  authenticate, // Ensure user is authenticated
+  businessAccountController.removeUserFromBusinessAccount);
 module.exports = router;

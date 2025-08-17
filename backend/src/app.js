@@ -29,6 +29,8 @@ const kycRoutes = require('./routes/kyc');
 const transactionRoutes = require('./routes/transactions');
 const growthRoutes = require('./routes/growth');
 const businessAccountRoutes = require('./routes/businessAccounts');
+const virtualCardRoutes = require('./routes/virtualCards');
+const walletRoutesNew = require('./routes/wallets'); // Renamed to avoid conflict if 'wallet' is used elsewhere
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
@@ -105,12 +107,14 @@ app.get('/health', (req, res) => {
  * @description Mounts the imported route handlers under specific API paths.
  */
 app.use('/api/auth', authRoutes);
-app.use('/api/cards', cardRoutes);
+app.use('/api/cards', cardRoutes); // Assuming 'cardRoutes' is for physical cards or a different card system
 app.use('/api/wallet', walletRoutes);
 app.use('/api/user/kyc', kycRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/growth', growthRoutes);
 app.use('/api/business-accounts', businessAccountRoutes);
+app.use('/api/virtual-cards', virtualCardRoutes);
+app.use('/api/wallets', walletRoutesNew); // Mounted the new wallet routes
 
 // API documentation endpoint (mock)
 /**
