@@ -28,6 +28,7 @@ const walletRoutes = require('./routes/wallet');
 const kycRoutes = require('./routes/kyc');
 const transactionRoutes = require('./routes/transactions');
 const growthRoutes = require('./routes/growth');
+const businessAccountRoutes = require('./routes/businessAccounts');
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
@@ -109,6 +110,7 @@ app.use('/api/wallet', walletRoutes);
 app.use('/api/user/kyc', kycRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/growth', growthRoutes);
+app.use('/api/business-accounts', businessAccountRoutes);
 
 // API documentation endpoint (mock)
 /**
