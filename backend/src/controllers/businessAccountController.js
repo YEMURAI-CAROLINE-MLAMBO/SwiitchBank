@@ -206,5 +206,60 @@ class BusinessAccountController {
       res.status(500).json({ error: 'Failed to remove user from business account' });
     }
   }
+
+  /**
+   * Remove a user from a business account
+   */
+  async removeUserFromBusinessAccount(req, res) {
+    try {
+      const accountId = req.params.accountId;
+      const userIdToRemove = parseInt(req.params.userIdToRemove, 10);
+      const requestingUserId = req.user.id; // Assuming user ID is available from authentication middleware
+
+      if (isNaN(userIdToRemove)) {
+        return res.status(400).json({ error: 'Invalid user ID to remove' });
+      }
+
+      // 1. Verify requesting user has 'owner' role for this account
+      const ownerCheck = await query(
+        `SELECT role FROM business_account_users WHERE business_account_id = $1 AND user_id = $2`,
+        [accountId, requestingUserId]
+      );
+
+      if (ownerCheck.rows.length === 0 || ownerCheck.rows[0].role !== 'owner') {
+        return res.status(403).json({ error: 'Unauthorized to remove users from this business account' });
+      }
+
+      // 2. Prevent removing the owner
+      const businessAccount = await query(
+        `SELECT owner_id FROM business_accounts WHERE id = $1`,
+        [accountId]
+      );
+
+      if (businessAccount.rows.length === 0) {
+        return res.status(404).json({ error: 'Business account not found' });
+      }
+
+      if (businessAccount.rows[0].owner_id === userIdToRemove) {
+        return res.status(400).json({ error: 'Cannot remove the business account owner' });
+      }
+
+      // 3. Delete the user's association with the business account
+      const deleteResult = await query(
+        `DELETE FROM business_account_users WHERE business_account_id = $1 AND user_id = $2`,
+        [accountId, userIdToRemove]
+      );
+
+      if (deleteResult.rowCount === 0) {
+        return res.status(404).json({ error: 'User not found in this business account' });
+      }
+
+      res.status(200).json({ message: `User ${userIdToRemove} removed from business account ${accountId} successfully` });
+
+    } catch (error) {
+      logger.error(`Error removing user ${req.params.userIdToRemove} from business account ${req.params.accountId}:`, error);
+      res.status(500).json({ error: 'Failed to remove user from business account' });
+    }
+  }
 }
 module.exports = new BusinessAccountController();
