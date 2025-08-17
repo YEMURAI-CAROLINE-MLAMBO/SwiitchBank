@@ -8,6 +8,7 @@ const StudentOnboarding = () => {
   const [university, setUniversity] = useState('');
   const [studentId, setStudentId] = useState('');
   const [isVerified, setIsVerified] = useState(false);
+  const [referralCode, setReferralCode] = useState('');
   const [showOffer, setShowOffer] = useState(true);
   
   const verifyStudentStatus = async () => {
@@ -15,6 +16,12 @@ const StudentOnboarding = () => {
       // Simple verification for MVP
       await api.post('/verification/student', { university, studentId });
       setIsVerified(true);
+
+      // If a referral code was entered and verification is successful, apply it
+      if (referralCode) {
+        // Assuming a backend endpoint /api/referral/apply exists
+        await api.post('/referral/apply', { referralCode });
+      }
       
       // Apply student benefits
       await api.post('/rewards/activate', { type: 'student' });
@@ -54,6 +61,13 @@ const StudentOnboarding = () => {
             placeholder="Enter student ID"
           />
           
+          <Input
+            label="Referral Code (Optional)"
+            value={referralCode}
+            onChange={(e) => setReferralCode(e.target.value)}
+            placeholder="Enter referral code"
+          />
+
           <Button onClick={verifyStudentStatus}>
             Verify Student Status
           </Button>

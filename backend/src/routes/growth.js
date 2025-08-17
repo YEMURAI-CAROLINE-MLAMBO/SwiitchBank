@@ -54,4 +54,15 @@ router.get('/referral', growthController.getReferralInfo);
  *       - bearerAuth: []
  */
 router.post('/referral/generate', growthController.generateReferralCode);
+
+/**
+ * @swagger
+ * /api/growth/referral/apply:
+ *   post:
+ *     summary: Apply a referral code
+ *     tags: [Growth]
+ *     security:
+ *       - bearerAuth: []
+ */
+router.post('/referral/apply', growthController.applyReferralCode);
 module.exports = router;

@@ -22,6 +22,25 @@ exports.getReferralInfo = async (req, res) => {
   }
 };
 
+exports.applyReferralCode = async (req, res) => {
+  try {
+    const { referralCode } = req.body;
+    const userId = req.user.id;
+
+    const success = await referralService.processReferral(referralCode, userId);
+
+    if (success) {
+      res.status(200).json({ message: 'Referral applied successfully' });
+    } else {
+      res.status(400).json({ message: 'Invalid or expired referral code' });
+    }
+
+  } catch (error) {
+    logger.error('Error applying referral code:', error);
+    res.status(500).json({ message: 'Failed to apply referral code' });
+  }
+};
+
 exports.generateReferralCode = async (req, res) => {
   try {
     const userId = req.user.id; // Assuming user ID is available from authenticated user
