@@ -1,6 +1,9 @@
 /**
+ * @file Express application configuration for the Swiitch Bank MVP.
+ * @description Sets up and configures the Express application with various middleware, routes, and error handling.
+ */
+/**
  * Swiitch Bank MVP - Express Application Configuration
- * Configures middleware, routes, and error handling
  */
 
 const express = require('express');
@@ -10,13 +13,21 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 
 // Import routes
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
 const authRoutes = require('./routes/auth');
 const cardRoutes = require('./routes/cards');
 const walletRoutes = require('./routes/wallet');
 const kycRoutes = require('./routes/kyc');
 const transactionRoutes = require('./routes/transactions');
 const growthRoutes = require('./routes/growth');
-
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
@@ -24,6 +35,10 @@ const logger = require('./utils/logger');
 const app = express();
 
 // Security middleware
+/**
+ * @description Configures security headers using Helmet.
+ * @see {@link https://helmetjs.github.io/}
+ */
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -36,6 +51,10 @@ app.use(helmet({
 }));
 
 // CORS configuration
+/**
+ * @description Configures Cross-Origin Resource Sharing (CORS) for allowing requests from specified origins.
+ * @see {@link https://www.npmjs.com/package/cors}
+ */
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? ['https://your-production-domain.com'] 
@@ -44,6 +63,10 @@ app.use(cors({
 }));
 
 // Rate limiting
+/**
+ * @description Configures rate limiting to protect against brute-force attacks.
+ * @see {@link https://www.npmjs.com/package/express-rate-limit}
+ */
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: process.env.NODE_ENV === 'production' ? 100 : 1000, // Limit requests per window
@@ -52,10 +75,18 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // Body parsing middleware
+/**
+ * @description Parses incoming JSON payloads.
+ * @see {@link https://expressjs.com/en/api.html#express.json}
+ */
 app.use(express.json({ limit: '10mb' }));
+/**
+ * @description Parses incoming URL-encoded payloads.
+ * @see {@link https://expressjs.com/en/api.html#express.urlencoded}
+ */
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
 // Logging
+/** @description Configures HTTP request logging using Morgan and sends output to the custom logger. */
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
 
 // Health check endpoint
@@ -69,6 +100,9 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
+/**
+ * @description Mounts the imported route handlers under specific API paths.
+ */
 app.use('/api/auth', authRoutes);
 app.use('/api/cards', cardRoutes);
 app.use('/api/wallet', walletRoutes);
@@ -77,6 +111,12 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/growth', growthRoutes);
 
 // API documentation endpoint (mock)
+/**
+ * @description Mock endpoint for API documentation.
+ * TODO: Replace with a proper documentation generation tool like Swagger/OpenAPI.
+ * @route GET /api/docs
+ * @returns {object} JSON object containing API documentation information.
+ */
 app.get('/api/docs', (req, res) => {
   res.json({
     message: 'Swiitch Bank API Documentation',
@@ -118,7 +158,15 @@ app.get('/api/docs', (req, res) => {
 });
 
 // Error handling middleware
+/**
+ * @description Middleware to handle 404 (Not Found) errors.
+ * @see {@link backend/src/middleware/errorHandler.js}
+ */
 app.use(notFound);
+/**
+ * @description General error handling middleware.
+ * @see {@link backend/src/middleware/errorHandler.js}
+ */
 app.use(errorHandler);
 
 module.exports = app;
