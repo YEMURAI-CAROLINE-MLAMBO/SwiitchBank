@@ -22,6 +22,18 @@ const createWallet = (req, res) => {
 };
 
 module.exports = {
+  /**
+ * @swagger
+ * /api/wallet/balance:
+ *   get:
+ *     summary: Get wallet balance for the authenticated user
+ *     tags: [Wallet]
+ *     responses:
+ *       200:
+ *         description: Successful response with wallet balance
+ *       500:
+ *         description: Internal server error
+ */
  createWallet,
  listWallets: async (req, res) => {
     const userId = req.user.id; // Assuming user ID is available from authenticated user
@@ -56,6 +68,40 @@ module.exports = {
     }
   }
   ,
+  /**
+ * @swagger
+ * /api/wallet/{walletId}/topup:
+ *   post:
+ *     summary: Top up a specific wallet
+ *     tags: [Wallet]
+ *     parameters:
+ *       - in: path
+ *         name: walletId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the wallet to top up
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: number
+ *                 format: float
+ *                 description: The amount to top up
+ *     responses:
+ *       200:
+ *         description: Wallet topped up successfully
+ *       400:
+ *         description: Invalid top-up amount
+ *       404:
+ *         description: Wallet not found or does not belong to user
+ *       500:
+ *         description: Error topping up wallet
+ */
   topupWallet: async (req, res) => {
     const { walletId } = req.params;
     const userId = req.user.id; // Assuming user ID is available from authenticated user
@@ -84,6 +130,46 @@ module.exports = {
     }
   }
   ,
+  /**
+ * @swagger
+ * /api/wallet/{fromWalletId}/transfer/{toWalletId}:
+ *   post:
+ *     summary: Transfer funds between wallets
+ *     tags: [Wallet]
+ *     parameters:
+ *       - in: path
+ *         name: fromWalletId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the source wallet
+ *       - in: path
+ *         name: toWalletId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the destination wallet
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: number
+ *                 format: float
+ *                 description: The amount to transfer
+ *     responses:
+ *       200:
+ *         description: Funds transferred successfully
+ *       400:
+ *         description: Invalid transfer amount or cannot transfer to the same wallet
+ *       404:
+ *         description: Source or destination wallet not found
+ *       500:
+ *         description: Error transferring funds
+ */
   transferFunds: async (req, res) => {
     const { fromWalletId, toWalletId } = req.params;
     const { amount } = req.body;

@@ -11,6 +11,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 
 // Import routes
 /**
@@ -116,52 +118,20 @@ app.use('/api/business-accounts', businessAccountRoutes);
 app.use('/api/virtual-cards', virtualCardRoutes);
 app.use('/api/wallets', walletRoutesNew); // Mounted the new wallet routes
 
-// API documentation endpoint (mock)
+// Swagger API documentation
 /**
- * @description Mock endpoint for API documentation.
- * TODO: Replace with a proper documentation generation tool like Swagger/OpenAPI.
- * @route GET /api/docs
- * @returns {object} JSON object containing API documentation information.
+ * @description Configures and serves the Swagger API documentation.
  */
-app.get('/api/docs', (req, res) => {
-  res.json({
-    message: 'Swiitch Bank API Documentation',
-    version: '1.0.0',
-    endpoints: {
-      auth: [
-        'POST /api/auth/register',
-        'POST /api/auth/login',
-        'POST /api/auth/logout',
-        'GET /api/auth/profile'
-      ],
-      cards: [
-        'POST /api/cards/issue',
-        'GET /api/cards',
-        'GET /api/cards/:id',
-        'PUT /api/cards/:id/status'
-      ],
-      wallet: [
-        'GET /api/wallet/balance',
-        'POST /api/wallet/topup',
-        'POST /api/wallet/convert'
-      ],
-      kyc: [
-        'POST /api/user/kyc/submit',
-        'GET /api/user/kyc/status'
-      ],
-      transactions: [
-        'GET /api/transactions',
-        'GET /api/transactions/:id'
-      ],
-      growth: [
-        'GET /api/growth/referral',
-        'POST /api/growth/referral/apply',
-        'POST /api/growth/circle',
-        'POST /api/growth/challenge'
-      ]
-    }
-  });
-});
+const swaggerOptions = {
+  swaggerDefinition: require('./swaggerDef'),
+  apis: ['./backend/src/routes/*.js', './backend/src/controllers/*.js'], // Path to the API routes and controllers
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+
 
 // Error handling middleware
 /**

@@ -4,6 +4,20 @@ const logger = require('../utils/logger');
 class BusinessAccountController {
   /**
    * Create a new business account
+   * @swagger
+   * /api/business-accounts:
+   *   post:
+   *     summary: Create a new business account
+   *     tags: [Business Accounts]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             $ref: '#/components/schemas/CreateBusinessAccountRequest'
+   *     responses:
+   *       201:
+   *         description: Business account created successfully
    */
   async createBusinessAccount(req, res) {
     try {
@@ -44,6 +58,20 @@ class BusinessAccountController {
 
   /**
    * Get business accounts for the authenticated user
+   * @swagger
+   * /api/business-accounts:
+   *   get:
+   *     summary: Get business accounts for the authenticated user
+   *     tags: [Business Accounts]
+   *     responses:
+   *       200:
+   *         description: A list of business accounts
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   */
+
    */
   async getBusinessAccounts(req, res) {
     try {
@@ -72,6 +100,17 @@ class BusinessAccountController {
 
   /**
    * Get details of a specific business account by ID
+   * @swagger
+   * /api/business-accounts/{id}:
+   *   get:
+   *     summary: Get details of a specific business account by ID
+   *     tags: [Business Accounts]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: integer
    */
   async getBusinessAccountById(req, res) {
     try {
@@ -107,6 +146,17 @@ class BusinessAccountController {
 
   /**
    * Add a user to a business account
+   * @swagger
+   * /api/business-accounts/{id}/users:
+   *   post:
+   *     summary: Add a user to a business account
+   *     tags: [Business Accounts]
+   *     parameters:
+   *       - in: path
+   *         name: id
+   *         required: true
+   *         schema:
+   *           type: integer
    */
   async addUserToBusinessAccount(req, res) {
     try {
@@ -154,6 +204,23 @@ class BusinessAccountController {
 
   /**
    * Remove a user from a business account
+   * @swagger
+   * /api/business-accounts/{accountId}/users/{userIdToRemove}:
+   *   delete:
+   *     summary: Remove a user from a business account
+   *     tags: [Business Accounts]
+   *     parameters:
+   *       - in: path
+   *         name: accountId
+   *         required: true
+   *         schema:
+   *           type: integer
+   *       - in: path
+   *         name: userIdToRemove
+   *         required: true
+   *         schema:
+   *           type: integer
+   *     responses:
    */
   async removeUserFromBusinessAccount(req, res) {
     try {

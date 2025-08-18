@@ -7,8 +7,73 @@ const { encrypt } = require('../utils/encryption');
 const referralService = require('../services/referral service'); // Import the referral service
 
 class AuthController {
+
   /**
    * Register new user
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - firstName
+ *               - lastName
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               referralCode:
+ *                 type: string
+ *                 description: Optional referral code
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     email:
+ *                       type: string
+ *                     firstName:
+ *                       type: string
+ *                     lastName:
+ *                       type: string
+ *                     createdAt:
+ *                       type: string
+ *                 token:
+ *                   type: string
+ *       400:
+ *         description: Bad request (e.g., email already registered, missing fields)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
    */
   async register(req, res) {
     try {
@@ -72,6 +137,50 @@ class AuthController {
 
   /**
    * Authenticate user
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Authenticate user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 user:
+ *                   $ref: '#/components/schemas/User' # Assuming a User schema is defined elsewhere
+ *                 token:
+ *                   type: string
+ *       401:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
    */
   async login(req, res) {
     try {
@@ -120,6 +229,47 @@ class AuthController {
       res.status(500).json({ error: 'Failed to authenticate' });
     }
   }
+
+  /**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout the current user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ */
+  async logout(req, res) {
+    // In a stateless JWT system, logout on the server side typically involves
+    // invalidating the token on the client side. If you were using session
+    // management on the server, you would destroy the session here.
+    // For JWTs, you might implement a token blacklist if necessary,
+    // but a simpler approach is for the client to discard the token.
+    // We'll send a success message assuming the client will discard the token.
+    try {
+      // Optional: Log the logout event if needed
+      // logger.info(`User ${req.user.id} logged out`);
+
+      res.json({ message: 'Logout successful' });
+    } catch (error) {
+      logger.error('Logout failed:', error);
+      res.status(500).json({ error: 'Failed to logout' });
+    }
+  }
+
+
 
   /**
    * Generate JWT token

@@ -52,6 +52,19 @@ router.get('/referral', growthController.getReferralInfo);
  *     tags: [Growth]
  *     security:
  *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Referral code generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 referralCode:
+ *                   type: string
+ *                   example: NEWCODE789
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
  */
 router.post('/referral/generate', growthController.generateReferralCode);
 router.post('/referral/generate', growthController.generateReferralCode);
