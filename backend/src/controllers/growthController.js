@@ -8,7 +8,7 @@ exports.getReferralInfo = async (req, res) => {
     const userId = req.user.id; // Assuming user ID is available from authenticated user
 
     // Call the referral service function to get referral details
-    const referralInfo = await referralService.getReferalDetails(userId);
+    const referralInfo = await referralService.getReferralDetails(userId);
     
     if (!referralInfo) {
       return res.status(404).json({ message: 'Referral information not found' });

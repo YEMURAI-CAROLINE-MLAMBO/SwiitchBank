@@ -1,8 +1,6 @@
 // backend/src/controllers/virtualCardController.js
 
-// In-memory storage for virtual cards (for demonstration purposes)
-
-const virtualCards = [];
+// Assuming you have a VirtualCard model for database interaction
 
 /**
  * @swagger
@@ -21,17 +19,11 @@ const virtualCards = [];
  *                 $ref: '#/components/schemas/VirtualCard' # Assuming you have a VirtualCard schema defined
  */
 exports.listVirtualCards = (req, res) => {
- res.status(200).json(virtualCards);
+  // TODO: Replace with database query to get all virtual cards for the authenticated user
+  // const virtualCards = await VirtualCard.findAll({ where: { userId: req.user.id } });
+  res.status(200).json([]); // Placeholder
 };
 
-exports.getVirtualCardById = (req, res) => {
- const cardId = req.params.cardId; // Corrected parameter name to match the route
-  // Find the card with the matching ID
-  const card = virtualCards.find(card => card.id === cardId);
-/**
- * @swagger
- * /api/cards/{cardId}:
- *   get:
  *     summary: Get virtual card details by ID
  *     tags: [Virtual Cards]
  *     parameters:
@@ -52,9 +44,9 @@ exports.getVirtualCardById = (req, res) => {
  *         description: Virtual card not found
  */
 exports.getVirtualCardById = (req, res) => {
- const cardId = req.params.cardId;
- const card = virtualCards.find(card => card.id === cardId);
+  const cardId = req.params.cardId;
 
+  // TODO: Replace with database query to find a virtual card by ID for the authenticated user
  if (card) {
     res.status(200).json(card);
   } else {
@@ -95,7 +87,8 @@ exports.withdrawVirtualCard = async (req, res) => {
     return res.status(400).json({ message: 'Invalid withdrawal amount' });
   }
 
-  const card = virtualCards.find(card => card.id === cardId);
+  // TODO: Replace with database query to find a virtual card by ID for the authenticated user
+  const card = null; // Placeholder
 
   if (!card) {
     return res.status(404).json({ message: 'Virtual card not found' });
@@ -129,10 +122,26 @@ exports.withdrawVirtualCard = async (req, res) => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/VirtualCard'
+ *       400:
+ *         description: Invalid input
+ *       500:
+ *         description: Server error
  */
-exports.createVirtualCard = (req, res) => {
-  const newCard = {
- id: Date.now().toString(), // Simple ID generation
+exports.createVirtualCard = async (req, res) => {
+  try {
+    // TODO: Integrate with Mastercard API (or chosen BaaS provider) to issue a virtual card.
+    // This would involve making an API call with necessary details (e.g., user info)
+    // and receiving card details (card number, expiry, CVV, etc.) in return.
+
+    // For now, simulate a response with placeholder data
+    const issuedCardDetails = {
+      cardNumber: 'xxxx-xxxx-xxxx-' + Math.random().toString().slice(2, 6), // Placeholder
+      expiryDate: '12/25', // Placeholder
+      cvv: Math.random().toString().slice(2, 5), // Placeholder
+      // ... other card details from API response
+    };
+
+    // TODO: Save the received card details (securely, e.g., tokenized) to the database
     ...req.body, // Assume card details are in the request body
     // Add any other required properties with default or generated values
     balance: 0, // Initialize balance
@@ -140,6 +149,22 @@ exports.createVirtualCard = (req, res) => {
   };
  virtualCards.push(newCard);
  res.status(201).json(newCard);
+
+    // Example of saving to database using a hypothetical VirtualCard model:
+    // const createdCard = await VirtualCard.create({
+    //   userId: req.user.id, // Assuming user is authenticated and available in req.user
+    //   cardNumber: issuedCardDetails.cardNumber, // Store securely (tokenized)
+    //   expiryDate: issuedCardDetails.expiryDate,
+    //   cvv: issuedCardDetails.cvv, // Store securely (tokenized)
+    //   balance: 0,
+    //   status: 'active',
+    // });
+
+    // res.status(201).json(createdCard);
+  } catch (error) {
+    console.error('Error creating virtual card:', error);
+    res.status(500).json({ message: 'Error creating virtual card' });
+  }
 };
 
 exports.topupVirtualCard = async (req, res) => {
