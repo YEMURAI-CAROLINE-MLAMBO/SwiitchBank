@@ -18,11 +18,16 @@
  *               items:
  *                 $ref: '#/components/schemas/VirtualCard' # Assuming you have a VirtualCard schema defined
  */
-exports.listVirtualCards = (req, res) => {
-  // TODO: Replace with database query to get all virtual cards for the authenticated user
-  // const virtualCards = await VirtualCard.findAll({ where: { userId: req.user.id } });
-  res.status(200).json([]); // Placeholder
-};
+exports.listVirtualCards = async (req, res) => {
+ try {
+ // Replace with database query to get all virtual cards for the authenticated user
+ // Assuming req.user.id is available after authentication middleware
+    // const virtualCards = await VirtualCard.findAll({ where: { userId: req.user.id } });
+
+ // res.status(200).json(virtualCards); // Send the retrieved cards in the response
+ res.status(200).json([]); // Placeholder response
+  } catch (error) {
+ console.error('Error listing virtual cards:', error);
 
  *     summary: Get virtual card details by ID
  *     tags: [Virtual Cards]
@@ -41,12 +46,25 @@ exports.listVirtualCards = (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/VirtualCard'
  *       404:
- *         description: Virtual card not found
- */
-exports.getVirtualCardById = (req, res) => {
+*         description: Virtual card not found
+ */exports.listVirtualCards = async (req, res) => {
+  try {
+    // Replace with database query to get all virtual cards for the authenticated user
+    // Assuming req.user.id is available after authentication middleware
+    // const virtualCards = await VirtualCard.findAll({ where: { userId: req.user.id } });
+
+    // res.status(200).json(virtualCards); // Send the retrieved cards in the response
+    res.status(200).json([]); // Placeholder response
+  } catch (error) {
+    console.error('Error listing virtual cards:', error);
+    res.status(500).json({ message: 'Error listing virtual cards' });
+  }
+};exports.getVirtualCardById = async (req, res) => {
   const cardId = req.params.cardId;
 
-  // TODO: Replace with database query to find a virtual card by ID for the authenticated user
+ try {
+ // Replace with database query to find a virtual card by ID for the authenticated user
+ // const card = await VirtualCard.findOne({ where: { id: cardId, userId: req.user.id } });
  if (card) {
     res.status(200).json(card);
   } else {
@@ -87,46 +105,27 @@ exports.withdrawVirtualCard = async (req, res) => {
     return res.status(400).json({ message: 'Invalid withdrawal amount' });
   }
 
-  // TODO: Replace with database query to find a virtual card by ID for the authenticated user
-  const card = null; // Placeholder
+ try {
+ // TODO: Replace with database query to find a virtual card by ID for the authenticated user
+ // const card = await VirtualCard.findOne({ where: { id: cardId, userId: req.user.id } });
 
-  if (!card) {
-    return res.status(404).json({ message: 'Virtual card not found' });
+ // Placeholder for now
+ const card = null;
+
+ if (!card) {
+ return res.status(404).json({ message: 'Virtual card not found' });
+    }
+ if ((card.balance || 0) < amount) {
+ return res.status(400).json({ message: 'Insufficient funds' });
+    }
+ // TODO: Update card balance in the database
+    card.balance = (card.balance || 0) - amount;
+ res.status(200).json(card);
+  } catch (error) {
+ console.error('Error withdrawing from virtual card:', error);
+    res.status(500).json({ message: 'Error withdrawing from virtual card' });
   }
-  if ((card.balance || 0) < amount) {
-    return res.status(400).json({ message: 'Insufficient funds' });
-  }
-  card.balance = (card.balance || 0) - amount;
-  res.status(200).json(card);
 };
-
-/**
- * @swagger
- * /api/cards/issue:
- *   post:
- *     summary: Create a new virtual card
- *     tags: [Virtual Cards]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               // Define the properties expected for creating a new virtual card
- *               // e.g., cardHolderName, expiryDate, cvv, etc.
- *     responses:
- *       201:
- *         description: Virtual card created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/VirtualCard'
- *       400:
- *         description: Invalid input
- *       500:
- *         description: Server error
- */
 exports.createVirtualCard = async (req, res) => {
   try {
     // TODO: Integrate with Mastercard API (or chosen BaaS provider) to issue a virtual card.
@@ -140,15 +139,6 @@ exports.createVirtualCard = async (req, res) => {
       cvv: Math.random().toString().slice(2, 5), // Placeholder
       // ... other card details from API response
     };
-
-    // TODO: Save the received card details (securely, e.g., tokenized) to the database
-    ...req.body, // Assume card details are in the request body
-    // Add any other required properties with default or generated values
-    balance: 0, // Initialize balance
-    status: 'active' // Initialize status
-  };
- virtualCards.push(newCard);
- res.status(201).json(newCard);
 
     // Example of saving to database using a hypothetical VirtualCard model:
     // const createdCard = await VirtualCard.create({
@@ -197,12 +187,21 @@ exports.topupVirtualCard = async (req, res) => {
     return res.status(400).json({ message: 'Invalid top-up amount' });
   }
 
-  const card = virtualCards.find(card => card.id === cardId);
+ try {
+ // TODO: Replace with database query to find a virtual card by ID for the authenticated user
+ // const card = await VirtualCard.findOne({ where: { id: cardId, userId: req.user.id } });
 
-  if (card) {
+ // Placeholder for now
+ const card = null;
+
+ if (card) {
     card.balance = (card.balance || 0) + amount;
     res.status(200).json(card);
   } else {
     res.status(404).json({ message: 'Virtual card not found' });
+  }
+  } catch (error) {
+ console.error('Error topping up virtual card:', error);
+    res.status(500).json({ message: 'Error topping up virtual card' });
   }
 };
