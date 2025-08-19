@@ -126,5 +126,5 @@ router.post('/logout', authController.logout);
  *       404:
  *         description: User not found
  */
-// router.get('/profile', authController.getProfile); // Assuming a getProfile function exists in authController
+router.get('/profile', authController.getProfile); // Assuming a getProfile function exists in authController
 module.exports = router;

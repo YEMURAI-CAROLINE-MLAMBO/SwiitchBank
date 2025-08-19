@@ -1,6 +1,6 @@
-none// backend/src/controllers/gamificationController.js
-
 // backend/src/controllers/gamificationController.js
+
+const gamificationService = require('../services/gamificationService');
 
 /**
  * @swagger
@@ -32,7 +32,6 @@ none// backend/src/controllers/gamificationController.js
  */
 exports.getFinancialInsights = async (req, res) => {
   try {
-    // Import the gamification service
     const gamificationService = require('../services/gamificationService');
     const { userId } = req.params;
     const insights = await gamificationService.getFinancialInsights(userId);
@@ -84,7 +83,6 @@ exports.getFinancialInsights = async (req, res) => {
  */
 exports.getGamificationChallenges = async (req, res) => {
   try {
-    const gamificationService = require('../services/gamificationService');
     const { userId } = req.params;
     const challenges = await gamificationService.getGamificationChallenges(userId);
     res.status(200).json(challenges);
@@ -128,9 +126,8 @@ exports.getGamificationChallenges = async (req, res) => {
  */
 exports.getGamificationLeaderboard = async (req, res) => {
   try {
-    const gamificationService = require('../services/gamificationService');
     const { userId } = req.params;
-    const leaderboard = await gamificationService.getGamificationLeaderboard();
+    const leaderboard = await gamificationService.getGamificationLeaderboard(userId);
     res.status(200).json(leaderboard);
   } catch (error) {
     console.error('Error getting gamification leaderboard:', error);

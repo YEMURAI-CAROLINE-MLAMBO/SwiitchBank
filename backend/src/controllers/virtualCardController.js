@@ -1,6 +1,6 @@
 // backend/src/controllers/virtualCardController.js
 
-// Assuming you have a VirtualCard model for database interaction
+const { query } = require('/workspace/backend/src/config/database');
 
 /**
  * @swagger
@@ -17,18 +17,27 @@
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/VirtualCard' # Assuming you have a VirtualCard schema defined
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
  */
 exports.listVirtualCards = async (req, res) => {
  try {
- // Replace with database query to get all virtual cards for the authenticated user
- // Assuming req.user.id is available after authentication middleware
-    // const virtualCards = await VirtualCard.findAll({ where: { userId: req.user.id } });
-
- // res.status(200).json(virtualCards); // Send the retrieved cards in the response
- res.status(200).json([]); // Placeholder response
+    const userId = req.user.id; // Assuming user ID is available from authentication middleware
+    const result = await query('SELECT * FROM virtual_cards WHERE user_id = $1', [userId]); 
+    const virtualCards = result.rows;
+    res.status(200).json(virtualCards); // Send the retrieved cards in the response
   } catch (error) {
  console.error('Error listing virtual cards:', error);
+    res.status(500).json({ message: 'Error listing virtual cards' });
+  }
+};
 
+/**
+ * @swagger
+ * /api/cards/{cardId}:
+ *   get:
  *     summary: Get virtual card details by ID
  *     tags: [Virtual Cards]
  *     parameters:
@@ -46,35 +55,39 @@ exports.listVirtualCards = async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/VirtualCard'
  *       404:
-*         description: Virtual card not found
- */exports.listVirtualCards = async (req, res) => {
-  try {
-    // Replace with database query to get all virtual cards for the authenticated user
-    // Assuming req.user.id is available after authentication middleware
-    // const virtualCards = await VirtualCard.findAll({ where: { userId: req.user.id } });
-
-    // res.status(200).json(virtualCards); // Send the retrieved cards in the response
-    res.status(200).json([]); // Placeholder response
-  } catch (error) {
-    console.error('Error listing virtual cards:', error);
-    res.status(500).json({ message: 'Error listing virtual cards' });
-  }
-};exports.getVirtualCardById = async (req, res) => {
+ *         description: Virtual card not found or unauthorized
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+exports.getVirtualCardById = async (req, res) => {
   const cardId = req.params.cardId;
 
  try {
- // Replace with database query to find a virtual card by ID for the authenticated user
- // const card = await VirtualCard.findOne({ where: { id: cardId, userId: req.user.id } });
- if (card) {
-    res.status(200).json(card);
+    const userId = req.user.id; // Assuming user ID is available from authentication middleware
+    const result = await query('SELECT * FROM virtual_cards WHERE id = $1 AND user_id = $2', [cardId, userId]);
+    const card = result.rows[0];
+
+    if (card) {
+      // Ensure card details are handled securely (e.g., tokenized) before sending
+      // For this example, we are returning raw data as a placeholder
+      res.status(200).json(card);
   } else {
-    res.status(404).json({ message: 'Virtual card not found' });
+      res.status(404).json({ message: 'Virtual card not found or unauthorized' });
   }
 };
 
 exports.withdrawVirtualCard = async (req, res) => {
   const cardId = req.params.cardId;
   const { amount } = req.body;
+  const userId = req.user.id;
+
+  // Remove duplicate Swagger documentation block
+
+  if (typeof amount !== 'number' || amount <= 0) {
+    return res.status(400).json({ message: 'Invalid withdrawal amount' });
+  }
 
   if (typeof amount !== 'number' || amount <= 0) {
 /**
@@ -102,21 +115,21 @@ exports.withdrawVirtualCard = async (req, res) => {
  *                 format: float
  *                 description: The amount to withdraw
  */
-    return res.status(400).json({ message: 'Invalid withdrawal amount' });
+    // Duplicate Swagger documentation, will be removed.
   }
 
  try {
- // TODO: Replace with database query to find a virtual card by ID for the authenticated user
- // const card = await VirtualCard.findOne({ where: { id: cardId, userId: req.user.id } });
+    // Find the virtual card for the authenticated user
+    const cardResult = await query('SELECT * FROM virtual_cards WHERE id = $1 AND user_id = $2', [cardId, userId]);
+    const card = cardResult.rows[0];
 
- // Placeholder for now
- const card = null;
-
- if (!card) {
- return res.status(404).json({ message: 'Virtual card not found' });
+    if (!card) {
+      return res.status(404).json({ message: 'Virtual card not found or unauthorized' });
     }
- if ((card.balance || 0) < amount) {
- return res.status(400).json({ message: 'Insufficient funds' });
+
+    // Check for sufficient funds
+    if ((card.balance || 0) < amount) {
+      return res.status(400).json({ message: 'Insufficient funds' });
     }
  // TODO: Update card balance in the database
     card.balance = (card.balance || 0) - amount;

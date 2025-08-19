@@ -4,7 +4,7 @@ const { query } = require('../config/database');
 const config = require('../config/environment');
 const logger = require('../utils/logger');
 const { encrypt } = require('../utils/encryption');
-const referralService = require('../services/referral service'); // Import the referral service
+const aiService = require('../services/aiService'); // Import the consolidated AI/referral service
 
 class AuthController {
 
@@ -112,7 +112,7 @@ class AuthController {
       // Check for and process referral code
       if (req.body.referralCode) {
         // Process referral - reward referrer if code is valid
-        await referralService.processReferral(req.body.referralCode, newUser.id);
+        await aiService.processReferral(req.body.referralCode, newUser.id);
       }
 
       // Generate JWT
@@ -269,6 +269,41 @@ class AuthController {
     }
   }
 
+  /**
+ * @swagger
+ * /api/auth/profile:
+ *   get:
+ *     summary: Get the profile of the authenticated user
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User' # Assuming you have a User schema defined
+ *       401:
+ *         description: Unauthorized (if the user is not logged in)
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+  async getProfile(req, res) {
+    try {
+      const userId = req.user.id; // Assuming user ID is available from authentication middleware
+      const result = await query('SELECT id, email, first_name, last_name, created_at FROM users WHERE id = $1', [userId]);
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      res.status(200).json(result.rows[0]);
+    } catch (error) {
+      logger.error('Error fetching user profile:', error);
+      res.status(500).json({ error: 'Failed to fetch user profile' });
+    }
+  }
 
 
   /**

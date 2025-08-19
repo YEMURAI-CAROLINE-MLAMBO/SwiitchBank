@@ -1,8 +1,21 @@
-// backend/src/controllers/cryptoController.js
+// backend/src/controllers/cryptoPayoutController.js
 
 const cryptoService = require('../services/cryptoService');
 const logger = require('../utils/logger');
 
+/**
+ * @swagger
+ * /api/crypto/currencies:
+ *   get:
+ *     summary: Get supported crypto currencies for payouts
+ *     tags: [Crypto]
+ *     responses:
+ *       200:
+ *         description: A list of supported currencies
+ *         content:
+ *           application/json:
+ *             schema:
+ */
 const getSupportedCurrencies = async (req, res) => {
   try {
     const supportedCurrencies = await cryptoService.getSupportedCurrencies();
@@ -13,6 +26,24 @@ const getSupportedCurrencies = async (req, res) => {
   }
 };
 
+/**
+ * @swagger
+ * /api/crypto/exchange-rate:
+ *   get:
+ *     summary: Get exchange rate between two currencies
+ *     tags: [Crypto]
+ *     parameters:
+ *       - in: query
+ *         name: fromCurrency
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: toCurrency
+ *         required: true
+ *         schema:
+ *           type: string
+ */
 const getExchangeRate = async (req, res) => {
   const { fromCurrency, toCurrency } = req.query;
   try {
@@ -24,4 +55,43 @@ const getExchangeRate = async (req, res) => {
   }
 };
 
+/**
+ * @swagger
+ * /api/crypto/payouts:
+ *   post:
+ *     summary: Initiate a crypto payout
+ *     tags: [Crypto]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - amount
+ *               - currency
+ *               - recipientAddress
+ *             properties:
+ *               amount:
+ *                 type: number
+ *               currency:
+ *                 type: string
+ *               recipientAddress:
+ *                 type: string
+ */
+const initiateCryptoPayout = async (req, res) => {
+  const { amount, currency, recipientAddress } = req.body;
+  try {
+    if (!amount || !currency || !recipientAddress) {
+      return res.status(400).json({ message: 'Amount, currency, and recipient address are required' });
+    }
+
+    const payoutResult = await cryptoService.initiatePayout(amount, currency, recipientAddress);
+    res.status(200).json({ message: 'Crypto payout initiated successfully', payout: payoutResult });
+  } catch (error) {
+    logger.error('Error initiating crypto payout:', error);
+    res.status(500).json({ message: 'Error initiating crypto payout' });
+  }
+};
+module.exports = { getSupportedCurrencies, getExchangeRate, initiateCryptoPayout };
 const initiateCryptoPayout = async (req,

@@ -69,7 +69,16 @@ class BusinessAccountController {
    *         content:
    *           application/json:
    *             schema:
-   *               type: object
+   *               type: array
+   *               items:
+   *                 type: object
+   *                 properties:
+   *                   id:
+   *                     type: integer
+   *                   name:
+   *                     type: string
+   *                   owner_id:
+   *                     type: integer
    */
 
    */
@@ -222,6 +231,35 @@ class BusinessAccountController {
    *           type: integer
    *     responses:
    */
+ *       200:
+ *         description: User removed from business account successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Bad request (e.g., invalid user ID, cannot remove owner)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       403:
+ *         description: Unauthorized to remove users
+ *       404:
+ *         description: Business account or user not found in account
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
   async removeUserFromBusinessAccount(req, res) {
     try {
       const accountId = req.params.accountId;
