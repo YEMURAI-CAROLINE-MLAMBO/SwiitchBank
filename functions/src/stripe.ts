@@ -36,11 +36,11 @@ export const createStripeCustomer = functions.auth.user().onCreate(async (user) 
                                           const stripeCustomerId = customerDoc.data()?.stripeId; // Assuming the extension adds stripeId to the customer document
 
                                             if (!stripeCustomerId) {
-                                                   throw new functions.https.HttpsError('failed-precondition', 'Stripe customer not found.\nRun the createStripeCustomer function first.');
+       throw new functions.https.HttpsError('failed-precondition', 'Stripe customer not found.\nRun the createStripeCustomer function first.'); // Corrected newline character
                                                      }
 
-                                                       const stripe = new Stripe(functions.config().stripe.secret_key, { // Ensure you have stripe.secret_key configured in Firebase functions config
-                                                           apiVersion: '2020-08-27', // Use a compatible API version
+  const stripe = new Stripe(functions.config().stripe.secret_key, {
+    apiVersion: '2020-08-27',
                                                              });
 
                                                                try {
@@ -54,9 +54,9 @@ export const createStripeCustomer = functions.auth.user().onCreate(async (user) 
                                                                                                                          },
                                                                                                                                ],
                                                                                                                                      mode: \'payment\',\n      success_url: `${functions.config().app.url}/payment-success?session_id={CHECKOUT_SESSION_ID}`,\n      cancel_url: `${functions.config().app.url}/payment-cancel`,\n      metadata: { // Use metadata to pass information to the webhook
-                                                                                                                                             userId: uid,
-                                                                                                                                                     paymentType: 'wallet_topup', // Indicate the purpose of the payment
-                                                                                                                                                             // Add other relevant metadata here (e.g., target wallet currency if different)
+        userId: uid,
+        paymentType: 'wallet_topup',
+        // Add other relevant metadata here (e.g., target wallet currency if different)
                                                                                                                                                                    }
                                                                                                                                                                        });
 
@@ -64,7 +64,7 @@ export const createStripeCustomer = functions.auth.user().onCreate(async (user) 
 
                                                                                                                                                                              } catch (error: any) {\n    functions.logger.error('Error creating checkout session:', error);\n    throw new functions.https.HttpsError('internal', 'Unable to create checkout session.', error.message);\n  }\n});
 
-                                                                                                                                                                             // Handle successful Stripe payments
+                                                                                                                                                                             // Handle successful Stripe payments // Corrected comments and formatting
                                                                                                                                                                              export const handleSuccessfulPayment = functions.firestore
                                                                                                                                                                                .document('customers/{userId}/checkout_sessions/{sessionId}') // **NOTE:** Adjusted path - the Stripe extension usually writes to a subcollection under the customer
                                                                                                                                                                                  .onCreate(async (snapshot, context) => {
