@@ -1,0 +1,32 @@
+import React from 'react';
+import { Outlet, Link } from 'react-router-dom';
+import './AppLayout.css'; // Layout specific styles
+
+function AppLayout() {
+  return (
+    <div className="app-layout">
+      <header className="app-header">
+        <nav className="app-nav">
+          <div className="app-logo">SwiitchBank</div>
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/wallet">Wallet</Link></li>
+            <li><Link to="/cards">Cards</Link></li>
+            {/* Add more navigation links */}
+          </ul>
+        </nav>
+      </header>
+
+      <main className="app-content">
+        <Outlet /> {/* Renders the content of the matched nested route */}
+      </main>
+
+      <footer className="app-footer">
+        {/* Footer content */}
+        <p>&copy; 2023 SwiitchBank</p>
+      </footer>
+    </div>
+  );
+}
+
+export default AppLayout;
