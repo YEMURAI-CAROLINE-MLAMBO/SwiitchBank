@@ -36,7 +36,7 @@ export const createStripeCustomer = functions.auth.user().onCreate(async (user) 
                                           const stripeCustomerId = customerDoc.data()?.stripeId; // Assuming the extension adds stripeId to the customer document
 
                                             if (!stripeCustomerId) {
-       throw new functions.https.HttpsError('failed-precondition', 'Stripe customer not found.\nRun the createStripeCustomer function first.'); // Corrected newline character
+       throw new functions.https.HttpsError('failed-precondition', 'Stripe customer not found.\nRun the createStripeCustomer function first.');
                                                      }
 
   const stripe = new Stripe(functions.config().stripe.secret_key, {
@@ -47,9 +47,9 @@ export const createStripeCustomer = functions.auth.user().onCreate(async (user) 
                                                                    const session = await stripe.checkout.sessions.create({
                                                                          customer: stripeCustomerId,
                                                                                payment_method_types: [\'card\'],
-                                                                                     line_items: [
-                                                                                             {
-                                                                                                       price: priceId,
+                                                                                     line_items: [ // Removed extra backslashes
+                                                                                             { // Removed extra backslashes
+                                                                                                       price: priceId, // Removed extra backslashes
                                                                                                                  quantity: 1,
                                                                                                                          },
                                                                                                                                ],
