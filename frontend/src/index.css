@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif; /* Example font */
+  background-color: #f4f4f4; /* Light background */
+  color: #333; /* Dark text */
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
