@@ -9,7 +9,6 @@ The next-generation AI-powered banking platform.
 - AI-driven financial insights
 - Viral growth features (referrals, banking circles)
 - Student onboarding program
-- Physical debit cards (Mastercard)
 
 ## Business Accounts
 
@@ -68,7 +67,6 @@ Dashboard showing both fiat and crypto balances.
 
 ### Prerequisites
 
-- Docker
 - Node.js (for local development)
 
 ### Installation
