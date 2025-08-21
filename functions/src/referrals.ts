@@ -59,6 +59,60 @@ function determineReferralReward(likelihood: number): { type: string, amount: nu
 
 
 /**
+ * Handles applying student benefits and referral codes during onboarding.
+ */
+export const applyStudentBenefitsAndReferral = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'Authentication required'
+    );
+  }
+
+  const userId = context.auth.uid;
+  const { university, studentId, referralCode } = data;
+
+  try {
+    const userRef = db.collection('users').doc(userId);
+
+    // Update user document with student information
+    await userRef.update({
+      university: university || null,
+      studentId: studentId || null,
+      studentVerified: true, // Assuming verification is handled client-side or elsewhere
+      // Add other student-specific fields if needed
+    });
+
+    // If a referral code is provided, attempt to process it
+    if (referralCode) {
+      await processReferral({ referralCode, newUserId: userId }, context); // Reuse processReferral logic
+    }
+
+    // Apply student-specific benefits (e.g., add welcome bonus to wallet)
+    await db.runTransaction(async (transaction) => {
+       const userWalletRef = getUserWalletRef(userId);
+       const userWalletDoc = await transaction.get(userWalletRef);
+       const currentBalance = userWalletDoc.exists ? (userWalletDoc.data()?.balance || 0) : 0;
+       transaction.update(userWalletRef, { balance: currentBalance + 5 }); // Add $5 welcome bonus
+    });
+
+    return { success: true, message: 'Student benefits and referral applied successfully' };
+
+  } catch (error: any) {
+    functions.logger.error('Error applying student benefits and referral:', error);
+    if (error instanceof functions.https.HttpsError) {
+      throw error;
+    }
+    throw new functions.https.HttpsError(
+      'internal',
+      'Failed to apply student benefits and referral',
+      error.message
+    );
+  }
+});
+
+
+/**
  * Generates or retrieves a user's referral offer.
  */
 export const generateReferralOffer = functions.https.onCall(async (data, context) => {

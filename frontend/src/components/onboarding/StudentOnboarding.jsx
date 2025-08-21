@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import api from '../../services/api';
 import { Button, Input, Modal } from '../common';
+import { db, functions } from '../../firebase'; // Assuming firebase.js is in src directory
 
 const StudentOnboarding = () => {
   const { user } = useAuth();
@@ -13,20 +13,26 @@ const StudentOnboarding = () => {
   
   const verifyStudentStatus = async () => {
     try {
-      // Simple verification for MVP
-      await api.post('/verification/student', { university, studentId });
+      if (!user) {
+        console.error("User not authenticated.");
+        return;
+      }
+
+      // Update user document in Firestore with student details
+      await db.collection('users').doc(user.uid).update({
+        university: university,
+        studentId: studentId,
+        studentVerified: true, // Assuming verification is successful here for MVP
+      });
+
       setIsVerified(true);
 
-      // If a referral code was entered and verification is successful, apply it
+      // Call a Cloud Function to handle referral and reward logic
       if (referralCode) {
-        // Assuming a backend endpoint /api/referral/apply exists
-        await api.post('/referral/apply', { referralCode });
+        const applyReferral = functions.httpsCallable('applyReferralAndActivateRewards');
+        await applyReferral({ referralCode: referralCode, rewardType: 'student' });
       }
-      
-      // Apply student benefits
-      await api.post('/rewards/activate', { type: 'student' });
-      
-      // Show welcome offer
+
       setShowOffer(true);
     } catch (error) {
       console.error('Verification failed:', error);

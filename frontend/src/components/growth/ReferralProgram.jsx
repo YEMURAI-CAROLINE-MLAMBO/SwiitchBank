@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import { Button, Modal } from '../common';
-
+import { httpsCallable } from 'firebase/functions';
 // frontend/src/components/growth/ReferralProgram.jsx
 const ReferralProgram = () => {
   const { user } = useAuth();
