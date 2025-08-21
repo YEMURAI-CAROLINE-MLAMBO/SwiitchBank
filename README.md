@@ -1,4 +1,4 @@
-oh# SwiitchBank MVP
+# SwiitchBank MVP
 
 The next-generation AI-powered banking platform.
 

@@ -1,0 +1,34 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main # Or your preferred branch
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Use a Node.js version compatible with your functions
+
+      - name: Install dependencies
+        run: |
+          npm install -g firebase-tools
+          npm ci
+          cd api && npm ci # Install dependencies for your functions (assuming 'api' is your functions directory)
+          cd ../frontend && npm ci # Install dependencies for your frontend
+
+      - name: Build frontend
+        run: cd frontend && npm run build # If you have a build process for your frontend
+
+      - name: Deploy to Firebase
+        run: firebase deploy --only hosting,functions --project swiitchbank-09410265
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_SWIITCHBANK_09410265 }}
