@@ -56,13 +56,6 @@ Dashboard showing both fiat and crypto balances.
 
 ## Project Structure
 
-*   `/backend`: Contains the backend application code, including API routes, controllers, services, middleware, and database configuration.
-*   `/frontend`: Contains the frontend application code, including React components.
-*   `/docker`: Contains the Dockerfiles for building the backend and frontend images.
-*   `/migrations`: Contains database migration files.
-
-
-
 ## Getting Started
 
 ### Prerequisites

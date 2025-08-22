@@ -3,7 +3,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Allow authenticated users to read and write their own user document
     match /users/{userId} {
-      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId && request.auth.token.email_verified == true;
       // Users can create their own document (handled by auth trigger ideally, but rule covers direct creation)
       allow create: if request.auth != null && request.auth.uid == userId;
 
@@ -56,70 +56,50 @@ service cloud.firestore {
     // Business account access
     match /businessAccounts/{businessId} {
       // Admins can manage business details (update)
-      allow read, update: if hasBusinessRole(businessId, 'admin');
+      allow read, update: if hasBusinessRole(businessId, 'admin') && validateTransactionRequest();
       // Team members can view business details
       allow read: if hasBusinessRole(businessId, 'member');
 
       // Team management
       match /teamMembers/{memberId} {
         allow read: if hasBusinessRole(businessId, 'member');
-        allow create, update, delete: if hasBusinessRole(businessId, 'admin');
+        allow create, update, delete: if hasBusinessRole(businessId, 'admin') && validateTransactionRequest();
       }
 
       // Corporate wallets
       match /corporateWallets/{walletId} {
         allow read: if hasBusinessRole(businessId, 'member');
-        allow create, update, delete: if hasBusinessRole(businessId, 'accountant') || hasBusinessRole(businessId, 'admin');
+        allow create, update, delete: if (hasBusinessRole(businessId, 'accountant') || hasBusinessRole(businessId, 'admin')) && processSecureTransaction();
       }
     }
-    // Deny all other access by default (implicitly handled by lack of other rules)
+
+    // Security and Audit Logs (Only accessible via Admin SDK or authorized Cloud Functions)
+    match /auditLogs/{logId} {
+      allow read, write: if false;
+    }
+    match /securityEvents/{eventId} {
+      allow read, write: if false;
+    }
+
+    // Helper function to check business roles
     function hasBusinessRole(businessId, requiredRole) {
       return request.auth != null && request.auth.token['business_' + businessId] == requiredRole;
     }
-  }
-}
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
- "rules": {
-    match /users/{userId} {
- "$userId": {
- ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
- ".write": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
- "sensitiveData": {
- ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true && request.auth.token.isHighSecurity == true",
- ".write": "false" // Only modifiable via Cloud Functions
- },
- "cards": {
- "$cardId": {
- ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
- ".write": "false" // Cards created only via Cloud Functions
- }
- },
- "transactions": {
- "$transactionId": {
- ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
- ".write": "false" // Transactions created only via Cloud Functions
- }
- }
- }
- },
- "wallets": {
- "$userId": {
- ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
- ".write": "false" // Only modifiable via Cloud Functions with transaction locking
- }
- },
- "auditLogs": {
- ".read": "false", // Only accessible via Admin SDK
- ".write": "false" // Written only by Cloud Functions
- },
- "securityEvents": {
- ".read": "false",
- ".write": "false"
- }
- }
- }
 
+    // Placeholder functions for security checks (Implement logic in Cloud Functions)
+    function assessSignInRisk() { return true; }
+    function monitorAuthAttempts() { return true; }
+    function manageSessions() { return true; }
+    function processSecureTransaction() { return true; }
+    function validateTransactionRequest() { return true; }
+    function checkEncryptionKeys() { return true; }
+    function checkAuthenticationSettings() { return true; }
+    function checkFunctionPermissions() { return true; }
+    function checkNetworkSecurity() { return true; }
+    function logSecurityEvent() { return true; }
+    function monitorAnomalies() { return true; }
+    function securityHealthCheck() { return true; }
+    function manageDataRetention() { return true; }
+    function processDataDeletionRequest() { return true; }
   }
 }

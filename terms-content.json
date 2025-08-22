@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "title": "Terms and Conditions",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "content": "Welcome to our service. By using our service, you agree to comply with and be bound by the following terms and conditions."
+    },
+    {
+      "heading": "Use of Service",
+      "content": "You agree to use the service only for lawful purposes and in accordance with these terms and conditions."
+    },
+    {
+      "heading": "Privacy Policy",
+      "content": "Our Privacy Policy, which outlines how we collect, use, and protect your personal information, is incorporated by reference into these terms."
+    },
+    {
+      "heading": "Changes to Terms",
+      "content": "We reserve the right to modify these terms at any time. We will notify you of any changes by posting the new terms on this page."
+    }
+  ]
+}
