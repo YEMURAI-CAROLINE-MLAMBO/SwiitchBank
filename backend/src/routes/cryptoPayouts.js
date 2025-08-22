@@ -6,6 +6,18 @@ const { protect } = require('../middleware/auth'); // Assuming your auth middlew
 // Protect all routes in this router
 router.use(protect);
 
+// Middleware to validate initiate payout request body
+const validateInitiatePayout = (req, res, next) => {
+  const { sourceCurrency, sourceAmount, targetCurrency, bankAccountId } = req.body;
+
+  if (!sourceCurrency || !sourceAmount || !targetCurrency || !bankAccountId) {
+    return res.status(400).json({ message: 'Missing required fields: sourceCurrency, sourceAmount, targetCurrency, and bankAccountId are required.' });
+  }
+
+  next();
+};
+
+
 /**
  * @swagger
  * /api/crypto-payouts/initiate:
@@ -50,7 +62,7 @@ router.use(protect);
  *         description: Internal server error.
  */
 // Placeholder POST route to initiate a crypto-to-bank payout
-router.post('/initiate', cryptoPayoutController.initiatePayout);
+router.post('/initiate', validateInitiatePayout, cryptoPayoutController.initiatePayout);
 
 router.get('/supported-currencies', cryptoPayoutController.getSupportedCurrencies);
 

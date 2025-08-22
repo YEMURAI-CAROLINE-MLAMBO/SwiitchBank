@@ -21,7 +21,7 @@ const getSupportedCurrencies = async (req, res) => {
     const supportedCurrencies = await cryptoService.getSupportedCurrencies();
     res.status(200).json(supportedCurrencies);
   } catch (error) {
-    console.error('Error getting supported currencies:', error);
+    logger.error('Error getting supported currencies:', error);
     res.status(500).json({ message: 'Error getting supported currencies' });
   }
 };
@@ -50,7 +50,7 @@ const getExchangeRate = async (req, res) => {
     const rate = await cryptoService.getExchangeRate(fromCurrency, toCurrency);
     res.status(200).json({ rate });
   } catch (error) {
-    console.error('Error getting exchange rate:', error);
+    logger.error('Error getting exchange rate:', error);
     res.status(500).json({ message: 'Error getting exchange rate' });
   }
 };
@@ -82,8 +82,12 @@ const getExchangeRate = async (req, res) => {
 const initiateCryptoPayout = async (req, res) => {
   const { amount, currency, recipientAddress } = req.body;
   try {
-    if (!amount || !currency || !recipientAddress) {
+    if (!amount || !currency || !recipientAddress ) {
       return res.status(400).json({ message: 'Amount, currency, and recipient address are required' });
+    }
+
+    if (typeof amount !== 'number' || typeof currency !== 'string') {
+ return res.status(400).json({ message: 'Invalid amount or currency type' });
     }
 
     const payoutResult = await cryptoService.initiatePayout(amount, currency, recipientAddress);
@@ -94,4 +98,3 @@ const initiateCryptoPayout = async (req, res) => {
   }
 };
 module.exports = { getSupportedCurrencies, getExchangeRate, initiateCryptoPayout };
-const initiateCryptoPayout = async (req,
