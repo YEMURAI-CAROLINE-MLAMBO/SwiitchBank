@@ -15,8 +15,8 @@ const getExchangeRate = async (fromCurrency, toCurrency) => {
   console.log(`Fetching exchange rate from ${fromCurrency} to ${toCurrency} - Placeholder`);
   // Simulate an exchange rate
   const rate = 40000 + Math.random() * 5000; // Example rate for BTC to USD
-  return {
-    success: true,
+  return { 
+ success: true,
     data: {
       from: fromCurrency,
       to: toCurrency,
@@ -24,6 +24,21 @@ const getExchangeRate = async (fromCurrency, toCurrency) => {
     },
     message: `Successfully retrieved exchange rate for ${fromCurrency} to ${toCurrency} - Placeholder`
   };
+};
+
+const convertCryptoForTopup = async (amount, fromCurrency, toCurrency) => {
+  // TODO: Implement actual crypto conversion and deduction from user's crypto wallet
+  console.log(`Converting ${amount} ${fromCurrency} to ${toCurrency} for top-up - Placeholder`);
+  const exchangeRateResponse = await getExchangeRate(fromCurrency, toCurrency);
+
+  if (!exchangeRateResponse.success) {
+    throw new Error(`Failed to get exchange rate: ${exchangeRateResponse.message}`);
+  }
+
+  const exchangeRate = parseFloat(exchangeRateResponse.data.rate);
+  const fiatAmount = amount * exchangeRate;
+
+  return fiatAmount;
 };
 
 const initiatePayout = async (walletId, bankAccountId, amount, currency) => {
@@ -72,4 +87,5 @@ module.exports = {
   getSupportedCurrencies,
   getExchangeRate,
   initiatePayout,
+  convertCryptoForTopup,
 };

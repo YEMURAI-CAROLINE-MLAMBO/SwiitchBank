@@ -1,6 +1,9 @@
 // backend/src/controllers/virtualCardController.js
 
 const { query } = require('/workspace/backend/src/config/database');
+const cryptoService = require('/workspace/backend/src/services/cryptoService');
+const bankTransferService = require('/workspace/backend/src/services/bankTransferService');
+const marqetaService = require('/workspace/backend/src/services/marqetaService');
 
 /**
  * @swagger
@@ -172,7 +175,7 @@ exports.createVirtualCard = async (req, res) => {
 
 exports.topupVirtualCard = async (req, res) => {
   const cardId = req.params.cardId;
-  const { amount } = req.body;
+  const { amount, method, currency } = req.body;
 
   if (typeof amount !== 'number' || amount <= 0) {
 /**

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth'); // Import the authentication middleware
 const virtualCardController = require('../controllers/virtualCardController');
+const marqetaWebhookService = require('../services/marqetaWebhookService');
 
 
 // Apply authentication middleware to all routes in this router
@@ -76,4 +77,15 @@ router.get('/:cardId', virtualCardController.getVirtualCardById);
 router.post('/', virtualCardController.createVirtualCard);
 router.post('/:cardId/topup', virtualCardController.topupVirtualCard);
 router.post('/:cardId/withdraw', virtualCardController.withdrawVirtualCard);
+
+/**
+ * @swagger
+ * /api/virtual-cards/webhooks/marqeta:
+ *   post:
+ *     summary: Receive and process Marqeta webhook events
+ *     tags: [Virtual Cards]
+ *     requestBody:
+ *       required: true
+ */
+router.post('/webhooks/marqeta', marqetaWebhookService.handleWebhook);
 module.exports = router;
