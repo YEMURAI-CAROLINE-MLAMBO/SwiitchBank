@@ -81,41 +81,45 @@ service cloud.firestore {
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow authenticated users to read and write their own user document
+ "rules": {
     match /users/{userId} {
-      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
-      // Users can create their own document (handled by auth trigger ideally, but rule covers direct creation)
-      allow create: if request.auth != null && request.auth.uid == userId;
+ "$userId": {
+ ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
+ ".write": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
+ "sensitiveData": {
+ ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true && request.auth.token.isHighSecurity == true",
+ ".write": "false" // Only modifiable via Cloud Functions
+ },
+ "cards": {
+ "$cardId": {
+ ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
+ ".write": "false" // Cards created only via Cloud Functions
+ }
+ },
+ "transactions": {
+ "$transactionId": {
+ ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
+ ".write": "false" // Transactions created only via Cloud Functions
+ }
+ }
+ }
+ },
+ "wallets": {
+ "$userId": {
+ ".read": "auth != null && auth.uid == $userId && auth.token.email_verified == true",
+ ".write": "false" // Only modifiable via Cloud Functions with transaction locking
+ }
+ },
+ "auditLogs": {
+ ".read": "false", // Only accessible via Admin SDK
+ ".write": "false" // Written only by Cloud Functions
+ },
+ "securityEvents": {
+ ".read": "false",
+ ".write": "false"
+ }
+ }
+ }
 
-      // Allow authenticated users to read and write their personalWallet subcollection
-      match /personalWallet/{walletId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-    }
-
-    // Business account access
-    match /businessAccounts/{businessId} {
-      // Admins can manage business details (update)
-      allow read, update: if hasBusinessRole(businessId, 'admin');
-      // Team members can view business details
-      allow read: if hasBusinessRole(businessId, 'member');
-
-      // Team management
-      match /teamMembers/{memberId} {
-        allow read: if hasBusinessRole(businessId, 'member');
-        allow create, update, delete: if hasBusinessRole(businessId, 'admin');
-      }
-
-      // Corporate wallets
-      match /corporateWallets/{walletId} {
-        allow read: if hasBusinessRole(businessId, 'member');
-        allow create, update, delete: if hasBusinessRole(businessId, 'accountant') || hasBusinessRole(businessId, 'admin');
-      }
-    }
-
-    // Deny all other access by default (implicitly handled by lack of other rules)
-    function hasBusinessRole(businessId, requiredRole) {
-      return request.auth != null && request.auth.token['business_' + businessId] == requiredRole;
-    }
   }
 }
