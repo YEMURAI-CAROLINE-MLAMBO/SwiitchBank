@@ -11,15 +11,6 @@ service cloud.firestore {
         allow read: if request.auth != null && request.auth.uid == userId && request.auth.token.email_verified == true;
         allow write: if false; // Sensitive data should only be written by trusted backend services
       }
-
-      match /personalWallet/{walletId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-    }
-
-    // Business account access
-    match /businessAccounts/{businessId} {
-      // Admins can manage business details
       allow read, update: if hasBusinessRole(businessId, 'admin');
       // Team members can view business details
       allow read: if hasBusinessRole(businessId, 'member');
@@ -39,17 +30,34 @@ service cloud.firestore {
       // Placeholder functions for security checks (Implement logic in Cloud Functions)
       // These functions are kept for compatibility with existing rules but should ideally be backend checks
       function validateTransactionRequest() { return true; }
-      function processSecureTransaction() { return true; }
+      function processSecureTransaction() { return false; } // Transactions should be processed by backend
     }
 
+    // Business account access
+    match /businessAccounts/{businessId} {
+      // Admins can manage business details
+      allow read, update: if hasBusinessRole(businessId, 'admin');
     // Wallets collection (top-level)
     match /wallets/{walletId} {
-      // Users can only read their own wallets
+      // Users can only read their own wallets or wallets associated with their business account if they have the correct role
       allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-      // Wallet updates (like balance changes) should be handled by trusted backend services
+                   || (resource.data.businessId != null && hasBusinessRole(resource.data.businessId, 'member'));
+      // Wallet creation is allowed for personal wallets
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId && request.resource.data.businessId == null;
+      // Business wallet creation is allowed for admins
+      allow create: if request.auth != null && request.resource.data.businessId != null && hasBusinessRole(request.resource.data.businessId, 'admin');
+      // Wallet updates (like balance changes or linking to business account) should be handled by trusted backend services
       allow write: if false;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
     }
+
+    // Sessions collection (for session management)
+    match /sessions/{sessionId} {
+      // Users can only read and delete their own session documents
+      allow read, delete: if request.auth != null && request.auth.uid == resource.data.userId;
+      // Sessions should only be created by trusted backend services upon successful authentication
+      allow create: if false;
+    }
+
 
     // Security and Audit Logs (Only accessible via Admin SDK or authorized Cloud Functions)
     function hasBusinessRole(businessId, requiredRole) {

@@ -1,6 +1,7 @@
 const pool = require('../config/database'); // Import the database connection pool
+const logger = require('../../utils/logger'); // Import the logger utility
 
-const createWallet = (req, res) => {
+const createWallet = (req, res) => { // Removed async since there are no await calls in this function
   const { wallet_type, currency, balance } = req.body;
   const userId = req.user.id; // Assuming user ID is available from authenticated user
 
@@ -13,7 +14,7 @@ const createWallet = (req, res) => {
     [userId, wallet_type, currency, balance],
     (error, results) => {
       if (error) {
-        console.error('Error creating wallet:', error);
+        logger.error('Error creating wallet:', error);
         return res.status(500).json({ message: 'Error creating wallet' });
       }
       res.status(201).json({ message: 'Wallet created successfully', walletId: results.insertId });
@@ -45,7 +46,7 @@ module.exports = {
  );
       res.status(200).json(rows);
     } catch (error) {
-      console.error('Error listing wallets:', error);
+      logger.error('Error listing wallets:', error);
       res.status(500).json({ message: 'Error listing wallets' });
     }
   },
@@ -63,7 +64,7 @@ module.exports = {
       }
       res.status(200).json(rows[0]);
     } catch (error) {
-      console.error('Error getting wallet:', error);
+      logger.error('Error getting wallet:', error);
       res.status(500).json({ message: 'Error getting wallet' });
     }
   }
@@ -125,7 +126,7 @@ module.exports = {
       const [updatedWalletRows] = await pool.promise().query('SELECT * FROM wallets WHERE wallet_id = ?', [walletId]);
       res.status(200).json({ message: 'Wallet topped up successfully', wallet: updatedWalletRows[0] });
     } catch (error) {
-      console.error('Error topping up wallet:', error);
+      logger.error('Error topping up wallet:', error);
       res.status(500).json({ message: 'Error topping up wallet' });
     }
   }
@@ -225,7 +226,7 @@ module.exports = {
       res.status(200).json({ message: 'Funds transferred successfully' });
     } catch (error) {
       if (connection) await connection.rollback();
-      console.error('Error transferring funds:', error);
+      logger.error('Error transferring funds:', error);
       res.status(500).json({ message: 'Error transferring funds' });
     } finally {
       if (connection) connection.release();
