@@ -9,13 +9,16 @@ const StudentOnboarding = () => {
   const [studentId, setStudentId] = useState('');
   const [isVerified, setIsVerified] = useState(false);
   const [referralCode, setReferralCode] = useState('');
-  const [showOffer, setShowOffer] = useState(true);
-  
+  const [showOffer, setShowOffer] = useState(false); // Changed to false initially
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
+  const [error, setError] = useState(null); // Add error state
+
   const verifyStudentStatus = async () => {
+    setIsLoading(true); // Set loading to true
+    setError(null); // Clear previous errors
     try {
       if (!user) {
         console.error("User not authenticated.");
-        return;
       }
 
       // Update user document in Firestore with student details
@@ -35,7 +38,10 @@ const StudentOnboarding = () => {
 
       setShowOffer(true);
     } catch (error) {
-      console.error('Verification failed:', error);
+      console.error('Verification failed:', error); // Log the error for debugging
+      setError('Failed to verify student status. Please try again.'); // Set a user-friendly error message
+    } finally {
+      setIsLoading(false); // Set loading to false
     }
   };
   
@@ -74,9 +80,13 @@ const StudentOnboarding = () => {
             placeholder="Enter referral code"
           />
 
-          <Button onClick={verifyStudentStatus}>
-            Verify Student Status
+          {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message */}
+
+          <Button onClick={verifyStudentStatus} disabled={isLoading}>
+            {isLoading ? 'Verifying...' : 'Verify Student Status'} {/* Change button text based on loading state */}
           </Button>
+
+
         </div>
       ) : null}
       

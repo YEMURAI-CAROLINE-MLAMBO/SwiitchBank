@@ -104,7 +104,7 @@ router.post('/login', [
  *       401:
  *         description: Unauthorized (if the user is not logged in)
  */
-router.post('/logout', authController.logout);
+router.post('/logout', validate, authController.logout);
 
 /**
  * @swagger
@@ -124,7 +124,7 @@ router.post('/logout', authController.logout);
  *       401:
  *         description: Unauthorized (if the user is not logged in)
  *       404:
- *         description: User not found
+ *         description: User not found 
  */
-router.get('/profile', authController.getProfile); // Assuming a getProfile function exists in authController
+router.get('/profile', validate, authController.getProfile); // Assuming a getProfile function exists in authController
 module.exports = router;

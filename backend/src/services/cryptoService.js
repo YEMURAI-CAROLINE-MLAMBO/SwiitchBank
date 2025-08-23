@@ -46,10 +46,7 @@ const initiatePayout = async (walletId, bankAccountId, amount, currency) => {
   // and check the balance. For this simulation, we'll assume the wallet exists
   // and has sufficient funds for amounts > 0.
   if (amount <= 0) {
-    return {
-      success: false,
-      message: 'Payout amount must be positive',
-    };
+    throw new Error('Payout amount must be positive');
   }
 
   // Simulate calculating a fee

@@ -1,7 +1,6 @@
 // backend/src/services/marqetaService.js
-
-const MARQETA_API_URL = 'YOUR_MARQETA_API_URL'; // Replace with actual Marqeta API URL
-const MARQETA_API_KEY = 'YOUR_MARQETA_API_KEY'; // Replace with your Marqeta API key
+const MARQETA_API_URL = process.env.MARQETA_API_URL;
+const MARQETA_API_KEY = process.env.MARQETA_API_KEY;
 
 /**
  * Service for interacting with the Marqeta API for virtual card management.

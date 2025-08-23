@@ -7,6 +7,16 @@ const processWebhookEvent = async (event) => {
     // TODO: Implement logic to verify the webhook signature for security
     // Marqeta signs webhook payloads. Verify the signature using your webhook secret
     // to ensure the request is from Marqeta and has not been tampered with.
+    // Example: You'll need to replace this with actual verification logic.
+    // const signature = req.headers['x-marqeta-signature'];
+    // const webhookSecret = 'YOUR_MARQETA_WEBHOOK_SECRET'; // Replace with your actual webhook secret
+    // const isValidSignature = verifySignature(payload, signature, webhookSecret);
+    // if (!isValidSignature) {
+    //   console.error('Invalid webhook signature');
+    //   return res.status(400).send('Invalid signature');
+    // }
+
+
 
     const eventType = event.type;
     const eventData = event.payload;

@@ -22,6 +22,10 @@ class BusinessAccountController {
   async createBusinessAccount(req, res) {
     try {
       const { name } = req.body;
+      // TODO: Implement transaction management
+      // Start a database transaction here to ensure atomicity for inserting
+      // into business_accounts and business_account_users tables.
+      // Example: const client = await pool.connect(); await client.query('BEGIN');
       const ownerId = req.user.id; // Assuming user ID is available from authentication middleware
 
       if (!name) {
@@ -45,10 +49,14 @@ class BusinessAccountController {
         [newBusinessAccount.id, ownerId, 'owner']
       );
 
+      // TODO: Commit the transaction if all operations are successful
+      // Example: await client.query('COMMIT');
       res.status(201).json({
         message: 'Business account created successfully',
         businessAccount: newBusinessAccount,
       });
+
+      // TODO: Release the client back to the pool
 
     } catch (error) {
       logger.error('Error creating business account:', error);
@@ -171,6 +179,10 @@ class BusinessAccountController {
     try {
       const accountId = req.params.id;
       const { userId, role } = req.body;
+      // TODO: Implement transaction management
+      // Start a database transaction here to ensure atomicity for the checks
+      // and the insertion into business_account_users table.
+      // Example: const client = await pool.connect(); await client.query('BEGIN');
       const requestingUserId = req.user.id; // Assuming user ID is available from authentication middleware
 
       // 1. Verify requesting user has 'owner' role for this account
@@ -200,9 +212,13 @@ class BusinessAccountController {
         [accountId, userId, role]
       );
 
+      // TODO: Commit the transaction if all operations are successful
+      // Example: await client.query('COMMIT');
       res.status(200).json({
         message: `User ${userId} added to business account ${accountId} with role ${role} successfully`,
       });
+
+      // TODO: Release the client back to the pool
 
     } catch (error) {
       logger.error(`Error adding user to business account ${req.params.id}:`, error);
@@ -264,6 +280,10 @@ class BusinessAccountController {
     try {
       const accountId = req.params.accountId;
       const userIdToRemove = parseInt(req.params.userIdToRemove, 10);
+      // TODO: Implement transaction management
+      // Start a database transaction here to ensure atomicity for the checks
+      // and the deletion from business_account_users table.
+      // Example: const client = await pool.connect(); await client.query('BEGIN');
       const requestingUserId = req.user.id; // Assuming user ID is available from authentication middleware
 
       if (isNaN(userIdToRemove)) {
@@ -304,9 +324,15 @@ class BusinessAccountController {
         return res.status(404).json({ error: 'User not found in this business account' });
       }
 
+      // TODO: Commit the transaction if all operations are successful
+      // Example: await client.query('COMMIT');
       res.status(200).json({ message: `User ${userIdToRemove} removed from business account ${accountId} successfully` });
 
+      // TODO: Release the client back to the pool
+
     } catch (error) {
+      // TODO: Roll back the transaction in case of an error
+      // Example: await client.query('ROLLBACK');
       logger.error(`Error removing user ${req.params.userIdToRemove} from business account ${req.params.accountId}:`, error);
       res.status(500).json({ error: 'Failed to remove user from business account' });
     }

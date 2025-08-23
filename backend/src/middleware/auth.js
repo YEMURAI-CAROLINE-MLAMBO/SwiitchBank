@@ -10,7 +10,12 @@ const authenticate = (req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');
   
   if (!token) {
-    return res.status(401).json({ error: 'Authorization token required' });
+ return res.status(401).json({ 
+ errors: [
+      { message: 'Authorization token required', location: 'header' }
+ ] 
+ });
+
   }
   
   try {
@@ -20,7 +25,12 @@ const authenticate = (req, res, next) => {
     next();
   } catch (error) {
     logger.error('Token verification failed:', error);
-    res.status(401).json({ error: 'Invalid token' });
+ res.status(401).json({ 
+ errors: [
+      { message: 'Invalid token', location: 'token' }
+ ] 
+ });
+
   }
 };
 

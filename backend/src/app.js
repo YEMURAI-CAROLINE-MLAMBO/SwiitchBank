@@ -24,7 +24,6 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *       scheme: bearer
  *       bearerFormat: JWT
  */
-const authRoutes = require('./routes/auth');
 const cardRoutes = require('./routes/cards');
 const walletRoutes = require('./routes/wallet');
 const kycRoutes = require('./routes/kyc');
@@ -32,8 +31,9 @@ const transactionRoutes = require('./routes/transactions');
 const growthRoutes = require('./routes/growth');
 const businessAccountRoutes = require('./routes/businessAccounts');
 const virtualCardRoutes = require('./routes/virtualCards');
-const walletRoutesNew = require('./routes/wallets'); // Renamed to avoid conflict if 'wallet' is used elsewhere
+const walletRoutes = require('./routes/wallets');
 const gamificationRoutes = require('./routes/gamification');
+const authRoutes = require('./routes/auth');
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
@@ -62,8 +62,8 @@ app.use(helmet({
  * @see {@link https://www.npmjs.com/package/cors}
  */
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-production-domain.com'] 
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.PRODUCTION_ORIGIN
     : ['http://localhost:3000'],
   credentials: true,
 }));

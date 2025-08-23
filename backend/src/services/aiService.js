@@ -264,19 +264,5 @@ class AIService {
       throw new Error('Failed to fetch referral details');
     };
   }
-
-  /**
-   * Generates financial recommendations for a user.
-   * This is a placeholder implementation.
-   * @param {string} userId - The ID of the user.
-   * @returns {Promise<object>} A promise that resolves with financial recommendations.
-   */
-  async generateRecommendations(userId) {
-    // Placeholder logic for recommendations
-    logger.info(`Generating recommendations for user: ${userId}`);
-    return {
-      recommendations: ['Consider saving 10% of your income.', 'Review your subscription services.']
-    };
-  }
 }
 module.exports = new AIService();

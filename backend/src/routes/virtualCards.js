@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth'); // Import the authentication middleware
+const { body, param } = require('express-validator');
 const virtualCardController = require('../controllers/virtualCardController');
 const marqetaWebhookService = require('../services/marqetaWebhookService');
 
@@ -73,10 +74,31 @@ router.get('/:cardId', virtualCardController.getVirtualCardById);
  *       201:
  *         description: Virtual card created successfully
  */
-// Placeholder POST route to create a virtual card
-router.post('/', virtualCardController.createVirtualCard);
-router.post('/:cardId/topup', virtualCardController.topupVirtualCard);
-router.post('/:cardId/withdraw', virtualCardController.withdrawVirtualCard);
+router.post('/',
+  [
+    body('type').notEmpty().withMessage('Card type is required'),
+    body('nickname').notEmpty().withMessage('Card nickname is required'),
+  ],
+  virtualCardController.createVirtualCard
+);
+
+router.post('/:cardId/topup',
+  [
+    param('cardId').notEmpty().withMessage('Card ID is required').isString().withMessage('Card ID must be a string'),
+    body('amount').notEmpty().withMessage('Amount is required').isFloat({ gt: 0 }).withMessage('Amount must be a positive number'),
+  ],
+  virtualCardController.topupVirtualCard
+);
+
+router.post('/:cardId/withdraw',
+  [
+    param('cardId').notEmpty().withMessage('Card ID is required').isString().withMessage('Card ID must be a string'),
+    body('amount').notEmpty().withMessage('Amount is required').isFloat({ gt: 0 }).withMessage('Amount must be a positive number'),
+  ],
+  virtualCardController.withdrawVirtualCard
+);
+
+
 
 /**
  * @swagger
@@ -87,5 +109,6 @@ router.post('/:cardId/withdraw', virtualCardController.withdrawVirtualCard);
  *     requestBody:
  *       required: true
  */
-router.post('/webhooks/marqeta', marqetaWebhookService.handleWebhook);
+router.post('/webhooks/marqeta', marqetaWebhookService.processWebhookEvent);
+
 module.exports = router;

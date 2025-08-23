@@ -92,35 +92,6 @@ exports.withdrawVirtualCard = async (req, res) => {
     return res.status(400).json({ message: 'Invalid withdrawal amount' });
   }
 
-  if (typeof amount !== 'number' || amount <= 0) {
-/**
- * @swagger
- * /api/cards/{cardId}/withdraw:
- *   post:
- *     summary: Withdraw funds from a virtual card
- *     tags: [Virtual Cards]
- *     parameters:
- *       - in: path
- *         name: cardId
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the virtual card
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               amount:
- *                 type: number
- *                 format: float
- *                 description: The amount to withdraw
- */
-    // Duplicate Swagger documentation, will be removed.
-  }
-
  try {
     // Find the virtual card for the authenticated user
     const cardResult = await query('SELECT * FROM virtual_cards WHERE id = $1 AND user_id = $2', [cardId, userId]);
@@ -134,8 +105,11 @@ exports.withdrawVirtualCard = async (req, res) => {
     if ((card.balance || 0) < amount) {
       return res.status(400).json({ message: 'Insufficient funds' });
     }
- // TODO: Update card balance in the database
-    card.balance = (card.balance || 0) - amount;
+
+    // Update card balance in the database
+    const newBalance = (card.balance || 0) - amount;
+    await query('UPDATE virtual_cards SET balance = $1 WHERE id = $2 AND user_id = $3', [newBalance, cardId, userId]);
+
  res.status(200).json(card);
   } catch (error) {
  console.error('Error withdrawing from virtual card:', error);
