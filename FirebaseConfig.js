@@ -3,14 +3,18 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-// Your Firebase project configuration (paste your copied object here)
+// FirebaseConfig.js - Mobile optimized
+import { getFunctions } from 'firebase/functions';
+
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+ apiKey: "your-api-key",
+ authDomain: "switchbank-09410265.firebaseapp.com",
+ projectId: "switchbank-09410265",
+ storageBucket: "switchbank-09410265.appspot.com",
+ messagingSenderId: "your-sender-id",
+ appId: "your-app-id",
+ measurementId: "your-measurement-id"
 };
 
 // Initialize Firebase
@@ -18,4 +22,13 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export { db, auth };
+// Initialize Firebase services
+const functions = getFunctions(app);
+
+// Optional: Connect to emulators for development
+if (window.location.hostname === 'localhost') {
+ connectFirestoreEmulator(db, 'localhost', 8080);
+ connectAuthEmulator(auth, 'http://localhost:9099');
+ connectFunctionsEmulator(functions, 'localhost', 5001);
+}
+export { db, auth, functions };
