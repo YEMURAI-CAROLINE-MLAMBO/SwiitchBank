@@ -263,6 +263,7 @@ const WalletDashboard = () => {
         <div className="no-wallet">No wallet found.</div>
       )}
 
+<<<<<<< HEAD
       <h4>Recent Transactions</h4>
       {transactions.length > 0 ? (
         <ul className="transaction-list">
@@ -270,3 +271,6 @@ const WalletDashboard = () => {
             <li key={transaction.id} className={`transaction-item ${transaction.type}`}>
               <span className="transaction-description">{transaction.description || 'Transaction'}</span>
   
+=======
+export default WalletDashboard;
+>>>>>>> ddeeda8d883ffc3923ec58acd2eee5dfb8473380
