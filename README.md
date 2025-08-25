@@ -1,19 +1,21 @@
-# SwiitchBank MVP
+# SwiitchBank
 
-The next-generation AI-powered banking platform.
-
+The next-generation AI-powered, cross-platform banking platform designed for the modern user.
+SwiitchBank aims to provide a seamless and intelligent financial experience across various devices, empowering users with innovative features for managing their money, growing their wealth, and connecting with others.
 ## Features
 
 - Virtual debit cards (Mastercard)
 - Multi-currency wallets (fiat and crypto)
+- **Automated Savings:** Effortlessly grow your funds with automatic round-ups on transactions and set personalized savings goals.
 - AI-driven financial insights
 - Viral growth features (referrals, banking circles)
-- Student onboarding program
+- Student onboarding program tailored for young adults entering the financial world.
+- **Gamification & Engagement:** Earn rewards, unlock achievements, and participate in challenges to make managing your money fun and engaging.
+- **AI Assistant (Jools):** Your intelligent co-pilot for financial advice, transaction analysis, and platform navigation.
 
 ## Business Accounts
 
 - Multi-user access with granular permissions
-- Seamless integration for bulk payments and payroll processing
 - Enhanced accounting and expense management tools
 - Higher transaction limits and dedicated support
 - API access for custom integrations
