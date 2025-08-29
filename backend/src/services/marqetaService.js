@@ -1,6 +1,19 @@
 // backend/src/services/marqetaService.js
+// Note: 'axios' is used to make HTTP requests. You'll need to add it to your project's dependencies.
+// You can do this by running `npm install axios` or `yarn add axios` in your backend directory.
+const axios = require('axios');
+
 const MARQETA_API_URL = process.env.MARQETA_API_URL;
 const MARQETA_API_KEY = process.env.MARQETA_API_KEY;
+
+// Create an axios instance for Marqeta API requests
+const marqetaApi = axios.create({
+  baseURL: MARQETA_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Basic ${Buffer.from(MARQETA_API_KEY).toString('base64')}`
+  }
+});
 
 /**
  * Service for interacting with the Marqeta API for virtual card management.
@@ -14,28 +27,11 @@ const marqetaService = {
    */
   createCard: async (cardDetails) => {
     try {
-      // TODO: Implement actual API call to Marqeta to create a virtual card
-      console.log('Simulating Marqeta API call: createCard', cardDetails);
-
-      // Placeholder for API call
-      const response = {
-        token: 'placeholder_card_token_' + Math.random().toString(36).substr(2, 9),
-        pan: 'placeholder_pan_' + Math.random().toString().slice(2, 12), // Masked or tokenized PAN
-        expiration_date: '12/25', // Placeholder
-        cvv: '123', // Placeholder (should be handled securely)
-        state: 'ACTIVE', // Placeholder initial state
-        // ... other relevant fields from Marqeta response
-      };
-
-      // Check for errors in the simulated response
-      if (response.error) {
-        throw new Error(response.error.message);
-      }
-
-      return response;
-
+      console.log('Creating virtual card with Marqeta:', cardDetails);
+      const response = await marqetaApi.post('/cards', cardDetails);
+      return response.data;
     } catch (error) {
-      console.error('Error creating virtual card with Marqeta:', error);
+      console.error('Error creating virtual card with Marqeta:', error.response ? error.response.data : error.message);
       throw new Error('Failed to create virtual card');
     }
   },
@@ -47,25 +43,11 @@ const marqetaService = {
    */
   activateCard: async (cardToken) => {
     try {
-      // TODO: Implement actual API call to Marqeta to activate a virtual card
-      console.log('Simulating Marqeta API call: activateCard', cardToken);
-
-      // Placeholder for API call
-      const response = {
-        token: cardToken,
-        state: 'ACTIVE', // Placeholder activated state
-        // ... other relevant fields from Marqeta response
-      };
-
-      // Check for errors in the simulated response
-      if (response.error) {
-        throw new Error(response.error.message);
-      }
-
-      return response;
-
+      console.log('Activating virtual card with Marqeta:', cardToken);
+      const response = await marqetaApi.post(`/cards/${cardToken}/activation`);
+      return response.data;
     } catch (error) {
-      console.error(`Error activating virtual card with Marqeta (${cardToken}):`, error);
+      console.error(`Error activating virtual card with Marqeta (${cardToken}):`, error.response ? error.response.data : error.message);
       throw new Error('Failed to activate virtual card');
     }
   },
@@ -77,25 +59,11 @@ const marqetaService = {
    */
   suspendCard: async (cardToken) => {
     try {
-      // TODO: Implement actual API call to Marqeta to suspend a virtual card
-      console.log('Simulating Marqeta API call: suspendCard', cardToken);
-
-      // Placeholder for API call
-      const response = {
-        token: cardToken,
-        state: 'SUSPENDED', // Placeholder suspended state
-        // ... other relevant fields from Marqeta response
-      };
-
-      // Check for errors in the simulated response
-      if (response.error) {
-        throw new Error(response.error.message);
-      }
-
-      return response;
-
+      console.log('Suspending virtual card with Marqeta:', cardToken);
+      const response = await marqetaApi.put(`/cards/${cardToken}`, { state: 'SUSPENDED' });
+      return response.data;
     } catch (error) {
-      console.error(`Error suspending virtual card with Marqeta (${cardToken}):`, error);
+      console.error(`Error suspending virtual card with Marqeta (${cardToken}):`, error.response ? error.response.data : error.message);
       throw new Error('Failed to suspend virtual card');
     }
   },
