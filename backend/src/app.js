@@ -31,7 +31,7 @@ const transactionRoutes = require('./routes/transactions');
 const growthRoutes = require('./routes/growth');
 const businessAccountRoutes = require('./routes/businessAccounts');
 const virtualCardRoutes = require('./routes/virtualCards');
-const walletRoutes = require('./routes/wallets');
+const walletRoutesNew = require('./routes/wallets'); // FIX: Renamed variable to avoid conflict
 const gamificationRoutes = require('./routes/gamification');
 const authRoutes = require('./routes/auth');
 // Import middleware
@@ -117,7 +117,7 @@ app.use('/api/transactions', transactionRoutes);
 app.use('/api/growth', growthRoutes);
 app.use('/api/business-accounts', businessAccountRoutes);
 app.use('/api/virtual-cards', virtualCardRoutes);
-app.use('/api/wallets', walletRoutesNew); // Mounted the new wallet routes
+app.use('/api/wallets', walletRoutesNew); // FIX: Correctly using the new variable
 app.use('/api/users', gamificationRoutes);
 
 // Swagger API documentation

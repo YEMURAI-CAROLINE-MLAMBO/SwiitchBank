@@ -1,0 +1,89 @@
+# .github/workflows/deploy.yml
+
+name: Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - development
+
+jobs:
+  deploy_production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Dependencies
+        run: |
+          npm install --prefix backend
+          npm install --prefix functions
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          action: deploy
+          project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+        env:
+          NODE_ENV: production
+          MARQETA_API_KEY: ${{ secrets.MARQETA_API_KEY }}
+          MARQETA_APP_TOKEN: ${{ secrets.MARQETA_APP_TOKEN }}
+          MARQETA_ACCESS_TOKEN: ${{ secrets.MARQETA_ACCESS_TOKEN }}
+
+  deploy_staging:
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Dependencies
+        run: |
+          npm install --prefix backend
+          npm install --prefix functions
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          action: deploy
+          project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+        env:
+          NODE_ENV: staging
+          MARQETA_API_KEY: ${{ secrets.MARQETA_API_KEY }}
+          MARQETA_APP_TOKEN: ${{ secrets.MARQETA_APP_TOKEN }}
+          MARQETA_ACCESS_TOKEN: ${{ secrets.MARQETA_ACCESS_TOKEN }}
+
+  deploy_development:
+    if: github.ref == 'refs/heads/development'
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Dependencies
+        run: |
+          npm install --prefix backend
+          npm install --prefix functions
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          action: deploy
+          project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+        env:
+          NODE_ENV: development
+          MARQETA_API_KEY: ${{ secrets.MARQETA_API_KEY }}
+          MARQETA_APP_TOKEN: ${{ secrets.MARQETA_APP_TOKEN }}
+          MARQETA_ACCESS_TOKEN: ${{ secrets.MARQETA_ACCESS_TOKEN }}
