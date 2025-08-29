@@ -36,7 +36,7 @@ const gamificationRoutes = require('./routes/gamification');
 const authRoutes = require('./routes/auth');
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
-const logger = require('./utils/logger');
+const logger = require('../utils/logger');
 
 const app = express();
 
@@ -125,8 +125,8 @@ app.use('/api/users', gamificationRoutes);
  * @description Configures and serves the Swagger API documentation.
  */
 const swaggerOptions = {
-  swaggerDefinition: require('./swaggerDef'),
-  apis: ['./backend/src/routes/*.js', './backend/src/controllers/*.js'], // Path to the API routes and controllers
+  swaggerDefinition: require('../../swaggerDef'),
+  apis: ['./src/routes/*.js', './src/controllers/*.js'], // Path to the API routes and controllers
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
