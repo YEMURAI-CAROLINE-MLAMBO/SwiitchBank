@@ -1,19 +1,25 @@
 // backend/src/services/automatedSavingsService.js
 
 const internalTransferService = require('./internalTransferService');
+const automatedSavingsSettingsService = require('./automatedSavingsSettingsService');
 const logger = require('../utils/logger');
 
 class AutomatedSavingsService {
   /**
-   * Triggers an automated savings transfer.
+   * Triggers an automated savings transfer based on user settings.
    * @param {string} userId The ID of the user.
    * @param {number} incomingAmount The amount of incoming funds.
    * @param {string} currency The currency of the funds.
    */
   async triggerSavings(userId, incomingAmount, currency) {
-    // For now, we'll use a hardcoded 10% savings rate.
-    // In the future, this would be a user-configurable setting.
-    const savingsRate = 0.10;
+    const settings = await automatedSavingsSettingsService.getSettings(userId);
+
+    if (!settings.enabled) {
+      logger.info(`Automated savings is disabled for user ${userId}. Skipping transfer.`);
+      return;
+    }
+
+    const savingsRate = settings.percentage / 100;
     const savingsAmount = incomingAmount * savingsRate;
 
     if (savingsAmount <= 0) {
