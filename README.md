@@ -11,7 +11,12 @@ SwiitchBank aims to provide a seamless and intelligent financial experience acro
 - Viral growth features (referrals, banking circles)
 - Student onboarding program tailored for young adults entering the financial world.
 - **Gamification & Engagement:** Earn rewards, unlock achievements, and participate in challenges to make managing your money fun and engaging.
-- **AI Assistant (Jools):** Your intelligent co-pilot for financial advice, transaction analysis, and platform navigation.
+- **AI Assistant (Jools):** Your intelligent co-pilot for financial advice, transaction analysis, and platform navigation. Jools is designed to be a proactive and helpful assistant, making it easier than ever to manage your finances. Interact with Jools through a natural language chat interface to:
+    *   Get personalized financial insights and advice.
+    *   Analyze your spending habits.
+    *   Navigate the SwiitchBank platform and discover new features.
+    *   Onboard and manage business accounts.
+    *   Initiate trades and manage your investment portfolio.
 
 ## Business Accounts
 
@@ -58,6 +63,32 @@ Dashboard showing both fiat and crypto balances.
 
 ## Project Structure
 
+```
+swiitchbank-mvp/
+├── android/          # Android-specific code (e.g., Google Pay integration)
+├── api/              # Main API entrypoint
+├── backend/          # Core backend logic
+│   ├── controllers/  # Request handlers for API routes
+│   ├── services/     # Business logic and external service integrations
+│   ├── middleware/   # Express middleware for auth, validation, etc.
+│   └── routes/       # API route definitions
+├── dataconnect/      # Firebase Data Connect configuration
+├── docker/           # Dockerfiles for backend and frontend
+├── frontend/         # React-based frontend application
+│   ├── components/   # Reusable UI components
+│   ├── context/      # React context providers
+│   ├── layouts/      # Application layout components
+│   └── pages/        # Main pages of the application
+├── functions/        # Firebase Functions for serverless operations
+│   ├── compliance/   # Automated compliance checks
+│   ├── paymentProcessors/ # MoonPay, Stripe, and other payment integrations
+│   ├── savings/      # Logic for automated savings features
+│   ├── security/     # Security-related functions
+│   └── services/     # Shared services for Firebase Functions
+├── README.md         # Project overview and documentation
+└── ...               # Other configuration and project files
+```
+
 ## Getting Started
 ### Prerequisites
 
@@ -69,3 +100,4 @@ Dashboard showing both fiat and crypto balances.
    ```bash
    git clone https://github.com/your-username/swiitchbank-mvp.git
    cd swiitchbank-mvp
+   ```

@@ -1,6 +1,6 @@
 // backend/src/controllers/growthController.js
 
-const aiService = require('../services/aiService'); // Corrected service import
+const referralService = require('../services/referralService');
 const logger = require('../utils/logger');
 
 /**
@@ -32,7 +32,7 @@ exports.getReferralInfo = async (req, res) => {
     const userId = req.user.id; // Assuming user ID is available from authenticated user
 
     // Call the referral service function to get referral details
-    const referralInfo = await aiService.getReferralDetails(userId);
+    const referralInfo = await referralService.getReferralDetails(userId);
     
     if (!referralInfo) {
       return res.status(404).json({ message: 'Referral information not found' });
@@ -78,7 +78,7 @@ exports.applyReferralCode = async (req, res) => {
     const { referralCode } = req.body;
     const userId = req.user.id;
 
-    const success = await aiService.processReferral(referralCode, userId);
+    const success = await referralService.processReferral(referralCode, userId);
 
     if (success) {
       res.status(200).json({ message: 'Referral applied successfully' });
@@ -124,7 +124,7 @@ exports.generateReferralCode = async (req, res) => {
     const userId = req.user.id; // Assuming user ID is available from authenticated user
 
     // Call the referral service function to generate a referral offer
-    const referralOffer = await aiService.generateReferralOffer(userId);
+    const referralOffer = await referralService.generateReferralOffer(userId);
 
     res.status(200).json(referralOffer);
   } catch (error) {
