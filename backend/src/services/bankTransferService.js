@@ -1,63 +1,30 @@
 // backend/src/services/bankTransferService.js
 
-const { query } = require('/workspace/backend/src/config/database'); // Assuming you have a database utility
+const automatedSavingsService = require('./automatedSavingsService');
+const logger = require('../utils/logger');
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     BankTransferDetails:
- *       type: object
- *       properties:
- *         bankAccountId:
- *           type: string
- *           description: The ID of the user's bank account
- *         amount:
- *           type: number
- *           format: float
- *           description: The amount to transfer
- */
+class BankTransferService {
+  /**
+   * Simulates an incoming bank transfer and triggers automated savings.
+   * @param {string} userId The ID of the user receiving the transfer.
+   * @param {number} amount The amount of the transfer.
+   * @param {string} currency The currency of the transfer.
+   */
+  async handleIncomingTransfer(userId, amount, currency) {
+    logger.info(`Processing incoming transfer of ${amount} ${currency} for user ${userId}.`);
 
-/**
- * Processes a bank transfer to top up a virtual card.
- * @param {string} cardId - The ID of the virtual card to top up.
- * @param {object} transferDetails - Details of the bank transfer (e.g., bankAccountId, amount).
- * @returns {Promise<boolean>} - True if the transfer is successful, false otherwise.
- */
-exports.processBankTransferTopup = async (cardId, transferDetails) => {
-  try {
-    // TODO: Implement actual bank transfer processing logic here.
-    // This would typically involve:
-    // 1. Initiating a transfer from the user's linked bank account using a payment gateway API.
-    // 2. Handling potential delays or asynchronous nature of bank transfers (e.g., using webhooks).
-    // 3. Verifying the transfer status.
+    // In a real application, you would credit the user's main account here.
 
-    console.log(`Simulating bank transfer of ${transferDetails.amount} to card ${cardId}`);
-    console.log('Bank account ID:', transferDetails.bankAccountId);
-
-    // For now, simulate a successful transfer and update the card balance in the database.
-    // In a real application, you would only update the balance after confirming the transfer.
-
-    // Example database update (replace with your actual database logic):
-    const updateResult = await query(
-      'UPDATE virtual_cards SET balance = balance + $1 WHERE id = $2 RETURNING *',
-      [transferDetails.amount, cardId]
-    );
-
-    if (updateResult.rowCount > 0) {
-      console.log(`Successfully updated balance for card ${cardId}`);
-      return true; // Indicate success
-    } else {
-      console.error(`Card with ID ${cardId} not found for top-up.`);
-      return false; // Indicate failure
+    // After the main account is credited, trigger the automated savings feature.
+    try {
+      await automatedSavingsService.triggerSavings(userId, amount, currency);
+    } catch (error) {
+      logger.error(`Failed to trigger automated savings for user ${userId}:`, error);
+      // Even if savings fails, the main transfer should not be rolled back.
     }
 
-  } catch (error) {
-    console.error('Error processing bank transfer top-up:', error);
-    // TODO: Implement more robust error handling, potentially including
-    // reverting the balance update if the bank transfer fails later.
-    return false; // Indicate failure
+    return { success: true, message: 'Incoming transfer processed.' };
   }
-};
+}
 
-// TODO: Add other bank transfer related functions as needed (e.g., linking bank accounts).
+module.exports = new BankTransferService();
