@@ -12,7 +12,7 @@ class MoonPayService {
     }
 
     // Create crypto buy transaction
-    async createBuyTransaction(userId, cryptoCurrency, fiatAmount, fiatCurrency) {
+    async createBuyTransaction(userId, cryptoCurrency, fiatAmount, fiatCurrency, walletAddress) {
         const externalCustomerId = userId;
         const timestamp = Math.floor(Date.now() / 1000);
         
@@ -64,4 +64,21 @@ class MoonPayService {
 
         return { success: true };
     }
+
+    async handleTransactionCreated(data) {
+        console.log('Transaction created:', data);
+        // TODO: Implement logic to handle transaction creation
+    }
+
+    async handleTransactionUpdated(data) {
+        console.log('Transaction updated:', data);
+        // TODO: Implement logic to handle transaction updates
+    }
+
+    async handleTransactionFailed(data) {
+        console.log('Transaction failed:', data);
+        // TODO: Implement logic to handle failed transactions
+    }
 }
+
+module.exports = new MoonPayService();

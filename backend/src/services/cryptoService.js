@@ -1,8 +1,11 @@
 // backend/src/services/cryptoService.js
 
+const payoutPartnerService = require('./payoutPartnerService');
+const logger = require('../utils/logger');
+
 const getSupportedCurrencies = async () => {
   // TODO: Implement logic to fetch supported cryptocurrencies from integrated partners
-  console.log("Fetching supported currencies - Placeholder");
+  logger.info("Fetching supported currencies - Placeholder");
   return {
     success: true,
     data: ["BTC", "ETH", "USDT"],
@@ -12,11 +15,11 @@ const getSupportedCurrencies = async () => {
 
 const getExchangeRate = async (fromCurrency, toCurrency) => {
   // TODO: Implement logic to fetch exchange rate from integrated partners
-  console.log(`Fetching exchange rate from ${fromCurrency} to ${toCurrency} - Placeholder`);
+  logger.info(`Fetching exchange rate from ${fromCurrency} to ${toCurrency} - Placeholder`);
   // Simulate an exchange rate
   const rate = 40000 + Math.random() * 5000; // Example rate for BTC to USD
   return { 
- success: true,
+    success: true,
     data: {
       from: fromCurrency,
       to: toCurrency,
@@ -28,7 +31,7 @@ const getExchangeRate = async (fromCurrency, toCurrency) => {
 
 const convertCryptoForTopup = async (amount, fromCurrency, toCurrency) => {
   // TODO: Implement actual crypto conversion and deduction from user's crypto wallet
-  console.log(`Converting ${amount} ${fromCurrency} to ${toCurrency} for top-up - Placeholder`);
+  logger.info(`Converting ${amount} ${fromCurrency} to ${toCurrency} for top-up - Placeholder`);
   const exchangeRateResponse = await getExchangeRate(fromCurrency, toCurrency);
 
   if (!exchangeRateResponse.success) {
@@ -42,27 +45,28 @@ const convertCryptoForTopup = async (amount, fromCurrency, toCurrency) => {
 };
 
 const initiatePayout = async (walletId, bankAccountId, amount, currency) => {
-  // In a real application, you would fetch the wallet from the database here
-  // and check the balance. For this simulation, we'll assume the wallet exists
-  // and has sufficient funds for amounts > 0.
   if (amount <= 0) {
     throw new Error('Payout amount must be positive');
   }
 
-  // Simulate calculating a fee
   const feePercentage = 0.01; // 1% fee
   const feeAmount = amount * feePercentage;
   const netAmount = amount - feeAmount;
 
-  // TODO: Implement logic to initiate crypto-to-bank payout via integrated partners
-  console.log(`Simulating payout of ${amount} ${currency} (Net: ${netAmount}, Fee: ${feeAmount}) from wallet ${walletId} to bank account ${bankAccountId}`);
+  logger.info(`Initiating payout of ${amount} ${currency} from wallet ${walletId} to bank account ${bankAccountId}`);
 
-  // Simulate deducting from wallet balance (in a real app, this would be a database transaction)
-  // For this placeholder, we'll just log it.
-  console.log(`Simulating deduction of ${amount} ${currency} from wallet ${walletId}`);
+  // In a real app, you'd have a database transaction here to lock the funds.
+  logger.info(`Simulating deduction of ${amount} ${currency} from wallet ${walletId}`);
+  
+  const partnerResult = await payoutPartnerService.initiatePayout(netAmount, currency, bankAccountId);
 
-  // Simulate generating a transaction ID and status
-  const payoutId = `payout_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  if (!partnerResult.success) {
+    // In a real app, you would roll back the transaction here.
+    logger.error('Payout failed with partner. Rolling back funds deduction.');
+    throw new Error(partnerResult.error);
+  }
+
+  const payoutId = `payout_${Date.now()}`;
   const transactionTime = new Date().toISOString();
 
   return {
@@ -75,11 +79,14 @@ const initiatePayout = async (walletId, bankAccountId, amount, currency) => {
       fee: feeAmount,
       netAmount: netAmount,
       bankAccountId: bankAccountId,
-      status: 'processing', // Simulated initial status
+      status: partnerResult.status,
+      partnerTransactionId: partnerResult.partnerTransactionId,
       timestamp: transactionTime,
     },
-    message: `Successfully initiated payout - Placeholder`
+    message: `Successfully initiated payout with partner.`
   };
+};
+
 module.exports = {
   getSupportedCurrencies,
   getExchangeRate,
