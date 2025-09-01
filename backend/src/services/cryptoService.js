@@ -2,6 +2,7 @@
 
 const payoutPartnerService = require('./payoutPartnerService');
 const logger = require('../utils/logger');
+const appConfig = require('../config/appConfig');
 
 const getSupportedCurrencies = async () => {
   // TODO: Implement logic to fetch supported cryptocurrencies from integrated partners
@@ -49,7 +50,7 @@ const initiatePayout = async (walletId, bankAccountId, amount, currency) => {
     throw new Error('Payout amount must be positive');
   }
 
-  const feePercentage = 0.01; // 1% fee
+  const feePercentage = appConfig.payouts.feePercentage;
   const feeAmount = amount * feePercentage;
   const netAmount = amount - feeAmount;
 
@@ -79,7 +80,7 @@ const initiatePayout = async (walletId, bankAccountId, amount, currency) => {
       fee: feeAmount,
       netAmount: netAmount,
       bankAccountId: bankAccountId,
-      status: partnerResult.status,
+      status: partnerResult.status || 'processing',
       partnerTransactionId: partnerResult.partnerTransactionId,
       timestamp: transactionTime,
     },

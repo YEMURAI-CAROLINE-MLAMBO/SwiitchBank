@@ -18,6 +18,9 @@ const configs = {
       API_KEY: process.env.MARQETA_API_KEY,
       APP_TOKEN: process.env.MARQETA_APP_TOKEN,
       ACCESS_TOKEN: process.env.MARQETA_ACCESS_TOKEN
+    },
+    payouts: {
+      feePercentage: 0.01
     }
   },
   staging: {
@@ -37,6 +40,9 @@ const configs = {
       API_KEY: process.env.MARQETA_API_KEY,
       APP_TOKEN: process.env.MARQETA_APP_TOKEN,
       ACCESS_TOKEN: process.env.MARQETA_ACCESS_TOKEN
+    },
+    payouts: {
+      feePercentage: 0.01
     }
   },
   production: {
@@ -56,6 +62,9 @@ const configs = {
       API_KEY: process.env.MARQETA_API_KEY,
       APP_TOKEN: process.env.MARQETA_APP_TOKEN,
       ACCESS_TOKEN: process.env.MARQETA_ACCESS_TOKEN
+    },
+    payouts: {
+      feePercentage: 0.01
     }
   }
 };
