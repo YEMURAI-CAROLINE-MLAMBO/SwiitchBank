@@ -47,9 +47,6 @@
   },
   "functions": [
     {
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run build"
-      ],
       "source": "functions",
       "codebase": "default"
     },
@@ -70,9 +67,6 @@
         "firebase-debug.log.json",
         "firebase-debug.*.log",
         "*.local"
-      ],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run lint"
       ]
     }
   ],
@@ -104,6 +98,6 @@
     }
   },
   "dataconnect": {
-    "source": "dataconnect"
+    "source": "dataconnet"
   }
 }

@@ -1,77 +1,64 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Function to check if a user has a specific role in a business
+    function hasBusinessRole(businessId, requiredRole) {
+      return exists(/databases/$(database)/documents/businessAccounts/$(businessId)/teamMembers/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/businessAccounts/$(businessId)/teamMembers/$(request.auth.uid)).data.role == requiredRole;
+    }
+
+    // Function to check if a user is a member of a business (any role)
+    function isBusinessMember(businessId) {
+        return exists(/databases/$(database)/documents/businessAccounts/$(businessId)/teamMembers/$(request.auth.uid));
+    }
+
     match /users/{userId} {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
-      // Users can create their own document (handled by auth trigger ideally, but rule covers direct creation)
       allow create: if request.auth != null && request.auth.uid == userId;
 
-      // Additional security for sensitive fields - Only verified users can read sensitive data
       match /sensitive/{document} {
         allow read: if request.auth != null && request.auth.uid == userId && request.auth.token.email_verified == true;
-        allow write: if false; // Sensitive data should only be written by trusted backend services
-      }
-
-      // Corporate wallets
-      match /corporateWallets/{walletId} {
-        allow read: if hasBusinessRole(businessId, 'member');
-        allow create, update, delete: if hasBusinessRole(businessId, 'accountant') || hasBusinessRole(businessId, 'admin');
+        allow write: if false;
       }
     }
 
-    // Business account access
     match /businessAccounts/{businessId} {
-      // Admins can manage business details
-      allow read, update: if hasBusinessRole(businessId, 'admin');
-      // Team members can view business details
-      allow read: if hasBusinessRole(businessId, 'member');
+      allow read: if isBusinessMember(businessId);
+      allow update: if hasBusinessRole(businessId, 'admin');
 
-      // Team management
       match /teamMembers/{memberId} {
-        allow read: if hasBusinessRole(businessId, 'member') || hasBusinessRole(businessId, 'admin');
+        allow read: if isBusinessMember(businessId);
         allow create, update, delete: if hasBusinessRole(businessId, 'admin');
       }
     }
 
-    // Wallets collection (top-level)
     match /wallets/{walletId} {
-      // Users can only read their own wallets or wallets associated with their business account if they have the correct role
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-                  // If the wallet is associated with a business, allow read if the user is a member of that business
-                  || (resource.data.businessId != null && exists(/databases/$(database)/documents/businessAccounts/$(resource.data.businessId)/teamMembers/$(request.auth.uid)));
-      // Wallet creation is allowed for personal wallets
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId && request.resource.data.businessId == null;
-      // Business wallet creation is allowed for admins
-      allow create: if request.auth != null && request.resource.data.businessId != null && exists(/databases/$(database)/documents/businessAccounts/$(request.resource.data.businessId)/teamMembers/$(request.auth.uid)) && get(/databases/$(database)/documents/businessAccounts/$(request.resource.data.businessId)/teamMembers/$(request.auth.uid)).data.role == 'admin';
-      // Wallet updates (like balance changes or linking to business account) should be handled by trusted backend services
-      // Allowing limited updates for personal wallets for now, but will move to backend for security
-      allow update: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow read: if (request.auth != null && resource.data.userId == request.auth.uid) ||
+                     (resource.data.businessId != null && isBusinessMember(resource.data.businessId));
 
-      // Placeholder functions for security checks (Implement logic in Cloud Functions)
-      // These functions are kept for compatibility with existing rules but should ideally be backend checks
-      function validateTransactionRequest() { return true; }
-      function processSecureTransaction() { return false; } // Transactions should be processed by backend
+      allow create: if (request.auth != null && request.resource.data.userId == request.auth.uid && request.resource.data.businessId == null) ||
+                       (request.auth != null && request.resource.data.businessId != null && hasBusinessRole(request.resource.data.businessId, 'admin'));
+
+      allow update: if request.auth != null && resource.data.userId == request.auth.uid;
     }
 
-    // Sessions collection (for session management)
     match /sessions/{sessionId} {
-      // Users can only read and delete their own session documents
-      // Sessions should only be created by trusted backend services upon successful authentication
       allow create: if false;
       allow read, delete: if request.auth != null && request.auth.uid == resource.data.userId;
     }
 
-    // Transactions collection (top-level)
     match /transactions/{transactionId} {
-      // Users can only read transactions associated with their wallets or their business accounts
-      allow read: if request.auth != null && (exists(/databases/$(database)/documents/wallets/$(resource.data.sourceWalletId)/$(request.auth.uid)) || exists(/databases/$(database)/documents/wallets/$(resource.data.destinationWalletId)/$(request.auth.uid)) || (resource.data.businessId != null && exists(/databases/$(database)/documents/businessAccounts/$(resource.data.businessId)/teamMembers/$(request.auth.uid))));
-      // Transactions should only be created or updated by trusted backend services
+      function userOwnsWallet(walletId) {
+        return exists(/databases/$(database)/documents/wallets/$(walletId)) &&
+               get(/databases/$(database)/documents/wallets/$(walletId)).data.userId == request.auth.uid;
+      }
+
+      allow read: if request.auth != null &&
+                   (userOwnsWallet(resource.data.sourceWalletId) ||
+                    userOwnsWallet(resource.data.destinationWalletId) ||
+                    (resource.data.businessId != null && isBusinessMember(resource.data.businessId)));
       allow write: if false;
     }
-
-
-    // Security and Audit Logs (Only accessible via Admin SDK or authorized Cloud Functions)
-    function hasBusinessRole(businessId, requiredRole) {
-      return request.auth != null && request.auth.token['business_' + businessId] == requiredRole;
-    }
   }
+}
