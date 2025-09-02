@@ -30,17 +30,16 @@
         "source": "/**",
         "headers": [
           {
- "key": "Strict-Transport-Security",
- "value": "max-age=63072000; includeSubDomains; preload"
- },
- {
- "key": "Content-Security-Policy",
- "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://*; object-src 'none'; frame-ancestors 'none';"
+            "key": "Strict-Transport-Security",
+            "value": "max-age=63072000; includeSubDomains; preload"
           },
- {
- "key": "X-Content-Type-Options",
- "value": "nosniff"
- }
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://*; object-src 'none'; frame-ancestors 'none';"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
           }
         ]
       }
@@ -64,11 +63,11 @@
       "ignore": [
         "node_modules",
         ".git",
- ".firebase",
- ".firebase-debug.log",
+        ".firebase",
+        ".firebase-debug.log",
         "firebase-debug.log",
- "firebase-debug.log.env",
- "firebase-debug.log.json",
+        "firebase-debug.log.env",
+        "firebase-debug.log.json",
         "firebase-debug.*.log",
         "*.local"
       ],
@@ -76,12 +75,12 @@
         "npm --prefix \"$RESOURCE_DIR\" run lint"
       ]
     }
- ],
- "vpcAccess": {
- "connector": {
- "id": "projects/your-gcp-project-id/locations/your-location/connectors/your-vpc-connector-name"
- }
   ],
+  "vpcAccess": {
+    "connector": {
+      "id": "projects/your-gcp-project-id/locations/your-location/connectors/your-vpc-connector-name"
+    }
+  },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
@@ -91,17 +90,17 @@
       "dataDir": "dataconnect/.dataconnect/pgliteData"
     },
     "auth": {
- "port": 9099
- },
+      "port": 9099
+    },
     "firestore": {
- "port": 8080
- },
+      "port": 8080
+    },
     "functions": {
- "port": 5001
+      "port": 5001
     },
     "ui": {
- "enabled": true,
- "port": 4000
+      "enabled": true,
+      "port": 4000
     }
   },
   "dataconnect": {
