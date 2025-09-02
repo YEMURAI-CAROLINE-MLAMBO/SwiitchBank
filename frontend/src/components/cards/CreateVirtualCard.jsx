@@ -15,16 +15,16 @@ const CreateVirtualCard = ({ onCardCreated }) => {
 
     const functions = getFunctions();
     const createVirtualCard = httpsCallable(functions, 'createVirtualCard');
-    setFeedbackMessage(null); // Clear previous feedback message
+    setFeedbackMessage(null);
     setIsLoading(true);
 
     try {
-      const result = await createVirtualCard({ type: newCardType, nickname: newCardNickname });
+      await createVirtualCard({ type: newCardType, nickname: newCardNickname });
       setFeedbackMessage({ type: 'success', text: 'Virtual card created successfully!' });
       setNewCardType('');
       setNewCardNickname('');
       if (onCardCreated) {
-        onCardCreated();
+        onCardCreated(); // Callback to refresh the card list
       }
     } catch (error) {
       console.error('Error creating virtual card:', error);
