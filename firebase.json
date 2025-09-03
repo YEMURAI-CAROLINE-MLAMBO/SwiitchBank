@@ -97,8 +97,5 @@
       "enabled": true,
       "port": 4000
     }
-  },
-  "dataconnect": {
-    "source": "dataconnet"
   }
 }

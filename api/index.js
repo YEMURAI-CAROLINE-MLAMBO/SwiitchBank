@@ -63,7 +63,6 @@ exports.createVirtualCard = onRequest(async (request, response) => {
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     };
 
- try {
     const cardRef = admin.firestore().collection('virtualCards').doc(userId);
     const doc = await cardRef.get();
 
