@@ -158,6 +158,6 @@ class RoundUpEngine {
 }
 
 // You can export the class or an instance of it as needed
-// module.exports = RoundUpEngine;
+module.exports = RoundUpEngine;
 // or
 // module.exports = new RoundUpEngine();

@@ -48,11 +48,12 @@
   "functions": [
     {
       "source": "functions",
-      "codebase": "default"
-    },
-    {
-      "source": "virtualCardsFunctions",
-      "codebase": "virtualcards"
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "**/node_modules/**"
+      ]
     },
     {
       "source": "api",
