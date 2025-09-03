@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "public",
+    "public": "frontend",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -97,5 +97,8 @@
       "enabled": true,
       "port": 4000
     }
+  },
+  "dataconnect": {
+    "source": "dataconnect"
   }
 }
