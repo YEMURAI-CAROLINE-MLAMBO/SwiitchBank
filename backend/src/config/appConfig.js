@@ -4,13 +4,13 @@ const configs = {
   development: {
     name: 'Development',
     firebase: {
-      // TODO: Add your development Firebase project configuration here
-      apiKey: "your-dev-api-key",
-      authDomain: "your-dev-project-id.firebaseapp.com",
-      projectId: "your-dev-project-id",
-      storageBucket: "your-dev-project-id.appspot.com",
-      messagingSenderId: "your-dev-sender-id",
-      appId: "your-dev-app-id"
+      apiKey: "AIzaSyDxPY90kj3ueTNF9IGYQLyuHiDOa_CCv-E",
+      authDomain: "swiitchbank-09410265.firebaseapp.com",
+      projectId: "swiitchbank-09410265",
+      storageBucket: "swiitchbank-09410265.appspot.com",
+      messagingSenderId: "24016491102",
+      appId: "1:24016491102:web:4f1c72e3895e0b69401acf",
+      measurementId: "G-F9W3SZ2GCC"
     },
     marqeta: {
       // These will be populated from GitHub environment secrets
@@ -26,13 +26,13 @@ const configs = {
   staging: {
     name: 'Staging',
     firebase: {
-      // TODO: Add your staging Firebase project configuration here
-      apiKey: "your-staging-api-key",
-      authDomain: "your-staging-project-id.firebaseapp.com",
-      projectId: "your-staging-project-id",
-      storageBucket: "your-staging-project-id.appspot.com",
-      messagingSenderId: "your-staging-sender-id",
-      appId: "your-staging-app-id"
+      apiKey: "AIzaSyDxPY90kj3ueTNF9IGYQLyuHiDOa_CCv-E",
+      authDomain: "swiitchbank-09410265.firebaseapp.com",
+      projectId: "swiitchbank-09410265",
+      storageBucket: "swiitchbank-09410265.appspot.com",
+      messagingSenderId: "24016491102",
+      appId: "1:24016491102:web:4f1c72e3895e0b69401acf",
+      measurementId: "G-F9W3SZ2GCC"
     },
     marqeta: {
       // These will be populated from GitHub environment secrets
@@ -48,13 +48,13 @@ const configs = {
   production: {
     name: 'Production',
     firebase: {
-      // TODO: Add your production Firebase project configuration here
-      apiKey: "your-prod-api-key",
-      authDomain: "your-prod-project-id.firebaseapp.com",
-      projectId: "your-prod-project-id",
-      storageBucket: "your-prod-project-id.appspot.com",
-      messagingSenderId: "your-prod-sender-id",
-      appId: "your-prod-app-id"
+      apiKey: "AIzaSyDxPY90kj3ueTNF9IGYQLyuHiDOa_CCv-E",
+      authDomain: "swiitchbank-09410265.firebaseapp.com",
+      projectId: "swiitchbank-09410265",
+      storageBucket: "swiitchbank-09410265.appspot.com",
+      messagingSenderId: "24016491102",
+      appId: "1:24016491102:web:4f1c72e3895e0b69401acf",
+      measurementId: "G-F9W3SZ2GCC"
     },
     marqeta: {
       // These will be populated from GitHub environment secrets
