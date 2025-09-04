@@ -1,4 +1,3 @@
-
 package com.swiitchbank.gpay
 
 import android.app.Activity
@@ -69,9 +68,8 @@ class GooglePayIntegration(private val activity: Activity) {
     }
 
     private fun getMerchantInfo(): JSONObject {
-        // TODO: Replace with your actual merchant name
         return JSONObject().apply {
-            put("merchantName", "Example Merchant")
+            put("merchantName", "Swiitch")
         }
     }
 
@@ -87,13 +85,14 @@ class GooglePayIntegration(private val activity: Activity) {
     }
 
     private fun getGatewayTokenizationSpecification(): JSONObject {
-        // TODO: Replace with your payment gateway (e.g., "stripe", "braintree")
-        // and configure it with your gateway merchant ID.
+        // TODO: Ensure you have the Stripe SDK dependency in your build.gradle.
+        // TODO: Replace with your actual Stripe Publishable Key.
         return JSONObject().apply {
             put("type", "PAYMENT_GATEWAY")
             put("parameters", JSONObject().apply {
-                put("gateway", "example")
-                put("gatewayMerchantId", "exampleGatewayMerchantId")
+                put("gateway", "stripe")
+                put("stripe:publishableKey", "pk_test_YOUR_PUBLISHABLE_KEY")
+                put("stripe:version", "2020-08-27")
             })
         }
     }

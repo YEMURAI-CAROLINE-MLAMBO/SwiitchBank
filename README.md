@@ -18,6 +18,20 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 - **Referral Program**: Automated rewards system fostering community growth
 - **Basic Business Accounts**: Multi-user access with role-based permissions (Owner, Accountant, Operations)
 
+<br>
+
+### Jools AI Assistant
+
+The Jools AI Assistant is an intelligent chatbot that provides users with a conversational interface for interacting with the SwitchBank platform. It's built on Google's Gemini Pro model and can be used for a variety of tasks, including:
+
+*   **Transaction Analysis:** Ask questions about your spending habits, and Jools will provide you with insights and analysis.
+*   **Navigation Assistance:** Can't find something in the app? Just ask Jools, and it will guide you to the right place.
+*   **Onboarding Guidance:** New to SwitchBank? Jools will help you get started and make the most of the platform.
+
+To use the Jools AI Assistant, simply tap on the chat icon in the app and start a conversation.
+
+<br>
+
 ### 📈 Should-Have Features (Post-MVP)
 - Yield vaults/reward earning post-trade
 - Cross-chain swap capabilities

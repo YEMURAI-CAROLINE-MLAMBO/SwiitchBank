@@ -12,6 +12,7 @@ const gamificationRoutes = require('./routes/gamification');
 const stripeRoutes = require('./routes/stripe');
 const moonpayRoutes = require('./routes/moonpay');
 const moonpayWebhookRoutes = require('./routes/moonpayWebhook');
+const aiRoutes = require('./routes/ai'); // Import the new AI route
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use('/api/users', gamificationRoutes);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/moonpay', moonpayRoutes);
 app.use('/api/moonpay-webhook', moonpayWebhookRoutes);
+app.use('/api/ai', aiRoutes); // Add the AI route to the app
 
 const PORT = process.env.PORT || 5000;
 
