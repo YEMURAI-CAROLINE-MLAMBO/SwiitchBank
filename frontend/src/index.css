@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
 body {
   margin: 0;
-  font-family: 'Arial', sans-serif; /* Example font */
-  background-color: #f4f4f4; /* Light background */
+  font-family: 'Inter', sans-serif; /* Updated font */
+  background-color: #F7F9FC; /* Light gray background from the new style guide */
   color: #333; /* Dark text */
 }
 

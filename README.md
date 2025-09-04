@@ -1,103 +1,101 @@
-# SwiitchBank
+# SwitchBank : AI-Powered Banking Platform
 
-The next-generation AI-powered, cross-platform banking platform designed for the modern user.
-SwiitchBank aims to provide a seamless and intelligent financial experience across various devices, empowering users with innovative features for managing their money, growing their wealth, and connecting with others.
-## Features
+![SwitchBank](https://img.shields.io/badge/Version-MVP-green.svg)
+![Firebase](https://img.shields.io/badge/Platform-Firebase-orange.svg)
+![Node.js](https://img.shields.io/badge/Runtime-Node.js-green.svg)
 
-- Virtual debit cards (Mastercard)
-- Multi-currency wallets (fiat and crypto)
-- **Automated Savings:** Effortlessly grow your funds with automatic round-ups on transactions and set personalized savings goals.
-- AI-driven financial insights
-- Viral growth features (referrals, banking circles)
-- Student onboarding program tailored for young adults entering the financial world.
-- **Gamification & Engagement:** Earn rewards, unlock achievements, and participate in challenges to make managing your money fun and engaging.
-- **AI Assistant (Jools):** Your intelligent co-pilot for financial advice, transaction analysis, and platform navigation. Jools is designed to be a proactive and helpful assistant, making it easier than ever to manage your finances. Interact with Jools through a natural language chat interface to:
-    *   Get personalized financial insights and advice.
-    *   Analyze your spending habits.
-    *   Navigate the SwiitchBank platform and discover new features.
-    *   Onboard and manage business accounts.
-    *   Initiate trades and manage your investment portfolio.
+## Overview
 
-## Business Accounts
+SwitchBank is a next-generation, AI-powered banking platform designed to bridge traditional finance with cryptocurrency ecosystems. Our platform provides a seamless, intelligent financial experience across devices, empowering users with innovative features for managing money, growing wealth, and building community.
 
-- Multi-user access with granular permissions
-- Enhanced accounting and expense management tools
-- Higher transaction limits and dedicated support
-- API access for custom integrations
-- Business debit cards with customizable spending controls
+**Key Value Proposition**: Combining traditional banking security with crypto flexibility through AI-driven automation.
 
-### Recent Updates
+## Core Features (MVP Scope)
 
-1️⃣ Innovative Trading Experience via Jools
+### 🎯 Must-Have Features
+- **Jools AI Assistant**: Basic transaction analysis, navigation assistance, and onboarding guidance
+- **Fiat-Crypto Bridge**: Effortless trading between traditional and digital assets
+- **Referral Program**: Automated rewards system fostering community growth
+- **Basic Business Accounts**: Multi-user access with role-based permissions (Owner, Accountant, Operations)
 
-Introduced a user-friendly mobile trading interface designed for accessibility and ease of use.
+### 📈 Should-Have Features (Post-MVP)
+- Yield vaults/reward earning post-trade
+- Cross-chain swap capabilities
+- Advanced gamification milestones
+- Multi-currency support for global users
 
-Seamless Trading with Fiat/Crypto Bridge: Users can effortlessly trade assets with integrated fiat and crypto capabilities, removing the need for in-depth cryptocurrency knowledge.
+## Technology Stack
 
-Automated Engagement Triggers:
+| **Layer** | **Technology** |
+| :--- | :--- |
+| **Backend** | Node.js, Express.js, Firebase Functions |
+| **Database** | Firestore, Firebase Data Connect |
+| **AI Service** | Gemini API integration (aiService.js) |
+| **Payment Processing** | Marqeta API (marqetaService.js) |
+| **Authentication** | Firebase Auth with multi-factor support |
+| **Frontend** | React Native (cross-platform) |
 
-Referral rewards are automatically activated upon trade completion, fostering community growth.
+## Installation & Local Development
 
-Affiliate tracking and gamification milestones remain active.
-
-
-Optional features planned:
-
-Cross-chain swaps.
-
-Yield vaults / reward earning post-trade.
-
-Multi-currency support for global users.
-
-
----
-
-2️⃣ Business Account Module (Gemini-Inspired)
-
-Jools will now handle business account onboarding with:
-
-Role-based access for team members (owner, accountant, operations).
-
-Dashboard showing both fiat and crypto balances.
-
-
-## Project Structure
-
-```
-swiitchbank-mvp/
-├── android/          # Android-specific code (e.g., Google Pay integration)
-├── api/              # Main API entrypoint
-├── backend/          # Core backend logic
-│   ├── controllers/  # Request handlers for API routes
-│   ├── services/     # Business logic and external service integrations
-│   ├── middleware/   # Express middleware for auth, validation, etc.
-│   └── routes/       # API route definitions
-├── dataconnect/      # Firebase Data Connect configuration
-├── docker/           # Dockerfiles for backend and frontend
-├── frontend/         # React-based frontend application
-│   ├── components/   # Reusable UI components
-│   ├── context/      # React context providers
-│   ├── layouts/      # Application layout components
-│   └── pages/        # Main pages of the application
-├── functions/        # Firebase Functions for serverless operations
-│   ├── compliance/   # Automated compliance checks
-│   ├── paymentProcessors/ # MoonPay, Stripe, and other payment integrations
-│   ├── savings/      # Logic for automated savings features
-│   ├── security/     # Security-related functions
-│   └── services/     # Shared services for Firebase Functions
-├── README.md         # Project overview and documentation
-└── ...               # Other configuration and project files
-```
-
-## Getting Started
 ### Prerequisites
+- Node.js (v18 or higher)
+- Firebase CLI tools
+- Marqeta developer account (for card processing)
+- Gemini API credentials (for AI services)
 
-- Node.js (for local development)
+### Setup Instructions
 
-### Installation
-
-1. Clone the repository:
+1. **Clone repository**:
    ```bash
-   git clone https://github.com/your-username/swiitchbank-mvp.git
-   cd swiitchbank-mvp
+   git clone https://github.com/your-username/switchbank-mvp.git
+   cd switchbank-mvp
+```
+
+2. Install dependencies:
+   ```bash
+   npm install
    ```
+3. Configure environment variables:
+   ```bash
+   cp env.example .env
+   # Edit .env with your API credentials
+   ```
+4. Initialize Firebase:
+   ```bash
+   ./setup-firebase.sh
+   ```
+5. Run development server:
+   ```bash
+   npm run dev
+   ```
+
+## Deployment
+
+Deploy securely using the provided script:
+
+```bash
+chmod +x deploy-secure.sh
+./deploy-secure.sh
+```
+
+This deployment process includes:
+
+· Cloud Function deployment
+· Firestore rules configuration
+· Data Connect schema implementation
+· Security rule validation
+
+## Known Limitations & Issues (MVP Phase)
+
+· Jools Onboarding: Business account onboarding via Jools is currently a guided assistant rather than fully autonomous implementation
+· Currency Support: Limited to primary currency (USD) and major cryptocurrencies (BTC, ETH)
+· Transaction Limits: Reduced limits during MVP testing phase
+· Browser Support: Optimized for Chrome and Safari browsers
+
+## Contributing
+
+We welcome contributions! Please read our contributing guidelines before submitting pull requests.
+
+## License
+
+This project is licensed under the terms contained in the LICENSE file.
