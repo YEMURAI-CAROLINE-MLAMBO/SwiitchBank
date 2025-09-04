@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:swiitch/config.dart'; // Assuming your package name is swiitch
+
 class AIAssistantScreen extends StatefulWidget {
   @override
   _AIAssistantScreenState createState() => _AIAssistantScreenState();
@@ -18,7 +20,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
     });
 
     final response = await http.post(
-      Uri.parse('http://localhost:5000/api/ai/ask'), // Make sure this URL is correct
+      Uri.parse('${AppConfig.backendUrl}/api/ai/ask'), // Use the backendUrl from the config file
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'prompt': _promptController.text}),
     );
