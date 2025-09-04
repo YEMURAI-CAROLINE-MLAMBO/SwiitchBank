@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import SettingsPage from './pages/SettingsPage';
 import TransactionsPage from './pages/TransactionsPage';
+import BusinessOnboarding from './components/BusinessOnboarding';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="cards" element={<CardsPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="transactions" element={<TransactionsPage />} />
+          <Route path="business-onboarding" element={<BusinessOnboarding />} />
           {/* Add other routes here */}
         </Route>{/* Add routes for login, signup, etc. outside the layout if needed */}
         <Route path="/login" element={<LoginPage />} />

@@ -34,6 +34,8 @@ const virtualCardRoutes = require('./routes/virtualCards');
 const walletRoutesNew = require('./routes/wallets');
 const gamificationRoutes = require('./routes/gamification');
 const authRoutes = require('./routes/auth');
+const onboardingRoutes = require('./routes/onboarding');
+
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 const logger = require('./utils/logger');
@@ -119,6 +121,7 @@ app.use('/api/business-accounts', businessAccountRoutes);
 app.use('/api/virtual-cards', virtualCardRoutes);
 app.use('/api/wallets', walletRoutesNew);
 app.use('/api/users', gamificationRoutes);
+app.use('/api/onboarding', onboardingRoutes);
 
 // Swagger API documentation
 /**
