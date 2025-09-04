@@ -1,321 +1,83 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { query } = require('../config/database');
-const config = require('../config/environment');
-const logger = require('../utils/logger');
-const { encrypt } = require('../utils/encryption');
-const aiService = require('../services/aiService'); // Import the consolidated AI/referral service
+const User = require('../models/User');
 
-class AuthController {
+exports.register = async (req, res) => {
+  const { firstName, lastName, email, password } = req.body;
 
-  /**
-   * Register new user
- * @swagger
- * /api/auth/register:
- *   post:
- *     summary: Register a new user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *               - firstName
- *               - lastName
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *               firstName:
- *                 type: string
- *               lastName:
- *                 type: string
- *               referralCode:
- *                 type: string
- *                 description: Optional referral code
- *     responses:
- *       201:
- *         description: User registered successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 user:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                     email:
- *                       type: string
- *                     firstName:
- *                       type: string
- *                     lastName:
- *                       type: string
- *                     createdAt:
- *                       type: string
- *                 token:
- *                   type: string
- *       400:
- *         description: Bad request (e.g., email already registered, missing fields)
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *       500:
- *         description: Internal server error
-   */
-  async register(req, res) {
-    try {
-      const { email, password, firstName, lastName } = req.body;
-      
-      // Check if user exists
-      const userCheck = await query(
-        `SELECT id FROM users WHERE email = $1`,
-        [email]
-      );
-      
-      if (userCheck.rows.length > 0) {
-        return res.status(400).json({ error: 'Email already registered' });
-      }
-      
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, config.security.bcryptRounds);
-      
-      // Create user
-      const result = await query(
-        `INSERT INTO users (email, password, first_name, last_name) 
-         VALUES ($1, $2, $3, $4) 
-         RETURNING id, email, first_name, last_name, created_at`,
-        [email, hashedPassword, firstName, lastName]
-      );
-      
-      const newUser = result.rows[0];
-      
-      // Create default wallet
-      await query(
-        `INSERT INTO wallets (user_id, currency, balance) 
-         VALUES ($1, 'USD', 0)`,
-        [newUser.id]
-      );
-      
-      // Check for and process referral code
-      if (req.body.referralCode) {
-        // Process referral - reward referrer if code is valid
-        await aiService.processReferral(req.body.referralCode, newUser.id);
-      }
+  try {
+    let user = await User.findOne({ email });
 
-      // Generate JWT
-      const token = this.generateToken(newUser.id);
-      
-      res.status(201).json({
-        message: 'User registered successfully',
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          firstName: newUser.first_name,
-          lastName: newUser.last_name,
-          createdAt: newUser.created_at
-        },
-        token
-      });
-    } catch (error) {
-      logger.error('Registration failed:', error);
-      res.status(500).json({ error: 'Failed to register user' });
+    if (user) {
+      return res.status(400).json({ msg: 'User already exists' });
     }
-  }
 
-  /**
-   * Authenticate user
- * @swagger
- * /api/auth/login:
- *   post:
- *     summary: Authenticate user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - email
- *               - password
- *             properties:
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       200:
- *         description: Login successful
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 user:
- *                   $ref: '#/components/schemas/User' # Assuming a User schema is defined elsewhere
- *                 token:
- *                   type: string
- *       401:
- *         description: Invalid credentials
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *       500:
- *         description: Internal server error
-   */
-  async login(req, res) {
-    try {
-      const { email, password } = req.body;
-      
-      // Find user
-      const result = await query(
-        `SELECT id, email, password, first_name, last_name 
-         FROM users WHERE email = $1`,
-        [email]
-      );
-      
-      if (result.rows.length === 0) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+    user = new User({
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
+    await user.save();
+
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: 360000 },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
       }
-      
-      const user = result.rows[0];
-      
-      // Verify password
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
-      
-      // Generate JWT
-      const token = this.generateToken(user.id);
-      
-      // Record login
-      await query(
-        `INSERT INTO user_logins (user_id) VALUES ($1)`,
-        [user.id]
-      );
-      
-      res.json({
-        message: 'Login successful',
-        user: {
-          id: user.id,
-          email: user.email,
-          firstName: user.first_name,
-          lastName: user.last_name
-        },
-        token
-      });
-    } catch (error) {
-      logger.error('Login failed:', error);
-      res.status(500).json({ error: 'Failed to authenticate' });
-    }
-  }
-
-  /**
- * @swagger
- * /api/auth/logout:
- *   post:
- *     summary: Logout the current user
- *     tags: [Auth]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Logout successful
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *       500:
- *         description: Internal server error
- */
-  async logout(req, res) {
-    // In a stateless JWT system, logout on the server side typically involves
-    // invalidating the token on the client side. If you were using session
-    // management on the server, you would destroy the session here.
-    // For JWTs, you might implement a token blacklist if necessary,
-    // but a simpler approach is for the client to discard the token.
-    // We'll send a success message assuming the client will discard the token.
-    try {
-      // Optional: Log the logout event if needed
-      // logger.info(`User ${req.user.id} logged out`);
-
-      res.json({ message: 'Logout successful' });
-    } catch (error) {
-      logger.error('Logout failed:', error);
-      res.status(500).json({ error: 'Failed to logout' });
-    }
-  }
-
-  /**
- * @swagger
- * /api/auth/profile:
- *   get:
- *     summary: Get the profile of the authenticated user
- *     tags: [Auth]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: User profile retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User' # Assuming you have a User schema defined
- *       401:
- *         description: Unauthorized (if the user is not logged in)
- *       404:
- *         description: User not found
- *       500:
- *         description: Internal server error
- */
-  async getProfile(req, res) {
-    try {
-      const userId = req.user.id; // Assuming user ID is available from authentication middleware
-      const result = await query('SELECT id, email, first_name, last_name, created_at FROM users WHERE id = $1', [userId]);
-      if (result.rows.length === 0) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      res.status(200).json(result.rows[0]);
-    } catch (error) {
-      logger.error('Error fetching user profile:', error);
-      res.status(500).json({ error: 'Failed to fetch user profile' });
-    }
-  }
-
-
-  /**
-   * Generate JWT token
-   */
-  generateToken(userId) {
-    return jwt.sign(
-      { id: userId },
-      config.security.jwtSecret,
-      { expiresIn: config.security.jwtExpire }
     );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
   }
-}
+};
 
-module.exports = new AuthController();
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
+
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: 360000 },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
