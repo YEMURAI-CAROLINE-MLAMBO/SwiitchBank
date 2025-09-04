@@ -7,7 +7,7 @@ function AppLayout() {
     <div className="app-layout">
       <header className="app-header">
         <nav className="app-nav">
-          <div className="app-logo">SwiitchBank</div>
+          <div className="app-logo">Ryt Bank</div>
           <ul>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/wallet">Wallet</Link></li>
@@ -27,7 +27,7 @@ function AppLayout() {
 
       <footer className="app-footer">
         {/* Footer content */}
-        <p>&copy; 2023 SwiitchBank</p>
+        <p>&copy; 2024 Ryt Bank</p>
       </footer>
     </div>
   );
