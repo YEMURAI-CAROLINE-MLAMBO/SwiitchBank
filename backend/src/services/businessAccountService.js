@@ -1,4 +1,4 @@
-const Business = require('../models/Business'); // Assuming a Business model exists
+const Business = require('../models/Business');
 
 /**
  * Creates a new business account.
@@ -6,22 +6,19 @@ const Business = require('../models/Business'); // Assuming a Business model exi
  * @returns {Promise<object>} The newly created business account.
  */
 const createBusinessAccount = async (accountDetails) => {
-  // For now, we'll just simulate the creation of a business account.
-  // In a real application, you would save this to a database.
-  console.log('Creating business account with details:', accountDetails);
-  return { id: Date.now(), ...accountDetails, status: 'active' };
+  const business = new Business(accountDetails);
+  await business.save();
+  return business;
 };
 
 /**
  * Checks if a business name is available.
  * @param {string} businessName - The business name to check.
- * @returns {Promise<boolean>} True if the name is available, false otherwise.
+ * a @returns {Promise<boolean>} True if the name is available, false otherwise.
  */
 const checkBusinessNameAvailability = async (businessName) => {
-  // For now, we'll simulate checking name availability.
-  // In a real application, you would query the database.
-  console.log(`Checking availability of business name: ${businessName}`);
-  return !['existing business', 'another business'].includes(businessName.toLowerCase());
+  const business = await Business.findOne({ businessName });
+  return business === null;
 };
 
 module.exports = {

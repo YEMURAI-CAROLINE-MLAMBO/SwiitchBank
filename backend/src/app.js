@@ -1,153 +1,33 @@
-/**
- * @file Express application configuration for the Swiitch Bank MVP.
- * @description Sets up and configures the Express application with various middleware, routes, and error handling.
- */
-/**
- * Swiitch Bank MVP - Express Application Configuration
- */
-
 const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
+const { connectDB } = require('./config/database');
 
 // Import routes
-/**
- * @swagger
- * components:
- *   securitySchemes:
- *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
- */
-// const cardRoutes = require('./routes/cards'); // FIX: Commented out missing file
-// const walletRoutes = require('./routes/wallet'); // FIX: Commented out missing file
-// const kycRoutes = require('./routes/kyc'); // FIX: Commented out missing file
-// const transactionRoutes = require('./routes/transactions'); // FIX: Commented out missing file
+const authRoutes = require('./routes/auth');
 const growthRoutes = require('./routes/growth');
 const businessAccountRoutes = require('./routes/businessAccounts');
 const virtualCardRoutes = require('./routes/virtualCards');
 const walletRoutesNew = require('./routes/wallets');
 const gamificationRoutes = require('./routes/gamification');
-const authRoutes = require('./routes/auth');
-const onboardingRoutes = require('./routes/onboarding');
-
-// Import middleware
-const { errorHandler, notFound } = require('./middleware/errorHandler');
-const logger = require('./utils/logger');
 
 const app = express();
 
-// Security middleware
-/**
- * @description Configures security headers using Helmet.
- * @see {@link https://helmetjs.github.io/}
- */
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-    },
-  },
-}));
+// Connect to MongoDB
+connectDB();
 
-// CORS configuration
-/**
- * @description Configures Cross-Origin Resource Sharing (CORS) for allowing requests from specified origins.
- * @see {@link https://www.npmjs.com/package/cors}
- */
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? process.env.PRODUCTION_ORIGIN
-    : ['http://localhost:3000'],
-  credentials: true,
-}));
-
-// Rate limiting
-/**
- * @description Configures rate limiting to protect against brute-force attacks.
- * @see {@link https://www.npmjs.com/package/express-rate-limit}
- */
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // Limit requests per window
-  message: 'Too many requests from this IP, please try again later.',
-});
-app.use('/api/', limiter);
-
-// Body parsing middleware
-/**
- * @description Parses incoming JSON payloads.
- * @see {@link https://expressjs.com/en/api.html#express.json}
- */
-app.use(express.json({ limit: '10mb' }));
-/**
- * @description Parses incoming URL-encoded payloads.
- * @see {@link https://expressjs.com/en/api.html#express.urlencoded}
- */
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-// Logging
-/** @description Configures HTTP request logging using Morgan and sends output to the custom logger. */
-app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    service: 'Swiitch Bank API',
-    version: '1.0.0'
-  });
-});
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // API Routes
-/**
- * @description Mounts the imported route handlers under specific API paths.
- */
 app.use('/api/auth', authRoutes);
-// app.use('/api/cards', cardRoutes); // FIX: Commented out missing route
-// app.use('/api/wallet', walletRoutes); // FIX: Commented out missing route
-// app.use('/api/user/kyc', kycRoutes); // FIX: Commented out missing route
-// app.use('/api/transactions', transactionRoutes); // FIX: Commented out missing route
 app.use('/api/growth', growthRoutes);
 app.use('/api/business-accounts', businessAccountRoutes);
 app.use('/api/virtual-cards', virtualCardRoutes);
 app.use('/api/wallets', walletRoutesNew);
 app.use('/api/users', gamificationRoutes);
-app.use('/api/onboarding', onboardingRoutes);
 
-// Swagger API documentation
-/**
- * @description Configures and serves the Swagger API documentation.
- */
-const swaggerOptions = {
-  swaggerDefinition: require('./swaggerDef'),
-  apis: ['./backend/src/routes/*.js', './backend/src/controllers/*.js'], // Path to the API routes and controllers
-};
+const PORT = process.env.PORT || 5000;
 
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
-
-
-// Error handling middleware
-/**
- * @description Middleware to handle 404 (Not Found) errors.
- * @see {@link backend/src/middleware/errorHandler.js}
- */
-app.use(notFound);
-/**
- * @description General error handling middleware.
- * @see {@link backend/src/middleware/errorHandler.js}
- */
-app.use(errorHandler);
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 module.exports = app;
