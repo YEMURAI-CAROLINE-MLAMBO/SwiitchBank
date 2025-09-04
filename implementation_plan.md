@@ -6,7 +6,8 @@
 ## 2. Jools AI Assistant
 - [X] Create backend service, controller, and route.
 - [X] Create basic Flutter UI for the AI assistant.
-- [ ] Refactor the frontend to use a configuration file for the backend URL.
+- [X] Refactor the frontend to use a configuration file for the backend URL.
+- [X] Document the Jools AI Assistant feature in the `README.md` file.
 
 ## 3. Android Client Implementation
 - [X] Implement the Android client-side code for Google Pay integration using the provided Kotlin snippet.
