@@ -1,8 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:swiitch/config.dart'; // Assuming your package name is swiitch
 
 class AIAssistantScreen extends StatefulWidget {
   @override
@@ -14,37 +13,53 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
   String _response = '';
   bool _isLoading = false;
 
-  Future<void> _getAIResponse() async {
+  Future<void> _sendPrompt() async {
     setState(() {
       _isLoading = true;
+      _response = '';
     });
 
-    final response = await http.post(
-      Uri.parse('${AppConfig.backendUrl}/api/ai/ask'), // Use the backendUrl from the config file
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode({'prompt': _promptController.text}),
-    );
+    try {
+      final prompt = _promptController.text;
+      // In a real app, you would get the transactions from your app's state
+      final transactions = []; 
+      
+      final url = prompt.toLowerCase().contains('transactions')
+          ? 'YOUR_BACKEND_URL/api/transaction-analysis/analyze'
+          : 'YOUR_BACKEND_URL/api/ai/ask';
 
-    if (response.statusCode == 200) {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'prompt': prompt, 'transactions': transactions}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _response = data['response'] ?? data['analysis'];
+        });
+      } else {
+        setState(() {
+          _response = 'Error: \${response.body}';
+        });
+      }
+    } catch (e) {
       setState(() {
-        _response = json.decode(response.body)['response'];
+        _response = 'Error: \$e';
       });
-    } else {
+    } finally {
       setState(() {
-        _response = 'Error: Could not get a response from the AI assistant.';
+        _isLoading = false;
       });
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Jools AI Assistant'),
+        title: Text('AI Assistant'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,18 +68,21 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
             TextField(
               controller: _promptController,
               decoration: InputDecoration(
-                labelText: 'Ask me anything...',
+                labelText: 'Ask a question',
               ),
             ),
-            SizedBox(height: 16.0),
-            _isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _getAIResponse,
-                    child: Text('Ask'),
-                  ),
-            SizedBox(height: 16.0),
-            Text(_response),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _isLoading ? null : _sendPrompt,
+              child: _isLoading ? CircularProgressIndicator() : Text('Send'),
+            ),
+            SizedBox(height: 16),
+            if (_response.isNotEmpty)
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Text(_response),
+                ),
+              ),
           ],
         ),
       ),

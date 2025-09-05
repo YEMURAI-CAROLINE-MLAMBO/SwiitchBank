@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:swiitch/ai_assistant_screen.dart'; // Assuming your package name is swiitch
+import 'package:swiitch/onboarding_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AIAssistantScreen(),
+      home: OnboardingScreen(),
     );
   }
 }
