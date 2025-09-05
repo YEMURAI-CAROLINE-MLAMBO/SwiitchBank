@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class AIAssistantScreen extends StatefulWidget {
+class LiveChatScreen extends StatefulWidget {
   @override
-  _AIAssistantScreenState createState() => _AIAssistantScreenState();
+  _LiveChatScreenState createState() => _LiveChatScreenState();
 }
 
-class _AIAssistantScreenState extends State<AIAssistantScreen> {
+class _LiveChatScreenState extends State<LiveChatScreen> {
   final List<Map<String, String>> _messages = [];
   final TextEditingController _textController = TextEditingController();
   bool _isLoading = false;
@@ -20,17 +20,24 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
 
   void _addInitialMessage() {
     setState(() {
-      _messages.insert(
-          0, {'sender': 'Jools', 'message': 'Hi! How can I help you today?'});
+      _messages.insert(0, {
+        'sender': 'agent',
+        'message': 'Welcome to SwiitchBank Support! I\'m Jools, your AI assistant. How can I help you?'
+      });
     });
   }
 
   Future<void> _handleSubmitted(String text) async {
+    if (text.trim().isEmpty) return;
+
     _textController.clear();
     setState(() {
       _messages.insert(0, {'sender': 'user', 'message': text});
       _isLoading = true;
     });
+
+    // Prompts Jools to act as a support agent
+    final String prompt = 'As a customer support agent for a mobile banking app called SwiitchBank, your name is Jools. A user has the following query: "$text". Please provide a helpful, friendly, and concise response. Do not offer to perform actions you cannot do, like making calls or opening tickets.';
 
     try {
       // IMPORTANT: Replace with your actual backend URL
@@ -38,20 +45,17 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
       final response = await http.post(
         Uri.parse('$backendUrl/api/ai/ask'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'prompt':
-              'As a navigation assistant for a mobile banking app, your task is to identify the user\'s intent and respond with a specific navigation command if it matches one of the following keywords. Your response should ONLY be the command, without any extra text.\n\nKeywords and their corresponding navigation commands:\n- \'transactions\', \'spending\', \'history\': navigate_to_transactions\n- \'home\', \'dashboard\', \'main\': navigate_to_home\n\nUser query: "$text"'
-        }),
+        body: json.encode({'prompt': prompt}),
       );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        _handleAIResponse(data['response'] ?? 'Sorry, I can\'t help with that yet.');
+        _addAgentResponse(data['response'] ?? 'Sorry, I can\'t help with that right now.');
       } else {
-        _addErrorMessage();
+        _addAgentResponse('Sorry, something went wrong. Please try again later.');
       }
     } catch (e) {
-      _addErrorMessage();
+      _addAgentResponse('I\'m having trouble connecting. Please check your internet connection and try again.');
     } finally {
       setState(() {
         _isLoading = false;
@@ -59,37 +63,16 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
     }
   }
 
-  void _handleAIResponse(String response) {
-    if (response == 'navigate_to_transactions') {
-      // In a real app, you would use a navigator service to handle this.
-      // For now, we'll just pop the screen.
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context, 'transactions');
-      }
-    } else if (response == 'navigate_to_home') {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context, 'home');
-      }
-    } else {
-      setState(() {
-        _messages.insert(0, {'sender': 'Jools', 'message': response});
-      });
-    }
-  }
-
-  void _addErrorMessage() {
+  void _addAgentResponse(String message) {
     setState(() {
-      _messages.insert(0, {
-        'sender': 'Jools',
-        'message': 'Sorry, something went wrong. Please try again.'
-      });
+      _messages.insert(0, {'sender': 'agent', 'message': message});
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Jools Assistant')),
+      appBar: AppBar(title: Text('AI Support Chat')),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -101,11 +84,9 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
                 final message = _messages[index];
                 final isUser = message['sender'] == 'user';
                 return Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+                  margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
                   child: Row(
-                    mainAxisAlignment:
-                        isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+                    mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
                     children: <Widget>[
                       Flexible(
                         child: Container(
@@ -154,7 +135,7 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
               child: TextField(
                 controller: _textController,
                 onSubmitted: _handleSubmitted,
-                decoration: InputDecoration.collapsed(hintText: 'Ask me anything...'),
+                decoration: InputDecoration.collapsed(hintText: 'Ask Jools anything...'),
               ),
             ),
             Container(

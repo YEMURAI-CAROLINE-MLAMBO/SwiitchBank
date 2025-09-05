@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:swiitch/home_screen.dart'; // Assuming you have a home screen
+import 'package:http/http.dart' as http;
+import 'package:swiitch/home_screen.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -8,7 +10,8 @@ class RegistrationScreen extends StatefulWidget {
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -19,19 +22,42 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _isLoading = true;
       });
 
-      // TODO: Implement actual registration logic (e.g., API call)
-      print('Registering user: ${_nameController.text}, ${_emailController.text}');
-      await Future.delayed(Duration(seconds: 2)); // Simulate network request
+      try {
+        // IMPORTANT: Replace with your actual backend URL
+        const String backendUrl = 'YOUR_BACKEND_URL';
+        final response = await http.post(
+          Uri.parse('$backendUrl/api/auth/register'),
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({
+            'firstName': _firstNameController.text,
+            'lastName': _lastNameController.text,
+            'email': _emailController.text,
+            'password': _passwordController.text,
+          }),
+        );
 
-      setState(() {
-        _isLoading = false;
-      });
-
-      // Navigate to home screen on successful registration
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          // Navigate to home screen on successful registration
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        } else {
+          // Show error message
+          final responseData = json.decode(response.body);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(responseData['errors']?[0]['msg'] ?? 'Registration failed. Please try again.')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('An error occurred. Please check your connection.')),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -49,11 +75,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Full Name'),
+                controller: _firstNameController,
+                decoration: InputDecoration(labelText: 'First Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
+                    return 'Please enter your first name';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _lastNameController,
+                decoration: InputDecoration(labelText: 'Last Name'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your last name';
                   }
                   return null;
                 },
@@ -76,8 +113,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 decoration: InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 validator: (value) {
-                  if (value == null || value.length < 8) {
-                    return 'Password must be at least 8 characters';
+                  if (value == null || value.length < 6) {
+                    return 'Password must be at least 6 characters';
                   }
                   return null;
                 },
