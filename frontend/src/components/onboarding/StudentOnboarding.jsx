@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Button, Input, Modal } from '../common';
 import { db, functions } from '../../firebase'; // Assuming firebase.js is in src directory
+import AIAssistant from '../AIAssistant';
 
 const StudentOnboarding = () => {
   const { user } = useAuth();
@@ -12,13 +14,14 @@ const StudentOnboarding = () => {
   const [showOffer, setShowOffer] = useState(false); // Changed to false initially
   const [isLoading, setIsLoading] = useState(false); // Add loading state
   const [error, setError] = useState(null); // Add error state
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
 
   const verifyStudentStatus = async () => {
     setIsLoading(true); // Set loading to true
     setError(null); // Clear previous errors
     try {
       if (!user) {
-        console.error("User not authenticated.");
+        console.error('User not authenticated.');
       }
 
       // Update user document in Firestore with student details
@@ -44,9 +47,9 @@ const StudentOnboarding = () => {
       setIsLoading(false); // Set loading to false
     }
   };
-  
+
   if (user.studentVerified) return null;
-  
+
   return (
     <div className="student-onboarding">
       {!isVerified ? (
@@ -58,21 +61,21 @@ const StudentOnboarding = () => {
             <li>💳 Free virtual card</li>
             <li>💰 $5 welcome bonus</li>
           </ul>
-          
-          <Input 
+
+          <Input
             label="University"
             value={university}
             onChange={(e) => setUniversity(e.target.value)}
             placeholder="Enter your university"
           />
-          
-          <Input 
+
+          <Input
             label="Student ID"
             value={studentId}
             onChange={(e) => setStudentId(e.target.value)}
             placeholder="Enter student ID"
           />
-          
+
           <Input
             label="Referral Code (Optional)"
             value={referralCode}
@@ -86,10 +89,13 @@ const StudentOnboarding = () => {
             {isLoading ? 'Verifying...' : 'Verify Student Status'} {/* Change button text based on loading state */}
           </Button>
 
+          <Button onClick={() => setShowAIAssistant(true)} >
+            Need help? Ask our AI Assistant!
+          </Button>
 
         </div>
       ) : null}
-      
+
       {showOffer && (
         <Modal onClose={() => setShowOffer(false)}>
           <div className="student-offer">
@@ -110,6 +116,12 @@ const StudentOnboarding = () => {
               <button>Snapchat</button>
             </div>
           </div>
+        </Modal>
+      )}
+
+      {showAIAssistant && (
+        <Modal onClose={() => setShowAIAssistant(false)}>
+          <AIAssistant />
         </Modal>
       )}
     </div>
