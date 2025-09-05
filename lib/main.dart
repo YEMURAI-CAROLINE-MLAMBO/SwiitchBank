@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:swiitch/onboarding_screen.dart';
+import 'package:swiitch/config/app_config.dart';
+import 'package:swiitch/registration_screen.dart';
 
-void main() {
+Future<void> main() async {
+  // Ensure that Flutter bindings are initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables
+  await AppConfig.load();
+
   runApp(MyApp());
 }
 
@@ -14,7 +21,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: OnboardingScreen(), // Set OnboardingScreen as the home
+      home: RegistrationScreen(), // Set RegistrationScreen as the home
     );
   }
 }
