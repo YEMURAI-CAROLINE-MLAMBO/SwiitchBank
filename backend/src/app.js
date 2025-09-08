@@ -1,19 +1,20 @@
-require('dotenv').config();
-const express = require('express');
-const { connectDB } = require('./config/database');
+import dotenv from 'dotenv';
+dotenv.config();
+import express from 'express';
+import { connectDB } from './config/database.js';
 
 // Import routes
-const authRoutes = require('./routes/auth');
-const growthRoutes = require('./routes/growth');
-const businessAccountRoutes = require('./routes/businessAccounts');
-const virtualCardRoutes = require('./routes/virtualCards');
-const walletRoutesNew = require('./routes/wallets');
-const gamificationRoutes = require('./routes/gamification');
-const stripeRoutes = require('./routes/stripe');
-const moonpayRoutes = require('./routes/moonpay');
-const moonpayWebhookRoutes = require('./routes/moonpayWebhook');
-const aiRoutes = require('./routes/ai'); // Import the new AI route
-const transactionAnalysisRoutes = require('./routes/transactionAnalysis');
+import authRoutes from './routes/auth.js';
+import growthRoutes from './routes/growth.js';
+import businessAccountRoutes from './routes/businessAccounts.js';
+import virtualCardRoutes from './routes/virtualCards.js';
+import walletRoutesNew from './routes/wallets.js';
+import gamificationRoutes from './routes/gamification.js';
+import stripeRoutes from './routes/stripe.js';
+import moonpayRoutes from './routes/moonpay.js';
+import moonpayWebhookRoutes from './routes/moonpayWebhook.js';
+import aiRoutes from './routes/ai.js'; // Import the new AI route
+import transactionAnalysisRoutes from './routes/transactionAnalysis.js';
 
 const app = express();
 
@@ -41,4 +42,4 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-module.exports = app;
+export default app;

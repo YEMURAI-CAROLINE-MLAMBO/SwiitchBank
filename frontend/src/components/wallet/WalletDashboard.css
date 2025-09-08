@@ -1,0 +1,41 @@
+.wallet-dashboard {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.wallet-summary p {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.transaction-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.transaction-item:last-child {
+  border-bottom: none;
+}
+
+.transaction-description {
+  font-weight: bold;
+}
+
+.transaction-amount.debit {
+  color: #e74c3c;
+}
+
+.transaction-amount.credit {
+  color: #2ecc71;
+}

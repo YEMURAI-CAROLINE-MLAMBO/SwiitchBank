@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button, Input } from './common';
 import { db } from '../../firebase';

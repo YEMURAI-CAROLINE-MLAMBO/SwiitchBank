@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { db } from '../../FirebaseConfig';
 import { doc, onSnapshot, collection, query, orderBy, limit, where } from 'firebase/firestore';
+import './WalletDashboard.css';
 
 const WalletDashboard = () => {
   const { user } = useAuth();
