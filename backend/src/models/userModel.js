@@ -1,1 +1,47 @@
-import mongoose from \'mongoose\';\nimport bcrypt from \'bcryptjs\';\n\nconst userSchema = new mongoose.Schema(\n  {\n    name: {\n      type: String,\n      required: true,\n    },\n    email: {\n      type: String,\n      required: true,\n      unique: true,\n    },\n    password: {\n      type: String,\n      required: true,\n    },\n    isAdmin: {\n      type: Boolean,\n      required: true,\n      default: false,\n    },\n  },\n  {\n    timestamps: true,\n  }\n);\n\n// Match user entered password to hashed password in database\nuserSchema.methods.matchPassword = async function (enteredPassword) {\n  return await bcrypt.compare(enteredPassword, this.password);\n};\n\n// Encrypt password using bcrypt\nuserSchema.pre(\'save\', async function (next) {\n  if (!this.isModified(\'password\)) {\n    next();\n  }\n\n  const salt = await bcrypt.genSalt(10);\n  this.password = await bcrypt.hash(this.password, salt);\n});\n\nconst User = mongoose.model(\'User\', userSchema);\n\nexport default User;\n
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    isAdmin: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Match user entered password to hashed password in database
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Encrypt password using bcrypt
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+const User = mongoose.model('User', userSchema);
+
+export default User;
