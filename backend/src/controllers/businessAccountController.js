@@ -12,7 +12,9 @@ exports.createBusinessAccount = async (req, res) => {
 
   try {
     const accountDetails = req.body;
-    const newAccount = await businessAccountService.createBusinessAccount(accountDetails);
+    const newAccount = await businessAccountService.createBusinessAccount(
+      accountDetails
+    );
     res.status(201).json(newAccount);
   } catch (error) {
     console.error('Error creating business account:', error);
@@ -24,17 +26,18 @@ exports.createBusinessAccount = async (req, res) => {
 // @route   GET api/onboarding/business/availability
 // @access  Public
 exports.checkBusinessNameAvailability = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-    try {
-        const { businessName } = req.query;
-        const isAvailable = await businessAccountService.checkBusinessNameAvailability(businessName);
-        res.json({ isAvailable });
-    } catch (error) {
-        console.error('Error checking business name availability:', error);
-        res.status(500).send('Server error');
-    }
+  try {
+    const { businessName } = req.query;
+    const isAvailable =
+      await businessAccountService.checkBusinessNameAvailability(businessName);
+    res.json({ isAvailable });
+  } catch (error) {
+    console.error('Error checking business name availability:', error);
+    res.status(500).send('Server error');
+  }
 };

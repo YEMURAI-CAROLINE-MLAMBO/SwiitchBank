@@ -14,13 +14,19 @@ export const enforceMFA = functions.https.onCall(async (data, context) => {
   const userId = context.auth?.uid;
 
   if (!userId) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated to enforce MFA.');
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'User must be authenticated to enforce MFA.'
+    );
   }
 
   try {
     const userRecord = await admin.auth().getUser(userId);
 
-    if (!userRecord.multiFactor || userRecord.multiFactor.enrolledFactors.length === 0) {
+    if (
+      !userRecord.multiFactor ||
+      userRecord.multiFactor.enrolledFactors.length === 0
+    ) {
       // User does not have MFA enrolled. Implement your logic here,
       // e.g., throw an error, redirect to setup, etc.
       functions.logger.log(`MFA not enforced for user: ${userId}`);
@@ -31,10 +37,12 @@ export const enforceMFA = functions.https.onCall(async (data, context) => {
     }
 
     return { status: 'success', message: 'MFA check performed.' };
-
   } catch (error) {
     functions.logger.error('Error enforcing MFA:', error);
-    throw new functions.https.HttpsError('internal', 'Unable to perform MFA check.');
+    throw new functions.https.HttpsError(
+      'internal',
+      'Unable to perform MFA check.'
+    );
   }
 });
 
@@ -46,14 +54,19 @@ export const enforceMFA = functions.https.onCall(async (data, context) => {
  * @param success Whether the authentication attempt was successful.
  * @param ipAddress The IP address of the user.
  */
-export const monitorAuthAttempts = functions.https.onCall(async (data, context) => {
+export const monitorAuthAttempts = functions.https.onCall(async (data) => {
   const { email, success, ipAddress } = data;
 
   if (!email || success === undefined || !ipAddress) {
-    throw new functions.https.HttpsError('invalid-argument', 'Missing required authentication attempt data.');
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'Missing required authentication attempt data.'
+    );
   }
 
-  functions.logger.log(`Auth attempt for ${email} from ${ipAddress}. Success: ${success}`);
+  functions.logger.log(
+    `Auth attempt for ${email} from ${ipAddress}. Success: ${success}`
+  );
 
   // Implement logic to monitor and analyze authentication attempts.
   // This could involve storing attempts in a database, checking for brute force, etc.
@@ -80,7 +93,10 @@ export const manageSessions = functions.https.onCall(async (data, context) => {
   const userId = context.auth?.uid;
 
   if (!userId) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated to manage sessions.');
+    throw new functions.https.HttpsError(
+      'unauthenticated',
+      'User must be authenticated to manage sessions.'
+    );
   }
 
   switch (action) {
@@ -88,25 +104,47 @@ export const manageSessions = functions.https.onCall(async (data, context) => {
       // Implement session creation logic.
       // This might involve generating a custom token or using Firebase Auth session cookies.
       functions.logger.log(`Creating session for user: ${userId}`);
-      return { status: 'success', message: 'Session creation logic would go here.' };
+      return {
+        status: 'success',
+        message: 'Session creation logic would go here.',
+      };
 
     case 'validate':
       if (!sessionId) {
-        throw new functions.https.HttpsError('invalid-argument', 'Session ID is required for validation.');
+        throw new functions.https.HttpsError(
+          'invalid-argument',
+          'Session ID is required for validation.'
+        );
       }
       // Implement session validation logic.
-      functions.logger.log(`Validating session ${sessionId} for user: ${userId}`);
-      return { status: 'success', message: 'Session validation logic would go here.' };
+      functions.logger.log(
+        `Validating session ${sessionId} for user: ${userId}`
+      );
+      return {
+        status: 'success',
+        message: 'Session validation logic would go here.',
+      };
 
     case 'terminate':
       if (!sessionId) {
-        throw new functions.https.HttpsError('invalid-argument', 'Session ID is required for termination.');
+        throw new functions.https.HttpsError(
+          'invalid-argument',
+          'Session ID is required for termination.'
+        );
       }
       // Implement session termination logic.
-      functions.logger.log(`Terminating session ${sessionId} for user: ${userId}`);
-      return { status: 'success', message: 'Session termination logic would go here.' };
+      functions.logger.log(
+        `Terminating session ${sessionId} for user: ${userId}`
+      );
+      return {
+        status: 'success',
+        message: 'Session termination logic would go here.',
+      };
 
     default:
-      throw new functions.https.HttpsError('invalid-argument', 'Invalid session action provided.');
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Invalid session action provided.'
+      );
   }
 });

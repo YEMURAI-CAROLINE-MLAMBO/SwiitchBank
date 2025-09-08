@@ -50,3 +50,7 @@
 #   reviewText: String
 #   reviewDate: Date! @default(expr: "request.time")
 # }
+
+type Query {
+  _placeholder: String
+}

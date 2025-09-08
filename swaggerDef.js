@@ -1,4 +1,4 @@
-byimport path from 'path';
+import path from 'path';
 
 const swaggerDefinition = {
   openapi: '3.0.0',

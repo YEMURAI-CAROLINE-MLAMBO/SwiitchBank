@@ -15,7 +15,9 @@ class AutomatedSavingsService {
     const settings = await automatedSavingsSettingsService.getSettings(userId);
 
     if (!settings.enabled) {
-      logger.info(`Automated savings is disabled for user ${userId}. Skipping transfer.`);
+      logger.info(
+        `Automated savings is disabled for user ${userId}. Skipping transfer.`
+      );
       return;
     }
 
@@ -41,12 +43,19 @@ class AutomatedSavingsService {
       );
 
       if (transferResult.success) {
-        logger.info(`Successfully transferred ${savingsAmount} ${currency} to savings for user ${userId}.`);
+        logger.info(
+          `Successfully transferred ${savingsAmount} ${currency} to savings for user ${userId}.`
+        );
       } else {
-        logger.error(`Failed to transfer savings for user ${userId}: ${transferResult.message}`);
+        logger.error(
+          `Failed to transfer savings for user ${userId}: ${transferResult.message}`
+        );
       }
     } catch (error) {
-      logger.error(`Error during automated savings transfer for user ${userId}:`, error);
+      logger.error(
+        `Error during automated savings transfer for user ${userId}:`,
+        error
+      );
     }
   }
 }

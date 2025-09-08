@@ -6,11 +6,13 @@ exports.handleWebhook = (req, res) => {
     return res.status(401).send('No signature header');
   }
 
-  const [timestamp, signature] = signatureHeader.split(',').reduce((acc, part) => {
-    const [key, value] = part.split('=');
-    acc[key] = value;
-    return acc;
-  }, {});
+  const [timestamp, signature] = signatureHeader
+    .split(',')
+    .reduce((acc, part) => {
+      const [key, value] = part.split('=');
+      acc[key] = value;
+      return acc;
+    }, {});
 
   if (!timestamp || !signature) {
     return res.status(401).send('Invalid signature header format');

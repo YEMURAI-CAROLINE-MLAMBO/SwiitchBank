@@ -43,7 +43,6 @@
  *   details: "map",             // Optional details about the transaction (e.g., original transaction ID for round-ups)
  * }
  */
-const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 
 admin.initializeApp(); // Initialize Firebase Admin SDK
@@ -71,7 +70,7 @@ class RoundUpEngine {
       await this.createSavingsTransaction(userId, roundUpAmount, 'round_up', {
         originalTransaction: transaction.id,
         roundedAmount: amount,
-        roundUp: roundUpAmount
+        roundUp: roundUpAmount,
       });
 
       // Check for milestone achievements
@@ -120,7 +119,9 @@ class RoundUpEngine {
   async getUserSavingsPrefs(userId) {
     try {
       const userRef = this.db.collection('users').doc(userId);
-      const savingsSettingsRef = userRef.collection('savings_settings').doc('roundUp'); // Assuming savings settings are stored in a document named 'roundUp' within a subcollection
+      const savingsSettingsRef = userRef
+        .collection('savings_settings')
+        .doc('roundUp'); // Assuming savings settings are stored in a document named 'roundUp' within a subcollection
       const doc = await savingsSettingsRef.get();
 
       if (doc.exists) {
@@ -144,7 +145,11 @@ class RoundUpEngine {
         details: details || {}, // Ensure details is an object
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
       };
-      await this.db.collection('users').doc(userId).collection('savings_transactions').add(transactionData);
+      await this.db
+        .collection('users')
+        .doc(userId)
+        .collection('savings_transactions')
+        .add(transactionData);
     } catch (error) {
       console.error('Error creating savings transaction:', error);
     }

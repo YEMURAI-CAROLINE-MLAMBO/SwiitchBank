@@ -78,6 +78,7 @@ const marqetaService = {
     }
   },
 
+  // TODO: Add other necessary Marqeta API interactions (e.g., get card details, get transactions, etc.)
 };
 
 module.exports = marqetaService;

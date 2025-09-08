@@ -23,7 +23,9 @@ const getSettings = async (req, res) => {
     res.status(200).json(settings);
   } catch (error) {
     logger.error('Error getting automated savings settings:', error);
-    res.status(500).json({ message: 'Error getting automated savings settings.' });
+    res
+      .status(500)
+      .json({ message: 'Error getting automated savings settings.' });
   }
 };
 
@@ -58,11 +60,14 @@ const updateSettings = async (req, res) => {
   const { userId } = req.params;
   const newSettings = req.body;
   try {
-    const updatedSettings = await automatedSavingsSettingsService.updateSettings(userId, newSettings);
+    const updatedSettings =
+      await automatedSavingsSettingsService.updateSettings(userId, newSettings);
     res.status(200).json(updatedSettings);
   } catch (error) {
     logger.error('Error updating automated savings settings:', error);
-    res.status(500).json({ message: 'Error updating automated savings settings.' });
+    res
+      .status(500)
+      .json({ message: 'Error updating automated savings settings.' });
   }
 };
 

@@ -13,6 +13,7 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 ## Core Features (MVP Scope)
 
 ### 🎯 Must-Have Features
+
 - **Jools AI Assistant**: Basic transaction analysis, navigation assistance, and onboarding guidance
 - **Fiat-Crypto Bridge**: Effortless trading between traditional and digital assets
 - **Referral Program**: Automated rewards system fostering community growth
@@ -24,15 +25,16 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 
 The Jools AI Assistant is an intelligent chatbot that provides users with a conversational interface for a variety of tasks, including:
 
-*   **Transaction Analysis:** Ask questions about your spending habits, and Jools will provide you with insights and analysis.
-*   **Navigation Assistance:** Can't find something in the app? Just ask Jools, and it will guide you to the right place.
-*   **Onboarding Guidance:** New to SwitchBank? Jools will help you get started and make the most of the platform.
+- **Transaction Analysis:** Ask questions about your spending habits, and Jools will provide you with insights and analysis.
+- **Navigation Assistance:** Can't find something in the app? Just ask Jools, and it will guide you to the right place.
+- **Onboarding Guidance:** New to SwitchBank? Jools will help you get started and make the most of the platform.
 
 To use the Jools AI Assistant, simply tap on the chat icon in the app and start a conversation.
 
 <br>
 
 ### 📈 Should-Have Features (Post-MVP)
+
 - Yield vaults/reward earning post-trade
 - Cross-chain swap capabilities
 - Advanced gamification milestones
@@ -40,16 +42,17 @@ To use the Jools AI Assistant, simply tap on the chat icon in the app and start 
 
 ## Technology Stack
 
-| **Layer** | **Technology** |
-| :--- | :--- |
-| **Backend** | Node.js, Express.js, Firebase Functions |
-| **Database** | Firestore, Firebase Data Connect |
-| **AI Service** | Gemini API integration (aiService.js) |
-| **Payment Processing** | Marqeta API (marqetaService.js) |
-| **Authentication** | Firebase Auth with multi-factor support |
-| **Frontend** | React Native (cross-platform) |
+| **Layer**              | **Technology**                          |
+| :--------------------- | :-------------------------------------- |
+| **Backend**            | Node.js, Express.js, Firebase Functions |
+| **Database**           | Firestore, Firebase Data Connect        |
+| **AI Service**         | Gemini API integration (aiService.js)   |
+| **Payment Processing** | Marqeta API (marqetaService.js)         |
+| **Authentication**     | Firebase Auth with multi-factor support |
+| **Frontend**           | React Native (cross-platform)           |
 
 ## Repository layout
+
 - /backend — Express/Node API, business logic, services, migrations
   - src/
     - controllers/
@@ -71,6 +74,7 @@ To use the Jools AI Assistant, simply tap on the chat icon in the app and start 
 ## Installation & Local Development
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - npm or yarn
 - Firebase CLI tools
@@ -78,7 +82,9 @@ To use the Jools AI Assistant, simply tap on the chat icon in the app and start 
 - Gemini API credentials (for AI services)
 
 ### Environment variables
+
 Create a `.env` in each package (backend, functions, frontend as needed). Use `.env.example` (do not commit secrets). Example keys:
+
 - PORT=3000
 - NODE_ENV=development
 - DATABASE_URL=<your-db-url>
@@ -93,12 +99,14 @@ Create a `.env` in each package (backend, functions, frontend as needed). Use `.
 ### Quick start (local dev)
 
 1.  **Clone repository**:
+
     ```bash
     git clone https://github.com/YEMURAI-CAROLINE-MLAMBO/SwiitchBank.git
     cd SwiitchBank
     ```
 
 2.  **Backend**
+
     ```bash
     cd backend
     cp .env.example .env
@@ -107,6 +115,7 @@ Create a `.env` in each package (backend, functions, frontend as needed). Use `.
     ```
 
 3.  **Frontend**
+
     ```bash
     cd ../frontend
     cp .env.example .env
@@ -123,6 +132,7 @@ Create a `.env` in each package (backend, functions, frontend as needed). Use `.
     ```
 
 ## Development checklist / best practices
+
 - Add ESLint + Prettier and shared config for consistent formatting
 - Add commit hooks with Husky + lint-staged to lint & format staged files
 - Add unit tests and integration tests for critical flows (auth, payments, transfers)
@@ -153,7 +163,6 @@ This deployment process includes:
 - Deploy backend to a managed host (Heroku, Render, Cloud Run) or container registry.
 - Use Firebase Hosting + Functions for serverless parts if desired. Use `firebase deploy --only hosting,functions`.
 - Use environment-specific Firebase project configs and secrets in CI (do not embed private keys in repo).
-
 
 ## Known Limitations & Issues (MVP Phase)
 

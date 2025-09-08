@@ -33,13 +33,14 @@ exports.getReferralInfo = async (req, res) => {
 
     // Call the referral service function to get referral details
     const referralInfo = await referralService.getReferralDetails(userId);
-    
+
     if (!referralInfo) {
-      return res.status(404).json({ message: 'Referral information not found' });
+      return res
+        .status(404)
+        .json({ message: 'Referral information not found' });
     }
 
     res.status(200).json(referralInfo);
-
   } catch (error) {
     logger.error('Error fetching referral info:', error);
     res.status(500).json({ message: 'Failed to fetch referral information' });
@@ -85,7 +86,6 @@ exports.applyReferralCode = async (req, res) => {
     } else {
       res.status(400).json({ message: 'Invalid or expired referral code' });
     }
-
   } catch (error) {
     logger.error('Error applying referral code:', error);
     res.status(500).json({ message: 'Failed to apply referral code' });

@@ -2,4 +2,5 @@
 
 /**
  * Placeholder function to get financial insights for a user.
- * @param
+ * @param {string} userId - The ID of the user.
+ */

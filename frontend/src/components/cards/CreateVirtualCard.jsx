@@ -20,7 +20,10 @@ const CreateVirtualCard = ({ onCardCreated }) => {
 
     try {
       await createVirtualCard({ type: newCardType, nickname: newCardNickname });
-      setFeedbackMessage({ type: 'success', text: 'Virtual card created successfully!' });
+      setFeedbackMessage({
+        type: 'success',
+        text: 'Virtual card created successfully!',
+      });
       setNewCardType('');
       setNewCardNickname('');
       if (onCardCreated) {
@@ -28,7 +31,10 @@ const CreateVirtualCard = ({ onCardCreated }) => {
       }
     } catch (error) {
       console.error('Error creating virtual card:', error);
-      setFeedbackMessage({ type: 'error', text: `Error creating virtual card: ${error.message}` });
+      setFeedbackMessage({
+        type: 'error',
+        text: `Error creating virtual card: ${error.message}`,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -38,11 +44,23 @@ const CreateVirtualCard = ({ onCardCreated }) => {
     <div>
       <h2>Create New Virtual Card</h2>
       {feedbackMessage && (
-        <div className={`feedback-message ${feedbackMessage.type}`}>{feedbackMessage.text}</div>
+        <div className={`feedback-message ${feedbackMessage.type}`}>
+          {feedbackMessage.text}
+        </div>
       )}
       <div>
-        <input type="text" placeholder="Card Type" value={newCardType} onChange={(e) => setNewCardType(e.target.value)} />
-        <input type="text" placeholder="Nickname" value={newCardNickname} onChange={(e) => setNewCardNickname(e.target.value)} />
+        <input
+          type="text"
+          placeholder="Card Type"
+          value={newCardType}
+          onChange={(e) => setNewCardType(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Nickname"
+          value={newCardNickname}
+          onChange={(e) => setNewCardNickname(e.target.value)}
+        />
       </div>
       <button onClick={handleCreateCard} disabled={isLoading}>
         {isLoading ? 'Creating...' : 'Create Virtual Card'}

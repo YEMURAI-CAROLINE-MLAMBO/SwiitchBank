@@ -6,37 +6,43 @@ const appConfig = require('../config/appConfig');
 
 const getSupportedCurrencies = async () => {
   // TODO: Implement logic to fetch supported cryptocurrencies from integrated partners
-  logger.info("Fetching supported currencies - Placeholder");
+  logger.info('Fetching supported currencies - Placeholder');
   return {
     success: true,
-    data: ["BTC", "ETH", "USDT"],
-    message: "Successfully retrieved supported currencies - Placeholder"
+    data: ['BTC', 'ETH', 'USDT'],
+    message: 'Successfully retrieved supported currencies - Placeholder',
   };
 };
 
 const getExchangeRate = async (fromCurrency, toCurrency) => {
   // TODO: Implement logic to fetch exchange rate from integrated partners
-  logger.info(`Fetching exchange rate from ${fromCurrency} to ${toCurrency} - Placeholder`);
+  logger.info(
+    `Fetching exchange rate from ${fromCurrency} to ${toCurrency} - Placeholder`
+  );
   // Simulate an exchange rate
   const rate = 40000 + Math.random() * 5000; // Example rate for BTC to USD
-  return { 
+  return {
     success: true,
     data: {
       from: fromCurrency,
       to: toCurrency,
-      rate: rate.toFixed(2)
+      rate: rate.toFixed(2),
     },
-    message: `Successfully retrieved exchange rate for ${fromCurrency} to ${toCurrency} - Placeholder`
+    message: `Successfully retrieved exchange rate for ${fromCurrency} to ${toCurrency} - Placeholder`,
   };
 };
 
 const convertCryptoForTopup = async (amount, fromCurrency, toCurrency) => {
   // TODO: Implement actual crypto conversion and deduction from user's crypto wallet
-  logger.info(`Converting ${amount} ${fromCurrency} to ${toCurrency} for top-up - Placeholder`);
+  logger.info(
+    `Converting ${amount} ${fromCurrency} to ${toCurrency} for top-up - Placeholder`
+  );
   const exchangeRateResponse = await getExchangeRate(fromCurrency, toCurrency);
 
   if (!exchangeRateResponse.success) {
-    throw new Error(`Failed to get exchange rate: ${exchangeRateResponse.message}`);
+    throw new Error(
+      `Failed to get exchange rate: ${exchangeRateResponse.message}`
+    );
   }
 
   const exchangeRate = parseFloat(exchangeRateResponse.data.rate);
@@ -54,12 +60,20 @@ const initiatePayout = async (walletId, bankAccountId, amount, currency) => {
   const feeAmount = amount * feePercentage;
   const netAmount = amount - feeAmount;
 
-  logger.info(`Initiating payout of ${amount} ${currency} from wallet ${walletId} to bank account ${bankAccountId}`);
+  logger.info(
+    `Initiating payout of ${amount} ${currency} from wallet ${walletId} to bank account ${bankAccountId}`
+  );
 
   // In a real app, you'd have a database transaction here to lock the funds.
-  logger.info(`Simulating deduction of ${amount} ${currency} from wallet ${walletId}`);
-  
-  const partnerResult = await payoutPartnerService.initiatePayout(netAmount, currency, bankAccountId);
+  logger.info(
+    `Simulating deduction of ${amount} ${currency} from wallet ${walletId}`
+  );
+
+  const partnerResult = await payoutPartnerService.initiatePayout(
+    netAmount,
+    currency,
+    bankAccountId
+  );
 
   if (!partnerResult.success) {
     // In a real app, you would roll back the transaction here.
@@ -84,7 +98,7 @@ const initiatePayout = async (walletId, bankAccountId, amount, currency) => {
       partnerTransactionId: partnerResult.partnerTransactionId,
       timestamp: transactionTime,
     },
-    message: `Successfully initiated payout with partner.`
+    message: `Successfully initiated payout with partner.`,
   };
 };
 

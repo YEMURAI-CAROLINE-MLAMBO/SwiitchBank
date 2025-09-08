@@ -13,7 +13,9 @@ const BusinessOnboarding = () => {
   const checkNameAvailability = async (name) => {
     if (name.length > 2) {
       try {
-        const res = await fetch(`/api/onboarding/business/availability?businessName=${name}`);
+        const res = await fetch(
+          `/api/onboarding/business/availability?businessName=${name}`
+        );
         const data = await res.json();
         setNameAvailable(data.isAvailable);
       } catch (err) {
@@ -65,7 +67,9 @@ const BusinessOnboarding = () => {
             onChange={onChange}
             required
           />
-          {!nameAvailable && <p style={{ color: 'red' }}>Business name not available</p>}
+          {!nameAvailable && (
+            <p style={{ color: 'red' }}>Business name not available</p>
+          )}
         </div>
         <div>
           <input

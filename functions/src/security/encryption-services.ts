@@ -37,7 +37,9 @@ export function configureSecureEnvironment() {
   // This function can be used to perform environment setup or validation
   // related to security, like checking for required environment variables.
   if (!ENCRYPTION_MASTER_KEY) {
-    functions.logger.error('ENCRYPTION_MASTER_KEY environment variable is not set!');
+    functions.logger.error(
+      'ENCRYPTION_MASTER_KEY environment variable is not set!'
+    );
     // Depending on your application's requirements, you might want to
     // throw an error or take other action here.
   }

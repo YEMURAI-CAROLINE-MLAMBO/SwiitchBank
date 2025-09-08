@@ -8,9 +8,9 @@
  */
 
 const admin = require('firebase-admin');
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+const { setGlobalOptions } = require('firebase-functions');
+const { onRequest } = require('firebase-functions/https');
+const logger = require('firebase-functions/logger');
 
 // For cost control, you can set the maximum number of containers that can be
 // running at the same time. This helps mitigate the impact of unexpected
@@ -37,12 +37,14 @@ admin.initializeApp();
 
 // Firebase Function to create a virtual card
 exports.createVirtualCard = onRequest(async (request, response) => {
-  logger.info("createVirtualCard function triggered.", { structuredData: true });
+  logger.info('createVirtualCard function triggered.', {
+    structuredData: true,
+  });
 
   const userId = request.body.userId;
 
   if (!userId) {
-    response.status(400).send("Missing userId in request body.");
+    response.status(400).send('Missing userId in request body.');
     return;
   }
 
@@ -71,8 +73,10 @@ exports.createVirtualCard = onRequest(async (request, response) => {
       // For now, let's assume a user can only have one virtual card document
       // linked directly to their userId. You might need a subcollection for
       // multiple cards per user.
-      logger.warn(`Virtual card already exists for user: ${userId}`, { structuredData: true });
-      response.status(409).send("Virtual card already exists for this user.");
+      logger.warn(`Virtual card already exists for user: ${userId}`, {
+        structuredData: true,
+      });
+      response.status(409).send('Virtual card already exists for this user.');
       return;
     }
 
@@ -85,21 +89,30 @@ exports.createVirtualCard = onRequest(async (request, response) => {
       // cardNumber: cardNumber.slice(-4) // Example
     });
   } catch (error) {
-    logger.error("Error creating virtual card:", error);
-    response.status(500).send("Error creating virtual card.");
+    logger.error('Error creating virtual card:', error);
+    response.status(500).send('Error creating virtual card.');
   }
 });
 // Firebase Function to top up a virtual card
 exports.topUpVirtualCard = onRequest(async (request, response) => {
-  logger.info("Topping up virtual card...", { structuredData: true });
+  logger.info('Topping up virtual card...', { structuredData: true });
 
   const userId = request.body.userId;
   const cardId = request.body.cardId; // Assuming cardId is the document ID in Firestore
   const amount = request.body.amount;
 
   // Basic input validation
-  if (!userId || !cardId || amount === undefined || amount === null || typeof amount !== 'number' || amount <= 0) {
-    response.status(400).send("Missing or invalid userId, cardId, or amount in request body.");
+  if (
+    !userId ||
+    !cardId ||
+    amount === undefined ||
+    amount === null ||
+    typeof amount !== 'number' ||
+    amount <= 0
+  ) {
+    response
+      .status(400)
+      .send('Missing or invalid userId, cardId, or amount in request body.');
     return;
   }
 
@@ -108,22 +121,25 @@ exports.topUpVirtualCard = onRequest(async (request, response) => {
     const doc = await cardRef.get();
 
     if (!doc.exists) {
-      response.status(404).send("Virtual card not found.");
+      response.status(404).send('Virtual card not found.');
       return;
     }
 
     const currentBalance = doc.data().balance || 0; // Assuming a 'balance' field
     const newBalance = currentBalance + amount;
 
-    await cardRef.update({ balance: newBalance, updatedAt: admin.firestore.FieldValue.serverTimestamp() });
+    await cardRef.update({
+      balance: newBalance,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
 
     response.status(200).send({
-      message: "Virtual card topped up successfully.",
+      message: 'Virtual card topped up successfully.',
       cardId: cardId,
-      newBalance: newBalance
+      newBalance: newBalance,
     });
   } catch (error) {
-    logger.error("Error topping up virtual card:", error);
-    response.status(500).send("Error topping up virtual card.");
+    logger.error('Error topping up virtual card:', error);
+    response.status(500).send('Error topping up virtual card.');
   }
 });

@@ -12,14 +12,14 @@ function encrypt(text) {
   try {
     const iv = crypto.randomBytes(ivLength);
     const cipher = crypto.createCipheriv(
-      algorithm, 
-      Buffer.from(config.security.encryptionKey, 'hex'), 
+      algorithm,
+      Buffer.from(config.security.encryptionKey, 'hex'),
       iv
     );
-    
+
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-    
+
     return `${iv.toString('hex')}:${encrypted.toString('hex')}`;
   } catch (error) {
     logger.error('Encryption failed:', error);
@@ -35,16 +35,16 @@ function decrypt(text) {
     const [ivHex, encryptedHex] = text.split(':');
     const iv = Buffer.from(ivHex, 'hex');
     const encrypted = Buffer.from(encryptedHex, 'hex');
-    
+
     const decipher = crypto.createDecipheriv(
-      algorithm, 
-      Buffer.from(config.security.encryptionKey, 'hex'), 
+      algorithm,
+      Buffer.from(config.security.encryptionKey, 'hex'),
       iv
     );
-    
+
     let decrypted = decipher.update(encrypted);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
-    
+
     return decrypted.toString();
   } catch (error) {
     logger.error('Decryption failed:', error);
@@ -54,5 +54,5 @@ function decrypt(text) {
 
 module.exports = {
   encrypt,
-  decrypt
+  decrypt,
 };

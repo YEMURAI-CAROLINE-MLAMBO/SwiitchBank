@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+} from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
 import WalletDashboard from '../components/wallet/WalletDashboard';
 import VirtualCardManager from '../components/cards/VirtualCardManager';
@@ -17,15 +23,24 @@ function WalletPage() {
     if (currentUser) {
       const db = getFirestore();
       const virtualCardsCollection = collection(db, 'virtualCards');
-      const q = query(virtualCardsCollection, where('userId', '==', currentUser.uid));
+      const q = query(
+        virtualCardsCollection,
+        where('userId', '==', currentUser.uid)
+      );
 
       try {
         const querySnapshot = await getDocs(q);
-        const cardsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const cardsData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
         setVirtualCards(cardsData);
       } catch (error) {
         console.error('Error fetching virtual cards:', error);
-        setFeedbackMessage({ type: 'error', text: 'Error fetching virtual cards.' });
+        setFeedbackMessage({
+          type: 'error',
+          text: 'Error fetching virtual cards.',
+        });
         setVirtualCards([]);
       } finally {
         setIsLoading(false);
@@ -41,7 +56,12 @@ function WalletPage() {
   }, [fetchVirtualCards]);
 
   if (!currentUser) {
-    return <div className="wallet-page"><h1>My Wallet</h1><p>Please log in to view your wallet and virtual cards.</p></div>;
+    return (
+      <div className="wallet-page">
+        <h1>My Wallet</h1>
+        <p>Please log in to view your wallet and virtual cards.</p>
+      </div>
+    );
   }
 
   return (
@@ -50,11 +70,13 @@ function WalletPage() {
       <h1>My Wallet</h1>
       <WalletDashboard />
       <h2>Virtual Cards</h2>
-      {virtualCards.map(card => (
+      {virtualCards.map((card) => (
         <VirtualCardManager key={card.id} card={card} />
       ))}
       {feedbackMessage && (
-        <div className={`feedback-message ${feedbackMessage.type}`}>{feedbackMessage.text}</div>
+        <div className={`feedback-message ${feedbackMessage.type}`}>
+          {feedbackMessage.text}
+        </div>
       )}
       <CreateVirtualCard onCardCreated={fetchVirtualCards} />
       <TopUpVirtualCard onTopUpSuccess={fetchVirtualCards} />

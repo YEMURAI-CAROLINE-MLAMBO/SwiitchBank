@@ -10,24 +10,30 @@ const logger = require('../utils/logger');
  * @returns {Promise<object>} The result of the payout initiation.
  */
 const initiatePayout = async (amount, currency, bankAccountId) => {
-  logger.info(`Initiating payout of ${amount} ${currency} to ${bankAccountId} with our partner.`);
+  logger.info(
+    `Initiating payout of ${amount} ${currency} to ${bankAccountId} with our partner.`
+  );
 
   // Simulate API call to a third-party payout partner
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 2000));
 
   // Deterministic success/failure for testing
   const success = !amount.toString().endsWith('.99');
 
   if (success) {
     const partnerTransactionId = `partner_${Date.now()}`;
-    logger.info(`Payout of ${amount} ${currency} to ${bankAccountId} successful with partner. Transaction ID: ${partnerTransactionId}`);
+    logger.info(
+      `Payout of ${amount} ${currency} to ${bankAccountId} successful with partner. Transaction ID: ${partnerTransactionId}`
+    );
     return {
       success: true,
       partnerTransactionId,
       status: 'completed',
     };
   } else {
-    logger.error(`Payout of ${amount} ${currency} to ${bankAccountId} with partner failed.`);
+    logger.error(
+      `Payout of ${amount} ${currency} to ${bankAccountId} with partner failed.`
+    );
     return {
       success: false,
       error: 'Partner payout failed',

@@ -26,9 +26,10 @@ const StudentOnboarding = () => {
         studentVerified: true,
       });
 
-      const activateStudentRewards = functions.httpsCallable('activateStudentRewards');
+      const activateStudentRewards = functions.httpsCallable(
+        'activateStudentRewards'
+      );
       await activateStudentRewards();
-
     } catch (error) {
       console.error('Student verification failed:', error);
     } finally {
@@ -37,7 +38,7 @@ const StudentOnboarding = () => {
   };
 
   if (user.studentVerified) {
-    return null; 
+    return null;
   }
 
   return (

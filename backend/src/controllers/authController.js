@@ -1,15 +1,16 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const ErrorResponse = require('../utils/errorResponse');
 
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
   try {
     let user = await User.findOne({ email });
 
     if (user) {
-      return res.status(400).json({ msg: 'User already exists' });
+      return next(new ErrorResponse('User already exists', 400));
     }
 
     user = new User({
@@ -40,25 +41,24 @@ exports.register = async (req, res) => {
       }
     );
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    next(err);
   }
 };
 
-exports.login = async (req, res) => {
+exports.login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
     let user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+      return next(new ErrorResponse('Invalid credentials', 400));
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+      return next(new ErrorResponse('Invalid credentials', 400));
     }
 
     const payload = {
@@ -77,7 +77,6 @@ exports.login = async (req, res) => {
       }
     );
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    next(err);
   }
 };

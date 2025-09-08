@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../FirebaseConfig';
-import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+} from 'firebase/firestore';
 import './TransactionsPage.css';
 
 const TransactionsPage = () => {
@@ -23,18 +29,22 @@ const TransactionsPage = () => {
       orderBy('timestamp', 'desc')
     );
 
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const transactionsList = [];
-      querySnapshot.forEach((doc) => {
-        transactionsList.push({ id: doc.id, ...doc.data() });
-      });
-      setTransactions(transactionsList);
-      setLoading(false);
-    }, (err) => {
-      console.error("Error fetching transactions:", err);
-      setError("Failed to load transactions.");
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) => {
+        const transactionsList = [];
+        querySnapshot.forEach((doc) => {
+          transactionsList.push({ id: doc.id, ...doc.data() });
+        });
+        setTransactions(transactionsList);
+        setLoading(false);
+      },
+      (err) => {
+        console.error('Error fetching transactions:', err);
+        setError('Failed to load transactions.');
+        setLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [user]);
@@ -48,7 +58,11 @@ const TransactionsPage = () => {
   }
 
   if (!user) {
-    return <div className="not-authenticated">Please log in to view your transactions.</div>;
+    return (
+      <div className="not-authenticated">
+        Please log in to view your transactions.
+      </div>
+    );
   }
 
   return (
@@ -56,13 +70,24 @@ const TransactionsPage = () => {
       <h1>Transactions</h1>
       {transactions.length > 0 ? (
         <ul className="transaction-list-full">
-          {transactions.map(transaction => (
-            <li key={transaction.id} className={`transaction-item ${transaction.type}`}>
+          {transactions.map((transaction) => (
+            <li
+              key={transaction.id}
+              className={`transaction-item ${transaction.type}`}
+            >
               <div className="transaction-details">
-                <span className="transaction-description">{transaction.description || 'Transaction'}</span>
-                <span className="transaction-date">{transaction.timestamp?.toDate().toLocaleString()}</span>
+                <span className="transaction-description">
+                  {transaction.description || 'Transaction'}
+                </span>
+                <span className="transaction-date">
+                  {transaction.timestamp?.toDate().toLocaleString()}
+                </span>
               </div>
-              <span className="transaction-amount">{transaction.type === 'debit' ? '-' : '+'}{transaction.amount?.toFixed(2) || '0.00'} {transaction.currency || ''}</span>
+              <span className="transaction-amount">
+                {transaction.type === 'debit' ? '-' : '+'}
+                {transaction.amount?.toFixed(2) || '0.00'}{' '}
+                {transaction.currency || ''}
+              </span>
             </li>
           ))}
         </ul>

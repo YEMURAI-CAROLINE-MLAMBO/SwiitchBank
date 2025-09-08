@@ -17,7 +17,7 @@ const TermsAcceptance = ({ onAccept }) => {
       } catch (err) {
         setError('Failed to load terms and conditions.');
         setLoading(false);
-        console.error("Error fetching terms:", err);
+        console.error('Error fetching terms:', err);
       }
     };
 
@@ -41,7 +41,14 @@ const TermsAcceptance = ({ onAccept }) => {
   return (
     <div>
       <h2>Terms and Conditions</h2>
-      <div style={{ border: '1px solid #ccc', padding: '10px', maxHeight: '200px', overflowY: 'scroll' }}>
+      <div
+        style={{
+          border: '1px solid #ccc',
+          padding: '10px',
+          maxHeight: '200px',
+          overflowY: 'scroll',
+        }}
+      >
         {termsContent ? (
           <div dangerouslySetInnerHTML={{ __html: termsContent }} />
         ) : (
@@ -49,14 +56,12 @@ const TermsAcceptance = ({ onAccept }) => {
         )}
       </div>
       <label style={{ marginTop: '10px', display: 'block' }}>
-        <input
-          type="checkbox"
-          checked={accepted}
-          onChange={handleAccept}
-        />
-        I agree to the terms and conditions
+        <input type="checkbox" checked={accepted} onChange={handleAccept} />I
+        agree to the terms and conditions
       </label>
-      {accepted && <p style={{ color: 'green' }}>Thank you for accepting the terms.</p>}
+      {accepted && (
+        <p style={{ color: 'green' }}>Thank you for accepting the terms.</p>
+      )}
     </div>
   );
 };

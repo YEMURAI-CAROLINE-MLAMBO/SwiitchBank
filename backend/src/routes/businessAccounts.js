@@ -1,6 +1,9 @@
 const express = require('express');
 const { body, query } = require('express-validator');
-const { createBusinessAccount, checkBusinessNameAvailability } = require('../controllers/businessAccountController');
+const {
+  createBusinessAccount,
+  checkBusinessNameAvailability,
+} = require('../controllers/businessAccountController');
 const auth = require('../middleware/auth');
 
 const router = express.Router();

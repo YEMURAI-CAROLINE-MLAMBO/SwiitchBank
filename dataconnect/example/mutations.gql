@@ -31,3 +31,7 @@
 #   # The "auth.uid" server value ensures that users can only delete their own reviews.
 #   review_delete(key: { userId_expr: "auth.uid", movieId: $movieId })
 # }
+
+type Mutation {
+  _placeholder: String
+}

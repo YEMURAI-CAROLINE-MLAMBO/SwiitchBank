@@ -6,13 +6,13 @@ import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "your-api-key",
-  authDomain: "switchbank-09410265.firebaseapp.com",
-  projectId: "switchbank-09410265",
-  storageBucket: "switchbank-09410265.appspot.com",
-  messagingSenderId: "your-sender-id",
-  appId: "your-app-id",
-  measurementId: "your-measurement-id"
+  apiKey: 'your-api-key',
+  authDomain: 'switchbank-09410265.firebaseapp.com',
+  projectId: 'switchbank-09410265',
+  storageBucket: 'switchbank-09410265.appspot.com',
+  messagingSenderId: 'your-sender-id',
+  appId: 'your-app-id',
+  measurementId: 'your-measurement-id',
 };
 
 // Initialize Firebase

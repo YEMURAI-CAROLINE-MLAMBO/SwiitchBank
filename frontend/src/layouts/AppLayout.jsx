@@ -9,13 +9,27 @@ function AppLayout() {
         <nav className="app-nav">
           <div className="app-logo">Ryt Bank</div>
           <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/wallet">Wallet</Link></li>
-            <li><Link to="/cards">Cards</Link></li>
-            <li><Link to="/transactions">Transactions</Link></li>
-            <li><Link to="/settings">Settings</Link></li>
-            <li><Link to="/login">Login</Link></li>
-            <li><Link to="/signup">Signup</Link></li>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/wallet">Wallet</Link>
+            </li>
+            <li>
+              <Link to="/cards">Cards</Link>
+            </li>
+            <li>
+              <Link to="/transactions">Transactions</Link>
+            </li>
+            <li>
+              <Link to="/settings">Settings</Link>
+            </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/signup">Signup</Link>
+            </li>
             {/* Add more navigation links */}
           </ul>
         </nav>

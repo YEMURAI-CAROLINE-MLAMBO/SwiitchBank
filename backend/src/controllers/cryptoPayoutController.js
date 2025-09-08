@@ -82,19 +82,34 @@ const getExchangeRate = async (req, res) => {
 const initiateCryptoPayout = async (req, res) => {
   const { amount, currency, recipientAddress } = req.body;
   try {
-    if (!amount || !currency || !recipientAddress ) {
-      return res.status(400).json({ message: 'Amount, currency, and recipient address are required' });
+    if (!amount || !currency || !recipientAddress) {
+      return res.status(400).json({
+        message: 'Amount, currency, and recipient address are required',
+      });
     }
 
     if (typeof amount !== 'number' || typeof currency !== 'string') {
- return res.status(400).json({ message: 'Invalid amount or currency type' });
+      return res
+        .status(400)
+        .json({ message: 'Invalid amount or currency type' });
     }
 
-    const payoutResult = await cryptoService.initiatePayout(amount, currency, recipientAddress);
-    res.status(200).json({ message: 'Crypto payout initiated successfully', payout: payoutResult });
+    const payoutResult = await cryptoService.initiatePayout(
+      amount,
+      currency,
+      recipientAddress
+    );
+    res.status(200).json({
+      message: 'Crypto payout initiated successfully',
+      payout: payoutResult,
+    });
   } catch (error) {
     logger.error('Error initiating crypto payout:', error);
     res.status(500).json({ message: 'Error initiating crypto payout' });
   }
 };
-module.exports = { getSupportedCurrencies, getExchangeRate, initiateCryptoPayout };
+module.exports = {
+  getSupportedCurrencies,
+  getExchangeRate,
+  initiateCryptoPayout,
+};

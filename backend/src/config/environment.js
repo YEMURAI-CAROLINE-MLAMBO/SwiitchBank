@@ -10,7 +10,8 @@ export default {
   DB_NAME: 'swiitchbank_dev',
   DB_USER: 'swiitchbank_user',
   DB_PASSWORD: 'your_db_password',
-  DATABASE_URL: 'postgresql://swiitchbank_user:your_db_password@localhost:5432/swiitchbank_dev',
+  DATABASE_URL:
+    'postgresql://swiitchbank_user:your_db_password@localhost:5432/swiitchbank_dev',
 
   // Security
   JWT_SECRET: 'your_super_secret_jwt_key_min_32_chars',

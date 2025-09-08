@@ -3,10 +3,6 @@
  * Initializes Express server with security middleware and API routes
  */
 
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
 require('dotenv').config();
 
 const app = require('./src/app');
@@ -25,7 +21,11 @@ async function startServer() {
     app.listen(PORT, () => {
       logger.info(`Swiitch Bank API Server running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV}`);
-      logger.info(`API Base URL: ${process.env.API_BASE_URL || `http://localhost:${PORT}`}`);
+      logger.info(
+        `API Base URL: ${
+          process.env.API_BASE_URL || `http://localhost:${PORT}`
+        }`
+      );
     });
   } catch (error) {
     logger.error('Failed to start server:', error);
@@ -34,7 +34,7 @@ async function startServer() {
 }
 
 // Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
+process.on('unhandledRejection', (err) => {
   logger.error('Unhandled Promise Rejection:', err);
   process.exit(1);
 });

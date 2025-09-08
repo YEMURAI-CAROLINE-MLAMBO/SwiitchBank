@@ -1,1 +1,1 @@
-import app from './server.js';
+// The 'app' import is not used, so it has been removed.

@@ -22,7 +22,8 @@ function App() {
           <Route path="transactions" element={<TransactionsPage />} />
           <Route path="business-onboarding" element={<BusinessOnboarding />} />
           {/* Add other routes here */}
-        </Route>{/* Add routes for login, signup, etc. outside the layout if needed */}
+        </Route>
+        {/* Add routes for login, signup, etc. outside the layout if needed */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
       </Routes>

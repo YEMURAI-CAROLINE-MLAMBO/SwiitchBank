@@ -15,7 +15,10 @@ router.post(
       check('baseCurrencyCode', 'Base currency code is required')
         .not()
         .isEmpty(),
-      check('baseCurrencyAmount', 'Base currency amount is required').isDecimal(),
+      check(
+        'baseCurrencyAmount',
+        'Base currency amount is required'
+      ).isDecimal(),
       check('quoteCurrencyCode', 'Quote currency code is required')
         .not()
         .isEmpty(),
@@ -29,7 +32,10 @@ router.post(
 // @access  Private
 router.post(
   '/transactions',
-  [auth, [check('transactionData', 'Transaction data is required').not().isEmpty()]],
+  [
+    auth,
+    [check('transactionData', 'Transaction data is required').not().isEmpty()],
+  ],
   moonpayController.createTransaction
 );
 

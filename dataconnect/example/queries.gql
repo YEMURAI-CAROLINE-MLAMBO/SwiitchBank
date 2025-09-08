@@ -76,3 +76,7 @@
 #     imageUrl
 #   }
 # }
+
+type Query {
+  _placeholder: String
+}

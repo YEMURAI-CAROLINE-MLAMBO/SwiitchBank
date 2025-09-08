@@ -193,6 +193,9 @@ router.post('/:walletId/topup', walletController.topupWallet);
  *       500:
  *         description: Internal server error
  */
-router.post('/:fromWalletId/transfer/:toWalletId', walletController.transferFunds);
+router.post(
+  '/:fromWalletId/transfer/:toWalletId',
+  walletController.transferFunds
+);
 
 module.exports = router;

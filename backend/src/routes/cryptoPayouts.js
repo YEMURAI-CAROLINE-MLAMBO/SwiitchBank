@@ -8,15 +8,18 @@ router.use(protect);
 
 // Middleware to validate initiate payout request body
 const validateInitiatePayout = (req, res, next) => {
-  const { sourceCurrency, sourceAmount, targetCurrency, bankAccountId } = req.body;
+  const { sourceCurrency, sourceAmount, targetCurrency, bankAccountId } =
+    req.body;
 
   if (!sourceCurrency || !sourceAmount || !targetCurrency || !bankAccountId) {
-    return res.status(400).json({ message: 'Missing required fields: sourceCurrency, sourceAmount, targetCurrency, and bankAccountId are required.' });
+    return res.status(400).json({
+      message:
+        'Missing required fields: sourceCurrency, sourceAmount, targetCurrency, and bankAccountId are required.',
+    });
   }
 
   next();
 };
-
 
 /**
  * @swagger
@@ -62,8 +65,15 @@ const validateInitiatePayout = (req, res, next) => {
  *         description: Internal server error.
  */
 // Placeholder POST route to initiate a crypto-to-bank payout
-router.post('/initiate', validateInitiatePayout, cryptoPayoutController.initiatePayout);
+router.post(
+  '/initiate',
+  validateInitiatePayout,
+  cryptoPayoutController.initiatePayout
+);
 
-router.get('/supported-currencies', cryptoPayoutController.getSupportedCurrencies);
+router.get(
+  '/supported-currencies',
+  cryptoPayoutController.getSupportedCurrencies
+);
 
 router.get('/exchange-rate', cryptoPayoutController.getExchangeRate);

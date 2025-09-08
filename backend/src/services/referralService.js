@@ -15,23 +15,22 @@ const predictReferralLikelihood = async (userId) => {
     const [txCount, balance, cardCount] = await Promise.all([
       query(`SELECT COUNT(*) FROM transactions WHERE user_id = $1`, [userId]),
       query(`SELECT SUM(balance) FROM wallets WHERE user_id = $1`, [userId]),
-      query(`SELECT COUNT(*) FROM cards WHERE user_id = $1`, [userId])
+      query(`SELECT COUNT(*) FROM cards WHERE user_id = $1`, [userId]),
     ]);
-    
+
     const tx = parseInt(txCount.rows[0].count);
     const bal = parseFloat(balance.rows[0].sum || 0);
     const cards = parseInt(cardCount.rows[0].count);
-    
-    const score = Math.min(1, 
-      (tx / 20 * 0.4) + 
-      (bal / 1000 * 0.3) + 
-      (cards / 2 * 0.3)
+
+    const score = Math.min(
+      1,
+      (tx / 20) * 0.4 + (bal / 1000) * 0.3 + (cards / 2) * 0.3
     );
-    
+
     return score.toFixed(2);
   } catch (error) {
     logger.error('Referral prediction failed:', error);
-    return "0.5";
+    return '0.5';
   }
 };
 
@@ -44,7 +43,7 @@ const generateReferralOffer = async (userId) => {
   try {
     const referralLikelihood = await predictReferralLikelihood(userId);
     const referralScore = parseFloat(referralLikelihood);
-    
+
     // Tiered rewards based on prediction
     let reward;
     if (referralScore > 0.8) {
@@ -54,33 +53,33 @@ const generateReferralOffer = async (userId) => {
     } else {
       reward = { type: 'cash', amount: 5, currency: 'USD', badge: 'bronze' };
     }
-    
+
     // Create referral code if doesn't exist
     const userResult = await query(
       `SELECT referral_code FROM users WHERE id = $1`,
       [userId]
     );
-    
+
     let referralCode = userResult.rows[0]?.referral_code;
     if (!referralCode) {
       referralCode = `SWIITCH-${uuidv4().split('-')[0].toUpperCase()}`;
-      await query(
-        `UPDATE users SET referral_code = $1 WHERE id = $2`,
-        [referralCode, userId]
-      );
+      await query(`UPDATE users SET referral_code = $1 WHERE id = $2`, [
+        referralCode,
+        userId,
+      ]);
     }
-    
+
     return {
       code: referralCode,
       reward,
-      shareMessage: `Join SwiitchBank using my code ${referralCode} and we both get $${reward.amount}!`
+      shareMessage: `Join SwiitchBank using my code ${referralCode} and we both get $${reward.amount}!`,
     };
   } catch (error) {
     logger.error('Referral offer generation failed:', error);
     return {
       code: 'ERROR',
       reward: { type: 'cash', amount: 5, currency: 'USD' },
-      shareMessage: 'Join SwiitchBank with my referral link!'
+      shareMessage: 'Join SwiitchBank with my referral link!',
     };
   }
 };
@@ -98,26 +97,26 @@ const processReferral = async (referralCode, newUserId) => {
       `SELECT id FROM users WHERE referral_code = $1`,
       [referralCode]
     );
-    
+
     if (referrerResult.rows.length === 0) return false;
-    
+
     const referrerId = referrerResult.rows[0].id;
     const offer = await generateReferralOffer(referrerId);
-    
+
     // Apply rewards
     await query(
       `UPDATE wallets SET balance = balance + $1 
        WHERE user_id = $2 AND currency = $3`,
       [offer.reward.amount, referrerId, offer.reward.currency]
     );
-    
+
     await query(
       `INSERT INTO referrals 
        (referrer_id, referred_id, reward_amount, reward_currency, status) 
        VALUES ($1, $2, $3, $4, 'completed')`,
       [referrerId, newUserId, offer.reward.amount, offer.reward.currency]
     );
-    
+
     return true;
   } catch (error) {
     logger.error('Referral processing failed:', error);

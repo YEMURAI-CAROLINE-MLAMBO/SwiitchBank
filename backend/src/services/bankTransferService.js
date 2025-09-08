@@ -11,7 +11,9 @@ class BankTransferService {
    * @param {string} currency The currency of the transfer.
    */
   async handleIncomingTransfer(userId, amount, currency) {
-    logger.info(`Processing incoming transfer of ${amount} ${currency} for user ${userId}.`);
+    logger.info(
+      `Processing incoming transfer of ${amount} ${currency} for user ${userId}.`
+    );
 
     // In a real application, you would credit the user's main account here.
 
@@ -19,7 +21,10 @@ class BankTransferService {
     try {
       await automatedSavingsService.triggerSavings(userId, amount, currency);
     } catch (error) {
-      logger.error(`Failed to trigger automated savings for user ${userId}:`, error);
+      logger.error(
+        `Failed to trigger automated savings for user ${userId}:`,
+        error
+      );
       // Even if savings fails, the main transfer should not be rolled back.
     }
 

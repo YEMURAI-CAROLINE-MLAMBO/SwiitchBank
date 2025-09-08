@@ -31,7 +31,9 @@ const handleIncomingTransfer = async (req, res) => {
   const { userId, amount, currency } = req.body;
   try {
     await bankTransferService.handleIncomingTransfer(userId, amount, currency);
-    res.status(200).json({ message: 'Incoming transfer processed successfully.' });
+    res
+      .status(200)
+      .json({ message: 'Incoming transfer processed successfully.' });
   } catch (error) {
     logger.error('Error handling incoming transfer:', error);
     res.status(500).json({ message: 'Error handling incoming transfer.' });

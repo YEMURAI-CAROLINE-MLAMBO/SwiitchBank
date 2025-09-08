@@ -35,8 +35,7 @@ exports.getFinancialInsights = async (req, res) => {
     const gamificationService = require('../services/gamificationService');
     const { userId } = req.params;
     const insights = await gamificationService.getFinancialInsights(userId);
-    res.status(200).json({ userId: userId, insights: insights
-    });
+    res.status(200).json({ userId: userId, insights: insights });
   } catch (error) {
     console.error('Error getting financial insights:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -84,7 +83,9 @@ exports.getFinancialInsights = async (req, res) => {
 exports.getGamificationChallenges = async (req, res) => {
   try {
     const { userId } = req.params;
-    const challenges = await gamificationService.getGamificationChallenges(userId);
+    const challenges = await gamificationService.getGamificationChallenges(
+      userId
+    );
     res.status(200).json(challenges);
   } catch (error) {
     console.error('Error getting gamification challenges:', error);
@@ -127,7 +128,9 @@ exports.getGamificationChallenges = async (req, res) => {
 exports.getGamificationLeaderboard = async (req, res) => {
   try {
     const { userId } = req.params;
-    const leaderboard = await gamificationService.getGamificationLeaderboard(userId);
+    const leaderboard = await gamificationService.getGamificationLeaderboard(
+      userId
+    );
     res.status(200).json(leaderboard);
   } catch (error) {
     console.error('Error getting gamification leaderboard:', error);

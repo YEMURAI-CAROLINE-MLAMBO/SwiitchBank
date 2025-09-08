@@ -1,5 +1,4 @@
 const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 
 // Initialize Firebase Admin SDK (if not initialized elsewhere)
 // admin.initializeApp();
@@ -21,9 +20,14 @@ exports.processTransactionForRoundup = functions.firestore
 
     try {
       await roundUpEngine.processTransactionRoundup(transaction);
-      console.log(`Successfully processed round-up for transaction: ${transactionId}`);
+      console.log(
+        `Successfully processed round-up for transaction: ${transactionId}`
+      );
     } catch (error) {
-      console.error(`Error processing round-up for transaction ${transactionId}:`, error);
+      console.error(
+        `Error processing round-up for transaction ${transactionId}:`,
+        error
+      );
       // Handle the error as needed
     }
   });
