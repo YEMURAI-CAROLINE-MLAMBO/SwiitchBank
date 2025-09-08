@@ -1,9 +1,8 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const MarqetaService = require('./services/marqetaService');
+const marqetaService = require('../../backend/src/services/marqetaService.js');
 
 admin.initializeApp();
-const marqetaService = new MarqetaService();
 
 // Create virtual card for user
 exports.createVirtualCard = functions.https.onCall(async (data, context) => {
