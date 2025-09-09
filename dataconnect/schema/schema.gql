@@ -54,3 +54,10 @@
 type Query {
   _placeholder: String
 }
+
+type Referral @table {
+  referrer: User!
+  referred: User!
+  status: String! @default(expr: "'pending'")
+  createdAt: Date! @default(expr: "request.time")
+}

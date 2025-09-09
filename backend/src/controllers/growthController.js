@@ -132,3 +132,28 @@ exports.generateReferralCode = async (req, res) => {
     res.status(500).json({ message: 'Failed to generate referral code' });
   }
 };
+
+exports.sendReferral = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const userId = req.user.id;
+
+    await referralService.sendReferral(userId, email);
+
+    res.status(200).json({ message: 'Referral invitation sent successfully' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getReferralStatus = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+
+    const referrals = await referralService.getReferralStatus(userId);
+
+    res.status(200).json(referrals);
+  } catch (error) {
+    next(error);
+  }
+};

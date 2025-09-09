@@ -153,9 +153,38 @@ const getReferralDetails = async (userId) => {
   }
 };
 
+const sendReferral = async (userId, email) => {
+  try {
+    const offer = await generateReferralOffer(userId);
+    // In a real application, this would send an email.
+    // For now, we'll just log it.
+    logger.info(`Sending referral to ${email} with code ${offer.code}`);
+  } catch (error) {
+    logger.error('Failed to send referral:', error);
+    throw new Error('Failed to send referral');
+  }
+};
+
+const getReferralStatus = async (userId) => {
+  try {
+    const referrals = await query(
+      `SELECT referred_id, status, created_at
+       FROM referrals
+       WHERE referrer_id = $1`,
+      [userId]
+    );
+    return referrals.rows;
+  } catch (error) {
+    logger.error('Error fetching referral status:', error);
+    throw new Error('Failed to fetch referral status');
+  }
+};
+
 module.exports = {
   predictReferralLikelihood,
   generateReferralOffer,
   processReferral,
   getReferralDetails,
+  sendReferral,
+  getReferralStatus,
 };

@@ -6,6 +6,7 @@ import { Button, Modal } from '../common';
 const ReferralProgram = () => {
   const { user } = useAuth();
   const [referralOffer, setReferralOffer] = useState(null);
+  const [referralStatus, setReferralStatus] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -20,8 +21,18 @@ const ReferralProgram = () => {
 
     if (user) {
       loadReferralOffer();
+      loadReferralStatus();
     }
   }, [user]);
+
+  const loadReferralStatus = async () => {
+    try {
+      const response = await api.get('/api/growth/referral/status');
+      setReferralStatus(response.data);
+    } catch (error) {
+      console.error('Failed to load referral status', error);
+    }
+  };
 
   if (!referralOffer) return <div>Loading referral program...</div>;
 
@@ -40,12 +51,10 @@ const ReferralProgram = () => {
 
       <h4>Referred Users:</h4>
       <ul>
-        {referralOffer.completedReferrals &&
-        referralOffer.completedReferrals.length > 0 ? (
-          referralOffer.completedReferrals.map((referral) => (
-            <li key={referral.id}>
-              User ID: {referral.referred_id}, Reward: ${referral.reward_amount}{' '}
-              {referral.reward_currency}
+        {referralStatus.length > 0 ? (
+          referralStatus.map((referral) => (
+            <li key={referral.referred_id}>
+              {referral.referred_id} - {referral.status}
             </li>
           ))
         ) : (

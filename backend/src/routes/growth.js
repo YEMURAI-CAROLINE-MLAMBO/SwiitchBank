@@ -67,7 +67,6 @@ router.get('/referral', growthController.getReferralInfo);
  *         $ref: '#/components/responses/Unauthorized'
  */
 router.post('/referral/generate', growthController.generateReferralCode);
-router.post('/referral/generate', growthController.generateReferralCode);
 
 /**
  * @swagger
@@ -79,4 +78,51 @@ router.post('/referral/generate', growthController.generateReferralCode);
  *       - bearerAuth: []
  */
 router.post('/referral/apply', growthController.applyReferralCode);
+
+/**
+ * @swagger
+ * /api/growth/referral/send:
+ *   post:
+ *     summary: Send a referral invitation to a friend
+ *     tags: [Growth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       200:
+ *         description: Referral invitation sent successfully
+ *       400:
+ *         description: Invalid email address
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/referral/send', growthController.sendReferral);
+
+/**
+ * @swagger
+ * /api/growth/referral/status:
+ *   get:
+ *     summary: Get the status of the authenticated user's referrals
+ *     tags: [Growth]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of referrals and their statuses
+ *       401:
+ *         description: Unauthorized
+ */
+router.get('/referral/status', growthController.getReferralStatus);
+
 module.exports = router;
