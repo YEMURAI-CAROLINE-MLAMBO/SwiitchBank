@@ -1,6 +1,7 @@
 // backend/src/services/marqetaWebhookService.js
 const crypto = require('crypto');
 const logger = require('../config/logger');
+const { query } = require('../config/database');
 
 const verifySignature = (payload, signature, secret) => {
   const hmac = crypto.createHmac('sha256', secret);
@@ -34,79 +35,21 @@ const processWebhookEvent = async (event, signature) => {
       case 'transaction.refund':
       case 'transaction.authorization':
       case 'transaction.clearing': {
-        // TODO: Process transaction events
-        // These events indicate different stages of a transaction lifecycle.
-        logger.info(`Processing transaction event: ${eventType}`);
-        // Extract relevant transaction details from eventData
-        const transactionDetails = {
-          // Example fields (adapt based on actual Marqeta webhook payload)
-          marqeta_transaction_token: eventData.token, // Unique identifier for the transaction in Marqeta
-          marqeta_card_token: eventData.card_token, // Token of the virtual card
-          marqeta_user_token: eventData.user_token, // Token of the user associated with the card
-          amount: eventData.amount,
-          currency: eventData.currency,
-          state: eventData.state, // Current state of the transaction (e.g., PENDING, COMPLETION, DECLINED)
-          created_time: eventData.created_time,
-          merchant_details: eventData.merchant, // Merchant information
-          transaction_type: eventType, // Store the specific webhook event type
-          // ... other relevant fields
-        };
-        // TODO: Identify fee information in the webhook payload.
-        // Marqeta webhook payloads for transactions may include details about interchange fees,
-        // network fees, and other associated costs. Extract these details.
-        // TODO: Calculate the revenue generated from this transaction based on the fee information.
-        // TODO: Update transaction history in the database
-        // Based on the transaction state, update your transaction table.
-        // If state is PENDING, create a new transaction record.
-        // If state is COMPLETION, update the transaction record with final details and potentially update the virtual card balance.
-        // If state is DECLINED, update the transaction record with the declined status.
-        logger.info(
-          'Placeholder: Update transaction history in database with:',
-          transactionDetails
-        );
+        await processTransactionEvent(eventData);
         break;
       }
       // TODO: Update the transaction record in the database to store the identified fee information
       // and the calculated revenue for this transaction.
       case 'card.state.change': {
-        // TODO: Handle card state changes (e.g., activation, suspension)
-        // This event indicates a change in the state of a virtual card.
-        logger.info(`Processing card state change event: ${eventType}`);
-        const marqetaCardToken = eventData.card_token; // Token of the virtual card
-        const newState = eventData.state; // New state of the card (e.g., ACTIVE, SUSPENDED, TERMINATED)
-        // TODO: Update card status in your database.
-        // Find the virtual card in your database using the marqetaCardToken and update its status.
-        logger.info(
-          `Placeholder: Update card ${marqetaCardToken} state to ${newState} in database`
-        );
+        await processCardStateChangeEvent(eventData);
         break;
       }
       case 'user.state.change': {
-        // TODO: Handle user state changes
-        logger.info(`Processing user state change event: ${eventType}`);
-        const marqetaUserToken = eventData.user_token; // Token of the user
-        const newUserState = eventData.state; // New state of the user
-        // TODO: Update user status in your database if you are syncing user states with Marqeta.
-        logger.info(
-          `Placeholder: Update user ${marqetaUserToken} state to ${newUserState} in database`
-        );
+        await processUserStateChangeEvent(eventData);
         break;
       }
       case 'balance.impact': {
-        // TODO: Handle balance impact events (e.g., fees, adjustments)
-        logger.info(`Processing balance impact event: ${eventType}`);
-        const balanceImpactDetails = {
-          marqeta_card_token: eventData.card_token,
-          amount: eventData.amount,
-          currency: eventData.currency,
-          type: eventData.type, // Type of balance impact (e.g., FEE, ADJUSTMENT)
-          // ... other relevant fields
-        };
-        // TODO: Update virtual card balance in your database based on the impact type and amount.
-        logger.info(
-          'Placeholder: Update virtual card balance based on balance impact:',
-          balanceImpactDetails
-        );
+        await processBalanceImpactEvent(eventData);
         break;
       }
       // TODO: Handle other relevant Marqeta webhook event types
@@ -116,11 +59,114 @@ const processWebhookEvent = async (event, signature) => {
         break;
     }
 
-    // TODO: Send a success response back to Marqeta to acknowledge receipt
-    // Marqeta expects a 200 OK response to consider the webhook successfully received.
+    res.status(200).send();
   } catch (error) {
     logger.error('Error processing Marqeta webhook event:', error);
-    // TODO: Implement error handling and potentially retry logic
+    res.status(500).send();
+  }
+};
+
+const processTransactionEvent = async (eventData) => {
+  const {
+    token,
+    card_token,
+    user_token,
+    amount,
+    currency,
+    state,
+    created_time,
+    merchant,
+  } = eventData;
+
+  const transactionDetails = {
+    marqeta_transaction_token: token,
+    marqeta_card_token: card_token,
+    marqeta_user_token: user_token,
+    amount,
+    currency,
+    state,
+    created_time,
+    merchant_details: merchant,
+  };
+
+  try {
+    const { rows } = await query(
+      `
+      INSERT INTO transactions (marqeta_transaction_token, marqeta_card_token, marqeta_user_token, amount, currency, state, created_time, merchant_details)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      ON CONFLICT (marqeta_transaction_token) DO UPDATE SET
+        state = EXCLUDED.state,
+        amount = EXCLUDED.amount
+      RETURNING *
+    `,
+      [
+        token,
+        card_token,
+        user_token,
+        amount,
+        currency,
+        state,
+        created_time,
+        merchant,
+      ]
+    );
+    logger.info('Transaction processed successfully:', rows[0]);
+  } catch (error) {
+    logger.error('Error processing transaction event:', error);
+  }
+};
+
+const processCardStateChangeEvent = async (eventData) => {
+  const { card_token, state } = eventData;
+  try {
+    const { rows } = await query(
+      `
+      UPDATE virtual_cards
+      SET status = $1
+      WHERE marqeta_card_token = $2
+      RETURNING *
+    `,
+      [state, card_token]
+    );
+    logger.info('Card state change processed successfully:', rows[0]);
+  } catch (error) {
+    logger.error('Error processing card state change event:', error);
+  }
+};
+
+const processUserStateChangeEvent = async (eventData) => {
+  const { user_token, state } = eventData;
+  try {
+    const { rows } = await query(
+      `
+      UPDATE users
+      SET status = $1
+      WHERE marqeta_user_token = $2
+      RETURNING *
+    `,
+      [state, user_token]
+    );
+    logger.info('User state change processed successfully:', rows[0]);
+  } catch (error) {
+    logger.error('Error processing user state change event:', error);
+  }
+};
+
+const processBalanceImpactEvent = async (eventData) => {
+  const { card_token, amount } = eventData;
+  try {
+    const { rows } = await query(
+      `
+      UPDATE virtual_cards
+      SET balance = balance + $1
+      WHERE marqeta_card_token = $2
+      RETURNING *
+    `,
+      [amount, card_token]
+    );
+    logger.info('Balance impact processed successfully:', rows[0]);
+  } catch (error) {
+    logger.error('Error processing balance impact event:', error);
   }
 };
 
