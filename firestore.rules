@@ -15,7 +15,11 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId &&
+                     request.resource.data.firstName is string &&
+                     request.resource.data.lastName is string &&
+                     request.resource.data.email is string &&
+                     request.resource.data.email == request.auth.token.email;
 
       match /sensitive/{document} {
         allow read: if request.auth != null && request.auth.uid == userId && request.auth.token.email_verified == true;
@@ -25,7 +29,10 @@ service cloud.firestore {
 
     match /businessAccounts/{businessId} {
       allow read: if isBusinessMember(businessId);
-      allow update: if hasBusinessRole(businessId, 'admin');
+      allow update: if hasBusinessRole(businessId, 'admin') &&
+                       request.resource.data.businessName is string &&
+                       request.resource.data.address is string &&
+                       request.resource.data.industry is string;
 
       match /teamMembers/{memberId} {
         allow read: if isBusinessMember(businessId);
@@ -37,10 +44,15 @@ service cloud.firestore {
       allow read: if (request.auth != null && resource.data.userId == request.auth.uid) ||
                      (resource.data.businessId != null && isBusinessMember(resource.data.businessId));
 
-      allow create: if (request.auth != null && request.resource.data.userId == request.auth.uid && request.resource.data.businessId == null) ||
-                       (request.auth != null && request.resource.data.businessId != null && hasBusinessRole(request.resource.data.businessId, 'admin'));
+      allow create: if (request.auth != null && request.resource.data.userId == request.auth.uid && request.resource.data.businessId == null &&
+                       request.resource.data.balance == 0 &&
+                       request.resource.data.currency is string) ||
+                       (request.auth != null && request.resource.data.businessId != null && hasBusinessRole(request.resource.data.businessId, 'admin') &&
+                       request.resource.data.balance == 0 &&
+                       request.resource.data.currency is string);
 
-      allow update: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && resource.data.userId == request.auth.uid &&
+                       request.resource.data.balance == resource.data.balance + request.resource.data.incoming_balance;
     }
 
     match /sessions/{sessionId} {
@@ -58,7 +70,9 @@ service cloud.firestore {
                    (userOwnsWallet(resource.data.sourceWalletId) ||
                     userOwnsWallet(resource.data.destinationWalletId) ||
                     (resource.data.businessId != null && isBusinessMember(resource.data.businessId)));
-      allow write: if false;
+      allow create: if request.auth != null &&
+                     (userOwnsWallet(request.resource.data.sourceWalletId) ||
+                      userOwnsWallet(request.resource.data.destinationWalletId));
     }
   }
 }
