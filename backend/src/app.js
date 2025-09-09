@@ -16,6 +16,7 @@ import moonpayRoutes from './routes/moonpay.js';
 import moonpayWebhookRoutes from './routes/moonpayWebhook.js';
 import aiRoutes from './routes/ai.js'; // Import the new AI route
 import transactionAnalysisRoutes from './routes/transactionAnalysis.js';
+import fiatCryptoBridgeRoutes from './routes/fiatCryptoBridge.js';
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/api/moonpay', moonpayRoutes);
 app.use('/api/moonpay-webhook', moonpayWebhookRoutes);
 app.use('/api/ai', aiRoutes); // Add the AI route to the app
 app.use('/api/transaction-analysis', transactionAnalysisRoutes);
+app.use('/api/fiat-crypto-bridge', fiatCryptoBridgeRoutes);
 
 const PORT = process.env.PORT || 5000;
 

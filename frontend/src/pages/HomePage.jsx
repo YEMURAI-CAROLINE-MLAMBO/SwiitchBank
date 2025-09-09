@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import WalletDashboard from '../components/wallet/WalletDashboard';
+import FiatCryptoBridge from '../components/fiat-crypto-bridge/FiatCryptoBridge';
 
 function HomePage() {
   const { user } = useAuth();
@@ -8,7 +9,10 @@ function HomePage() {
   return (
     <div className="home-page">
       {user ? (
-        <WalletDashboard />
+        <>
+          <WalletDashboard />
+          <FiatCryptoBridge />
+        </>
       ) : (
         <>
           <h2>Welcome to SwiitchBank</h2>
