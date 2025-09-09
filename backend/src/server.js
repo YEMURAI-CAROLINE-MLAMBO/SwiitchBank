@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import logger from './config/logger.js';
 
 // Load environment variables
 dotenv.config();
@@ -34,7 +35,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(
+  logger.info(
     `Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`
   );
 });

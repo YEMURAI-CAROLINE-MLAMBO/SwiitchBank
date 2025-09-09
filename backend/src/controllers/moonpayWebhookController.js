@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const logger = require('../config/logger');
 
 exports.handleWebhook = (req, res) => {
   const signatureHeader = req.header('MoonPay-Signature-V2');
@@ -35,19 +36,19 @@ exports.handleWebhook = (req, res) => {
   switch (type) {
     case 'transaction_created':
       // Handle transaction created event
-      console.log('Transaction created:', data);
+      logger.info('Transaction created:', data);
       break;
     case 'transaction_updated':
       // Handle transaction updated event
-      console.log('Transaction updated:', data);
+      logger.info('Transaction updated:', data);
       break;
     case 'transaction_failed':
       // Handle transaction failed event
-      console.log('Transaction failed:', data);
+      logger.info('Transaction failed:', data);
       break;
     // Add other event types as needed
     default:
-      console.log('Unhandled event type:', type);
+      logger.info('Unhandled event type:', type);
   }
 
   res.status(200).send('Webhook received');

@@ -24,6 +24,14 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "globals": "^15.0.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.6.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }

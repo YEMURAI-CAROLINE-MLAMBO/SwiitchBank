@@ -1,5 +1,6 @@
 // backend/src/services/marqetaWebhookService.js
 const crypto = require('crypto');
+const logger = require('../config/logger');
 
 const verifySignature = (payload, signature, secret) => {
   const hmac = crypto.createHmac('sha256', secret);
@@ -10,16 +11,16 @@ const verifySignature = (payload, signature, secret) => {
 
 const processWebhookEvent = async (event, signature) => {
   try {
-    console.log('Received Marqeta webhook event:', event);
+    logger.info('Received Marqeta webhook event:', event);
 
     const webhookSecret = process.env.MARQETA_WEBHOOK_SECRET;
     if (!webhookSecret) {
-      console.error('Marqeta webhook secret is not configured.');
+      logger.error('Marqeta webhook secret is not configured.');
       return;
     }
 
     if (!verifySignature(JSON.stringify(event.payload), signature, webhookSecret)) {
-      console.error('Invalid webhook signature');
+      logger.error('Invalid webhook signature');
       return;
     }
 
@@ -35,7 +36,7 @@ const processWebhookEvent = async (event, signature) => {
       case 'transaction.clearing': {
         // TODO: Process transaction events
         // These events indicate different stages of a transaction lifecycle.
-        console.log(`Processing transaction event: ${eventType}`);
+        logger.info(`Processing transaction event: ${eventType}`);
         // Extract relevant transaction details from eventData
         const transactionDetails = {
           // Example fields (adapt based on actual Marqeta webhook payload)
@@ -59,7 +60,7 @@ const processWebhookEvent = async (event, signature) => {
         // If state is PENDING, create a new transaction record.
         // If state is COMPLETION, update the transaction record with final details and potentially update the virtual card balance.
         // If state is DECLINED, update the transaction record with the declined status.
-        console.log(
+        logger.info(
           'Placeholder: Update transaction history in database with:',
           transactionDetails
         );
@@ -70,30 +71,30 @@ const processWebhookEvent = async (event, signature) => {
       case 'card.state.change': {
         // TODO: Handle card state changes (e.g., activation, suspension)
         // This event indicates a change in the state of a virtual card.
-        console.log(`Processing card state change event: ${eventType}`);
+        logger.info(`Processing card state change event: ${eventType}`);
         const marqetaCardToken = eventData.card_token; // Token of the virtual card
         const newState = eventData.state; // New state of the card (e.g., ACTIVE, SUSPENDED, TERMINATED)
         // TODO: Update card status in your database.
         // Find the virtual card in your database using the marqetaCardToken and update its status.
-        console.log(
+        logger.info(
           `Placeholder: Update card ${marqetaCardToken} state to ${newState} in database`
         );
         break;
       }
       case 'user.state.change': {
         // TODO: Handle user state changes
-        console.log(`Processing user state change event: ${eventType}`);
+        logger.info(`Processing user state change event: ${eventType}`);
         const marqetaUserToken = eventData.user_token; // Token of the user
         const newUserState = eventData.state; // New state of the user
         // TODO: Update user status in your database if you are syncing user states with Marqeta.
-        console.log(
+        logger.info(
           `Placeholder: Update user ${marqetaUserToken} state to ${newUserState} in database`
         );
         break;
       }
       case 'balance.impact': {
         // TODO: Handle balance impact events (e.g., fees, adjustments)
-        console.log(`Processing balance impact event: ${eventType}`);
+        logger.info(`Processing balance impact event: ${eventType}`);
         const balanceImpactDetails = {
           marqeta_card_token: eventData.card_token,
           amount: eventData.amount,
@@ -102,7 +103,7 @@ const processWebhookEvent = async (event, signature) => {
           // ... other relevant fields
         };
         // TODO: Update virtual card balance in your database based on the impact type and amount.
-        console.log(
+        logger.info(
           'Placeholder: Update virtual card balance based on balance impact:',
           balanceImpactDetails
         );
@@ -111,14 +112,14 @@ const processWebhookEvent = async (event, signature) => {
       // TODO: Handle other relevant Marqeta webhook event types
       // Refer to Marqeta's webhook documentation for a full list of event types.
       default:
-        console.log(`Ignoring unknown event type: ${eventType}`);
+        logger.info(`Ignoring unknown event type: ${eventType}`);
         break;
     }
 
     // TODO: Send a success response back to Marqeta to acknowledge receipt
     // Marqeta expects a 200 OK response to consider the webhook successfully received.
   } catch (error) {
-    console.error('Error processing Marqeta webhook event:', error);
+    logger.error('Error processing Marqeta webhook event:', error);
     // TODO: Implement error handling and potentially retry logic
   }
 };

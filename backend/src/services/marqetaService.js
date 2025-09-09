@@ -2,6 +2,7 @@
 // Note: 'axios' is used to make HTTP requests. You'll need to add it to your project's dependencies.
 // You can do this by running `npm install axios` or `yarn add axios` in your backend directory.
 const axios = require('axios');
+const logger = require('../config/logger');
 
 const MARQETA_API_URL = process.env.MARQETA_API_URL;
 const MARQETA_API_KEY = process.env.MARQETA_API_KEY;
@@ -26,11 +27,11 @@ const marqetaService = {
    */
   createCard: async (cardDetails) => {
     try {
-      console.log('Creating virtual card with Marqeta:', cardDetails);
+      logger.info('Creating virtual card with Marqeta:', cardDetails);
       const response = await marqetaApi.post('/cards', cardDetails);
       return response.data;
     } catch (error) {
-      console.error(
+      logger.error(
         'Error creating virtual card with Marqeta:',
         error.response ? error.response.data : error.message
       );
@@ -45,11 +46,11 @@ const marqetaService = {
    */
   activateCard: async (cardToken) => {
     try {
-      console.log('Activating virtual card with Marqeta:', cardToken);
+      logger.info('Activating virtual card with Marqeta:', cardToken);
       const response = await marqetaApi.post(`/cards/${cardToken}/activation`);
       return response.data;
     } catch (error) {
-      console.error(
+      logger.error(
         `Error activating virtual card with Marqeta (${cardToken}):`,
         error.response ? error.response.data : error.message
       );
@@ -64,13 +65,13 @@ const marqetaService = {
    */
   suspendCard: async (cardToken) => {
     try {
-      console.log('Suspending virtual card with Marqeta:', cardToken);
+      logger.info('Suspending virtual card with Marqeta:', cardToken);
       const response = await marqetaApi.put(`/cards/${cardToken}`, {
         state: 'SUSPENDED',
       });
       return response.data;
     } catch (error) {
-      console.error(
+      logger.error(
         `Error suspending virtual card with Marqeta (${cardToken}):`,
         error.response ? error.response.data : error.message
       );
