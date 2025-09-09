@@ -25,4 +25,11 @@ router.get(
   checkBusinessNameAvailability
 );
 
+router.get(
+  '/availability',
+  apiLimiter,
+  [query('businessName').notEmpty().trim().escape()],
+  checkBusinessNameAvailability
+);
+
 module.exports = router;

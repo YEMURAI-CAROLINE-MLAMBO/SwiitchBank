@@ -4,6 +4,7 @@ const authMiddleware = require('../middleware/auth'); // Import the authenticati
 const { body, param } = require('express-validator');
 const virtualCardController = require('../controllers/virtualCardController');
 const marqetaWebhookService = require('../services/marqetaWebhookService');
+const apiLimiter = require('../middleware/rateLimiter');
 
 // Apply authentication middleware to all routes in this router
 router.use(authMiddleware);
@@ -125,6 +126,10 @@ router.post(
  *     requestBody:
  *       required: true
  */
-router.post('/webhooks/marqeta', marqetaWebhookService.processWebhookEvent);
+router.post(
+  '/webhooks/marqeta',
+  apiLimiter,
+  marqetaWebhookService.processWebhookEvent
+);
 
 module.exports = router;
