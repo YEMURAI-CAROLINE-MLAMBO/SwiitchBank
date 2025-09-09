@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import TeamMembers from './business-accounts/TeamMembers';
 
 const BusinessOnboarding = () => {
   const [formData, setFormData] = useState({
@@ -7,6 +8,7 @@ const BusinessOnboarding = () => {
     taxId: '',
   });
   const [nameAvailable, setNameAvailable] = useState(true);
+  const [businessId, setBusinessId] = useState(null);
 
   const { businessName, businessAddress, taxId } = formData;
 
@@ -46,7 +48,7 @@ const BusinessOnboarding = () => {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      console.log(data);
+      setBusinessId(data._id);
       alert('Business account created successfully!');
     } catch (err) {
       console.error(err);
@@ -93,6 +95,7 @@ const BusinessOnboarding = () => {
         </div>
         <input type="submit" value="Create Account" />
       </form>
+      {businessId && <TeamMembers businessId={businessId} />}
     </div>
   );
 };

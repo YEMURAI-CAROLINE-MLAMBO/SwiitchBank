@@ -68,3 +68,15 @@ type ExchangeRate @table {
   rate: Float!
   updatedAt: Date! @default(expr: "request.time")
 }
+
+type BusinessAccount @table {
+  businessName: String!
+  address: String!
+  industry: String!
+}
+
+type TeamMember @table {
+  user: User!
+  businessAccount: BusinessAccount!
+  role: String! @default(expr: "'member'")
+}
