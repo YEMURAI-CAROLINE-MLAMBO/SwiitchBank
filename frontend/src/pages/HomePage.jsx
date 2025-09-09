@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import WalletDashboard from '../components/wallet/WalletDashboard';
 import FiatCryptoBridge from '../components/fiat-crypto-bridge/FiatCryptoBridge';
+import JoolsAI from '../components/ai/JoolsAI';
 
 function HomePage() {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ function HomePage() {
         <>
           <WalletDashboard />
           <FiatCryptoBridge />
+          <JoolsAI />
         </>
       ) : (
         <>
