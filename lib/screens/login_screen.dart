@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:swiitch/services/auth_service.dart';
-import 'package:swiitch/login_screen.dart';
-import 'package:swiitch/main_screen.dart';
+import 'package:swiitch/screens/registration_screen.dart';
+import 'package:swiitch/screens/main_screen.dart';
 
-class RegistrationScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _RegistrationScreenState createState() => _RegistrationScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> {
-  final TextEditingController _nameController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
 
-  Future<void> _registerUser() async {
-    // Basic validation
-    if (_nameController.text.isEmpty || _emailController.text.isEmpty || _passwordController.text.isEmpty) {
+  Future<void> _loginUser() async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       setState(() {
         _errorMessage = 'Please fill in all fields.';
       });
@@ -29,8 +27,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       _errorMessage = null;
     });
 
-    final result = await AuthService.register(
-      name: _nameController.text,
+    final result = await AuthService.login(
       email: _emailController.text,
       password: _passwordController.text,
     );
@@ -54,7 +51,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create Your Account')),
+      appBar: AppBar(title: Text('Log In to SwiitchBank')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -63,27 +60,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           children: <Widget>[
             SizedBox(height: 40),
             Text(
-              'Welcome to SwiitchBank',
+              'Welcome Back',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
             Text(
-              'Let\'s get you started.',
+              'Log in to your account to continue.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
             ),
             SizedBox(height: 50),
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Full Name',
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.person),
-              ),
-              keyboardType: TextInputType.name,
-            ),
-            SizedBox(height: 16),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
@@ -116,8 +103,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             _isLoading
                 ? Center(child: CircularProgressIndicator())
                 : ElevatedButton(
-                    onPressed: _registerUser,
-                    child: Text('Register'),
+                    onPressed: _loginUser,
+                    child: Text('Log In'),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       textStyle: TextStyle(fontSize: 18),
@@ -128,10 +115,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  MaterialPageRoute(builder: (context) => RegistrationScreen()),
                 );
               },
-              child: Text('Already have an account? Log In'),
+              child: Text('Don\'t have an account? Sign Up'),
             ),
           ],
         ),

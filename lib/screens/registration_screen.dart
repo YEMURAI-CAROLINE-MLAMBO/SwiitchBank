@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:swiitch/services/auth_service.dart';
-import 'package:swiitch/registration_screen.dart';
-import 'package:swiitch/main_screen.dart';
+import 'package:swiitch/screens/login_screen.dart';
+import 'package:swiitch/screens/main_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegistrationScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegistrationScreenState extends State<RegistrationScreen> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
 
-  Future<void> _loginUser() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+  Future<void> _registerUser() async {
+    // Basic validation
+    if (_nameController.text.isEmpty || _emailController.text.isEmpty || _passwordController.text.isEmpty) {
       setState(() {
         _errorMessage = 'Please fill in all fields.';
       });
@@ -27,7 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final result = await AuthService.login(
+    final result = await AuthService.register(
+      name: _nameController.text,
       email: _emailController.text,
       password: _passwordController.text,
     );
@@ -51,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Log In to SwiitchBank')),
+      appBar: AppBar(title: Text('Create Your Account')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -60,17 +63,27 @@ class _LoginScreenState extends State<LoginScreen> {
           children: <Widget>[
             SizedBox(height: 40),
             Text(
-              'Welcome Back',
+              'Welcome to SwiitchBank',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
             Text(
-              'Log in to your account to continue.',
+              'Let\'s get you started.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
             ),
             SizedBox(height: 50),
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                labelText: 'Full Name',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.person),
+              ),
+              keyboardType: TextInputType.name,
+            ),
+            SizedBox(height: 16),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
@@ -103,8 +116,8 @@ class _LoginScreenState extends State<LoginScreen> {
             _isLoading
                 ? Center(child: CircularProgressIndicator())
                 : ElevatedButton(
-                    onPressed: _loginUser,
-                    child: Text('Log In'),
+                    onPressed: _registerUser,
+                    child: Text('Register'),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       textStyle: TextStyle(fontSize: 18),
@@ -115,10 +128,10 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => RegistrationScreen()),
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
                 );
               },
-              child: Text('Don\'t have an account? Sign Up'),
+              child: Text('Already have an account? Log In'),
             ),
           ],
         ),

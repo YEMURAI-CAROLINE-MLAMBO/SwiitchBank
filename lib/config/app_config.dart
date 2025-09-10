@@ -9,7 +9,7 @@ class AppConfig {
   // Asynchronous initialization
   static Future<void> load() async {
     await dotenv.load(fileName: ".env");
-    _apiBaseUrl = dotenv.env['API_BASE_URL'];
+    _apiBaseUrl = dotenv.env['API_BASE_URL'] ?? 'http://10.88.0.3:3000/api';
 
     // You can add more environment variables here as needed
     // For example:
