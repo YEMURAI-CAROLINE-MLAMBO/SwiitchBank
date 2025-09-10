@@ -17,8 +17,6 @@ class GooglePayActivity : Activity() {
     private lateinit var googlePayIntegration: GooglePayIntegration
     private lateinit var googlePayButton: Button
 
-    private val LOAD_PAYMENT_DATA_REQUEST_CODE = 991
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Set your layout file here, which should contain a Button with id 'googlePayButton'
@@ -47,21 +45,13 @@ class GooglePayActivity : Activity() {
     private fun requestGooglePay() {
         // Replace with the actual price in cents
         val priceCents = 1000L
-        googlePayIntegration.requestPayment(priceCents) { paymentDataRequest ->
-            if (paymentDataRequest != null) {
-                // This is where you would launch the Google Pay sheet.
-                // In a real app, this would be a PaymentDataRequest object, and you would use
-                // AutoResolveHelper to launch the payment sheet.
-                val task = googlePayIntegration.paymentsClient.loadPaymentData(paymentDataRequest)
-                AutoResolveHelper.resolveTask(task, this, LOAD_PAYMENT_DATA_REQUEST_CODE)
-            }
-        }
+        googlePayIntegration.requestPayment(priceCents)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == LOAD_PAYMENT_DATA_REQUEST_CODE) {
+        if (requestCode == GooglePayIntegration.LOAD_PAYMENT_DATA_REQUEST_CODE) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     data?.let {

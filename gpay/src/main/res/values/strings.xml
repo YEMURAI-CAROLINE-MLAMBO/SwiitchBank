@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">gpay</string>
+    <string name="google_pay_env">ENVIRONMENT_TEST</string>
+    <string name="currency_code">USD</string>
+    <string name="merchant_name">Swiitch</string>
+    <string name="gateway_stripe">stripe</string>
+    <string name="stripe_publishable_key">pk_test_YOUR_PUBLISHABLE_KEY</string>
+    <string name="stripe_api_version">2020-08-27</string>
+    <string-array name="auth_methods">
+        <item>PAN_ONLY</item>
+        <item>CRYPTOGRAM_3DS</item>
+    </string-array>
+    <string-array name="card_networks">
+        <item>AMEX</item>
+        <item>DISCOVER</item>
+        <item>JCB</item>
+        <item>MASTERCARD</item>
+        <item>VISA</item>
+    </string-array>
+</resources>

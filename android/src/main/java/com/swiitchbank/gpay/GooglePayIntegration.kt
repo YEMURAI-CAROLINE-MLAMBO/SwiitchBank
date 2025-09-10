@@ -1,6 +1,10 @@
 package com.swiitchbank.gpay
 
 import android.app.Activity
+import com.google.android.gms.wallet.AutoResolveHelper
+import com.google.android.gms.wallet.IsReadyToPayRequest
+import com.google.android.gms.wallet.PaymentDataRequest
+import com.swiitchbank.gpay.R
 import com.google.android.gms.wallet.PaymentsClient
 import com.google.android.gms.wallet.Wallet
 import com.google.android.gms.wallet.WalletConstants
@@ -9,11 +13,16 @@ import org.json.JSONObject
 
 class GooglePayIntegration(private val activity: Activity) {
 
-    private val paymentsClient: PaymentsClient = createPaymentsClient()
+    val paymentsClient: PaymentsClient = createPaymentsClient()
 
     private fun createPaymentsClient(): PaymentsClient {
+        val environment = if (activity.getString(R.string.google_pay_env) == "ENVIRONMENT_PRODUCTION") {
+            WalletConstants.ENVIRONMENT_PRODUCTION
+        } else {
+            WalletConstants.ENVIRONMENT_TEST
+        }
         val walletOptions = Wallet.WalletOptions.Builder()
-            .setEnvironment(WalletConstants.ENVIRONMENT_TEST) // Use ENVIRONMENT_PRODUCTION for release
+            .setEnvironment(environment)
             .build()
         return Wallet.getPaymentsClient(activity, walletOptions)
     }
@@ -32,15 +41,10 @@ class GooglePayIntegration(private val activity: Activity) {
     /**
      * Creates a PaymentDataRequest and presents the Google Pay sheet.
      */
-    fun requestPayment(priceCents: Long, callback: (JSONObject?) -> Unit) {
-        val paymentDataRequest = createPaymentDataRequest(priceCents)
-        val task = paymentsClient.loadPaymentData(paymentDataRequest)
-        // The result of this task is handled in onActivityResult of the calling Activity
-        // For this proof of concept, we'll assume a successful callback for demonstration
-        // In a real app, you would use AutoResolveHelper.resolveTask to launch the sheet
-        // and handle the result in onActivityResult.
-        // For now, let's just indicate the request was made.
-         callback(JSONObject("{}")) // Placeholder for success
+    fun requestPayment(priceCents: Long) {
+        val paymentDataRequestJson = createPaymentDataRequest(priceCents)
+        val request = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
+        AutoResolveHelper.resolveTask(paymentsClient.loadPaymentData(request), activity, LOAD_PAYMENT_DATA_REQUEST_CODE)
     }
 
     private fun googlePayBaseRequest(): JSONObject {
@@ -50,35 +54,37 @@ class GooglePayIntegration(private val activity: Activity) {
         }
     }
 
-    private fun createPaymentDataRequest(priceCents: Long): PaymentDataRequest {
+    private fun createPaymentDataRequest(priceCents: Long): JSONObject {
         val paymentDataRequest = googlePayBaseRequest().apply {
             put("allowedPaymentMethods", JSONArray().put(cardPaymentMethod()))
             put("transactionInfo", getTransactionInfo(priceCents))
             put("merchantInfo", getMerchantInfo())
         }
-        return PaymentDataRequest.fromJson(paymentDataRequest.toString())
+        return paymentDataRequest
     }
 
     private fun getTransactionInfo(priceCents: Long): JSONObject {
         return JSONObject().apply {
             put("totalPrice", (priceCents / 100.0).toString())
             put("totalPriceStatus", "FINAL")
-            put("currencyCode", "USD") // Change to your currency
+            put("currencyCode", activity.getString(R.string.currency_code))
         }
     }
 
     private fun getMerchantInfo(): JSONObject {
         return JSONObject().apply {
-            put("merchantName", "Swiitch")
+            put("merchantName", activity.getString(R.string.merchant_name))
         }
     }
 
     private fun cardPaymentMethod(): JSONObject {
+        val authMethods = activity.resources.getStringArray(R.array.auth_methods).toList()
+        val cardNetworks = activity.resources.getStringArray(R.array.card_networks).toList()
         return JSONObject().apply {
             put("type", "CARD")
             put("parameters", JSONObject().apply {
-                put("allowedAuthMethods", JSONArray(listOf("PAN_ONLY", "CRYPTOGRAM_3DS")))
-                put("allowedCardNetworks", JSONArray(listOf("AMEX", "DISCOVER", "JCB", "MASTERCARD", "VISA")))
+                put("allowedAuthMethods", JSONArray(authMethods))
+                put("allowedCardNetworks", JSONArray(cardNetworks))
             })
             put("tokenizationSpecification", getGatewayTokenizationSpecification())
         }
@@ -90,10 +96,14 @@ class GooglePayIntegration(private val activity: Activity) {
         return JSONObject().apply {
             put("type", "PAYMENT_GATEWAY")
             put("parameters", JSONObject().apply {
-                put("gateway", "stripe")
-                put("stripe:publishableKey", "pk_test_YOUR_PUBLISHABLE_KEY")
-                put("stripe:version", "2020-08-27")
+                put("gateway", activity.getString(R.string.gateway_stripe))
+                put("stripe:publishableKey", activity.getString(R.string.stripe_publishable_key))
+                put("stripe:version", activity.getString(R.string.stripe_api_version))
             })
         }
+    }
+
+    companion object {
+        const val LOAD_PAYMENT_DATA_REQUEST_CODE = 991
     }
 }
