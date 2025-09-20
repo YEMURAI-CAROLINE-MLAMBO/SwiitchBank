@@ -94,3 +94,6 @@ docker-compose.override.yml
 
 # macOS
 .DS_Store
+
+# Firebase
+.firebase/
