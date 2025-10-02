@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:swiitch/config/app_config.dart';
+import 'package:swiitchbank/config/app_config.dart';
 
 class AuthService {
   static Future<Map<String, dynamic>> register({

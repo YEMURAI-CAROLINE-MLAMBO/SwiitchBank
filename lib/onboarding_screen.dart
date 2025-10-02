@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:swiitch/main_screen.dart';
+import 'package:swiitchbank/main_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override

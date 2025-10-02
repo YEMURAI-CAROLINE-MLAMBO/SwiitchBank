@@ -69,7 +69,7 @@ class GooglePayIntegration(private val activity: Activity) {
 
     private fun getMerchantInfo(): JSONObject {
         return JSONObject().apply {
-            put("merchantName", "Swiitch")
+            put("merchantName", "SwiitchBank")
         }
     }
 

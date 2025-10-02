@@ -3,9 +3,9 @@ byimport path from 'path';
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
-    title: 'Swiitch Bank API Documentation',
+    title: 'SwiitchBank API Documentation',
     version: '1.0.0',
-    description: 'API documentation for the Swiitch Bank application',
+    description: 'API documentation for the SwiitchBank application',
   },
   servers: [
     {

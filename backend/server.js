@@ -1,5 +1,5 @@
 /**
- * Swiitch Bank MVP - Main Server Entry Point
+ * SwiitchBank MVP - Main Server Entry Point
  * Initializes Express server with security middleware and API routes
  */
 
@@ -23,7 +23,7 @@ async function startServer() {
 
     // Start server
     app.listen(PORT, () => {
-      logger.info(`Swiitch Bank API Server running on port ${PORT}`);
+      logger.info(`SwiitchBank API Server running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV}`);
       logger.info(`API Base URL: ${process.env.API_BASE_URL || `http://localhost:${PORT}`}`);
     });
