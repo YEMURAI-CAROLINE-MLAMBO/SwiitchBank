@@ -63,7 +63,7 @@ const generateReferralOffer = async (userId) => {
     
     let referralCode = userResult.rows[0]?.referral_code;
     if (!referralCode) {
-      referralCode = `SWIITCH-${uuidv4().split('-')[0].toUpperCase()}`;
+      referralCode = `SWIITCHBANK-${uuidv4().split('-')[0].toUpperCase()}`;
       await query(
         `UPDATE users SET referral_code = $1 WHERE id = $2`,
         [referralCode, userId]

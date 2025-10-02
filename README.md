@@ -1,12 +1,12 @@
-# SwitchBank : AI-Powered Banking Platform
+# SwiitchBank : AI-Powered Banking Platform
 
-![SwitchBank](https://img.shields.io/badge/Version-MVP-green.svg)
+![SwiitchBank](https://img.shields.io/badge/Version-MVP-green.svg)
 ![Firebase](https://img.shields.io/badge/Platform-Firebase-orange.svg)
 ![Node.js](https://img.shields.io/badge/Runtime-Node.js-green.svg)
 
 ## Overview
 
-SwitchBank is a next-generation, AI-powered banking platform designed to bridge traditional finance with cryptocurrency ecosystems. Our platform provides a seamless, intelligent financial experience across devices, empowering users with innovative features for managing money, growing wealth, and building community.
+SwiitchBank is a next-generation, AI-powered banking platform designed to bridge traditional finance with cryptocurrency ecosystems. Our platform provides a seamless, intelligent financial experience across devices, empowering users with innovative features for managing money, growing wealth, and building community.
 
 **Key Value Proposition**: Combining traditional banking security with crypto flexibility through AI-driven automation.
 
@@ -26,7 +26,7 @@ The Jools AI Assistant is an intelligent chatbot that provides users with a conv
 
 *   **Transaction Analysis:** Ask questions about your spending habits, and Jools will provide you with insights and analysis.
 *   **Navigation Assistance:** Can't find something in the app? Just ask Jools, and it will guide you to the right place.
-*   **Onboarding Guidance:** New to SwitchBank? Jools will help you get started and make the most of the platform.
+*   **Onboarding Guidance:** New to SwiitchBank? Jools will help you get started and make the most of the platform.
 
 To use the Jools AI Assistant, simply tap on the chat icon in the app and start a conversation.
 

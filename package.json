@@ -1,7 +1,7 @@
 {
-  "name": "switchbank",
+  "name": "swiitchbank",
   "version": "0.0.1",
-  "description": "Switch Bank Project",
+  "description": "SwiitchBank Project",
   "main": "backend/src/app.js",
   "scripts": {
     "start": "node backend/src/app.js"

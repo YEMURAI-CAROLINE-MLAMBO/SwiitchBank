@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Setting up Firebase for SwitchBank..."
+echo "Setting up Firebase for SwiitchBank..."
 
 # Install Firebase CLI if not installed
 if ! command -v firebase &> /dev/null; then

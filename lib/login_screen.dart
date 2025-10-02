@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:swiitch/services/auth_service.dart';
-import 'package:swiitch/registration_screen.dart';
-import 'package:swiitch/main_screen.dart';
+import 'package:swiitchbank/services/auth_service.dart';
+import 'package:swiitchbank/registration_screen.dart';
+import 'package:swiitchbank/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
