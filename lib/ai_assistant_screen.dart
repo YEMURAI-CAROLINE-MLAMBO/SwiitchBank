@@ -1,6 +1,7 @@
-import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:SwiitchBank/widgets/jools/jools_avatar.dart';
+import 'package:SwiitchBank/widgets/jools/jools_chat_bubble.dart';
 
 class AIAssistantScreen extends StatefulWidget {
   @override
@@ -15,128 +16,92 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
   @override
   void initState() {
     super.initState();
-    _addInitialMessage();
+    _addInitialMessages();
   }
 
-  void _addInitialMessage() {
+  void _addInitialMessages() {
     setState(() {
-      _messages.insert(
-          0, {'sender': 'Jools', 'message': 'Hi! How can I help you today?'});
+      _messages.insert(0, {
+        'sender': 'Jools',
+        'message':
+            "Hi! I'm Jools, your AI financial co-pilot. I can:\n• Analyze spending patterns\n• Optimize currency exchanges\n• Predict market trends\n• Manage business accounts"
+      });
     });
   }
 
   Future<void> _handleSubmitted(String text) async {
+    if (text.isEmpty) return;
     _textController.clear();
     setState(() {
       _messages.insert(0, {'sender': 'user', 'message': text});
       _isLoading = true;
     });
 
-    try {
-      // IMPORTANT: Replace with your actual backend URL
-      const String backendUrl = 'YOUR_BACKEND_URL';
-      final response = await http.post(
-        Uri.parse('$backendUrl/api/ai/ask'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'prompt':
-              'As a navigation assistant for a mobile banking app, your task is to identify the user\'s intent and respond with a specific navigation command if it matches one of the following keywords. Your response should ONLY be the command, without any extra text.\n\nKeywords and their corresponding navigation commands:\n- \'transactions\', \'spending\', \'history\': navigate_to_transactions\n- \'home\', \'dashboard\', \'main\': navigate_to_home\n\nUser query: "$text"'
-        }),
-      );
+    // Simulate AI response
+    await Future.delayed(const Duration(seconds: 2));
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        _handleAIResponse(data['response'] ?? 'Sorry, I can\'t help with that yet.');
-      } else {
-        _addErrorMessage();
-      }
-    } catch (e) {
-      _addErrorMessage();
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
+    // Hardcoded response based on the prompt
+    final aiResponse = "Analyzing... ✅\n📊 EUR strong today - converts save 1.8% vs last week\n💡 Best rate: 1 USD = 0.92 EUR";
 
-  void _handleAIResponse(String response) {
-    if (response == 'navigate_to_transactions') {
-      // In a real app, you would use a navigator service to handle this.
-      // For now, we'll just pop the screen.
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context, 'transactions');
-      }
-    } else if (response == 'navigate_to_home') {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context, 'home');
-      }
-    } else {
-      setState(() {
-        _messages.insert(0, {'sender': 'Jools', 'message': response});
-      });
-    }
-  }
-
-  void _addErrorMessage() {
     setState(() {
-      _messages.insert(0, {
-        'sender': 'Jools',
-        'message': 'Sorry, something went wrong. Please try again.'
-      });
+      _messages.insert(0, {'sender': 'Jools', 'message': aiResponse});
+      _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text('Jools Assistant')),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(8.0),
-              reverse: true,
-              itemCount: _messages.length,
-              itemBuilder: (BuildContext context, int index) {
-                final message = _messages[index];
-                final isUser = message['sender'] == 'user';
-                return Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment:
-                        isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-                    children: <Widget>[
-                      Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                            color: isUser ? Colors.blue : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          child: Text(
-                            message['message']!,
-                            style: TextStyle(
-                                color: isUser ? Colors.white : Colors.black,
-                                fontSize: 16),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Row(
+          children: [
+            JoolsAvatar(),
+            const SizedBox(width: 12),
+            Text("Jools", style: theme.textTheme.titleLarge),
+          ],
+        ),
+      ),
+      body: Stack(
+        children: [
+          // Placeholder for the circuit pattern background
+          Container(
+            decoration: BoxDecoration(
+              color: theme.primaryColor,
+              // Ideally, we'd use a DecorationImage with a circuit pattern here
             ),
           ),
-          if (_isLoading)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(),
-            ),
-          Divider(height: 1.0),
-          Container(
-            decoration: BoxDecoration(color: Theme.of(context).cardColor),
-            child: _buildTextComposer(),
+          Column(
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16.0),
+                  reverse: true,
+                  itemCount: _messages.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final message = _messages[index];
+                    final isUser = message['sender'] == 'user';
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: JoolsChatBubble(
+                        message: message['message']!,
+                        isUser: isUser,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              if (_isLoading)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.secondary),
+                  ),
+                ),
+              _buildTextComposer(),
+            ],
           ),
         ],
       ),
@@ -144,27 +109,51 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
   }
 
   Widget _buildTextComposer() {
-    return IconTheme(
-      data: IconThemeData(color: Theme.of(context).colorScheme.secondary),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-        child: Row(
-          children: <Widget>[
-            Flexible(
-              child: TextField(
-                controller: _textController,
-                onSubmitted: _handleSubmitted,
-                decoration: InputDecoration.collapsed(hintText: 'Ask me anything...'),
+    final theme = Theme.of(context);
+    final glowColor = theme.colorScheme.secondary;
+
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+        child: Container(
+          margin: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
+          decoration: BoxDecoration(
+            color: theme.cardColor.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(30.0),
+            border: Border.all(color: glowColor.withOpacity(0.4)),
+             boxShadow: [
+                  BoxShadow(
+                    color: glowColor.withOpacity(0.2),
+                    blurRadius: 8.0,
+                  ),
+                ],
+          ),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: TextField(
+                  controller: _textController,
+                  onSubmitted: _handleSubmitted,
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Type message...',
+                    hintStyle: TextStyle(color: Colors.white70),
+                  ),
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: IconButton(
-                icon: Icon(Icons.send),
+              IconButton(
+                icon: Icon(Icons.send, color: glowColor),
                 onPressed: () => _handleSubmitted(_textController.text),
               ),
-            ),
-          ],
+              IconButton(
+                icon: Icon(Icons.mic, color: glowColor),
+                onPressed: () {
+                  // Voice chat functionality to be implemented
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
