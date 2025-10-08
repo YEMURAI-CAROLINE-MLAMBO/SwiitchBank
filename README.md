@@ -114,6 +114,27 @@ Create a `.env` in each package (backend, functions, frontend as needed). Use `.
     npm start
     ```
 
+4.  **Flutter App**
+
+    The Flutter application uses build flavors to manage different environments (Development, Staging, and Production). You can run the application with a specific environment by using the `--dart-define` flag.
+
+    -   **Development:**
+        ```bash
+        flutter run --dart-define=env=DEV
+        ```
+
+    -   **Staging:**
+        ```bash
+        flutter run --dart-define=env=STAGING
+        ```
+
+    -   **Production:**
+        ```bash
+        flutter run --dart-define=env=PROD
+        ```
+
+    This will ensure that the application loads the correct configuration from the corresponding `.env` file.
+
 4.  **Firebase functions (emulator)**
     ```bash
     cd ../functions
