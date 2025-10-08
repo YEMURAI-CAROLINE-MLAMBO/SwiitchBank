@@ -1,13 +1,16 @@
 import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import './AppLayout.css'; // Layout specific styles
+import logo from '../assets/images/logo.jpg';
 
 function AppLayout() {
   return (
     <div className="app-layout">
       <header className="app-header">
         <nav className="app-nav">
-          <div className="app-logo">Ryt Bank</div>
+          <div className="app-logo">
+            <img src={logo} alt="SwiitchBank Logo" />
+          </div>
           <ul>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/wallet">Wallet</Link></li>
@@ -27,7 +30,7 @@ function AppLayout() {
 
       <footer className="app-footer">
         {/* Footer content */}
-        <p>&copy; 2024 Ryt Bank</p>
+        <p>&copy; 2024 SwiitchBank</p>
       </footer>
     </div>
   );
