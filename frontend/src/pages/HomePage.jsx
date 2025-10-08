@@ -12,7 +12,7 @@ function HomePage() {
       ) : (
         <>
           <h2>Welcome to SwiitchBank</h2>
-          <p>Your modern banking solution.</p>
+          <p>Anytime Anywhere</p>
           {/* You could add a call to action here, like a link to the login or signup page */}
         </>
       )}

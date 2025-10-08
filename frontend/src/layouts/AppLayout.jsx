@@ -8,7 +8,6 @@ function AppLayout() {
       <header className="app-header">
         <nav className="app-nav">
           <div className="app-logo">SwiitchBank</div>
-          <p className="app-tagline">Anytime Anywhere</p>
           <ul>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/wallet">Wallet</Link></li>
