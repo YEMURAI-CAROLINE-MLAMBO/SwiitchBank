@@ -1,3 +1,20 @@
+// #############################################################################
+// #  ARCHITECTURAL NOTE (2025-10-09)
+// #############################################################################
+// # This 'api' directory is one of TWO locations for Firebase Functions in this
+// # project. The other, more modern, and more organized location is the
+// # 'functions' directory at the root of the repository.
+// #
+// # It is strongly recommended that:
+// #  1. All NEW Firebase Functions be added to the 'functions' directory.
+// #  2. A plan be made to migrate the functions from this 'api' directory to the
+// #     'functions' directory to consolidate the architecture.
+// #
+// # This will reduce confusion and improve the overall maintainability of the
+// # project. Do not add new functions here.
+// #############################################################################
+
+
 /**
  * Import function triggers from their respective submodules:
  *
