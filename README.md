@@ -63,6 +63,7 @@ To use the Jools AI Assistant, simply tap on the chat icon in the app and start 
     - pages/ (or routes)
     - context/
 - /functions — Firebase Cloud Functions (serverless logic)
+- /api — **Legacy** Firebase Cloud Functions (do not add new functions here)
 - /dataconnect-generated — generated SDK connectors (do not edit manually)
 - /docker — dockerization (images, compose)
 - firebase.json, firestore.rules, FirebaseConfig.js — Firebase configuration
@@ -154,6 +155,14 @@ This deployment process includes:
 - Use Firebase Hosting + Functions for serverless parts if desired. Use `firebase deploy --only hosting,functions`.
 - Use environment-specific Firebase project configs and secrets in CI (do not embed private keys in repo).
 
+## Backend Architecture
+
+This project contains two separate directories for Firebase Functions: `/api` and `/functions`.
+
+-   **/functions**: This is the primary, modern, and organized location for all new Firebase Functions. All new serverless logic should be added here.
+-   **/api**: This directory contains legacy Firebase Functions that are critical to the platform's operation. **Do not add new functions to this directory.** A future effort should be made to migrate these legacy functions to the `/functions` directory to consolidate the architecture.
+
+This separation is a temporary measure to ensure the stability of the existing system while allowing for new, more organized development. By following these guidelines, we can maintain a clean and maintainable codebase.
 
 ## Known Limitations & Issues (MVP Phase)
 
