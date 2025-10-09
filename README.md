@@ -47,7 +47,7 @@ To use the Jools AI Assistant, simply tap on the chat icon in the app and start 
 | **AI Service** | Gemini API integration (aiService.js) |
 | **Payment Processing** | Marqeta API (marqetaService.js) |
 | **Authentication** | Firebase Auth with multi-factor support |
-| **Frontend** | React Native (cross-platform) |
+| **Frontend** | React (Web), Flutter (Mobile) |
 
 ## Repository layout
 - /backend — Express/Node API, business logic, services, migrations
@@ -57,11 +57,12 @@ To use the Jools AI Assistant, simply tap on the chat icon in the app and start 
     - routes/
     - middleware/
     - config/
-- /frontend — React app for web/mobile UI
+- /frontend — React app for web UI
   - src/
     - components/
     - pages/ (or routes)
     - context/
+- /lib — Flutter application for mobile UI
 - /functions — Firebase Cloud Functions (serverless logic)
 - /api — **Legacy** Firebase Cloud Functions (do not add new functions here)
 - /dataconnect-generated — generated SDK connectors (do not edit manually)
@@ -157,9 +158,10 @@ This deployment process includes:
 
 ## Backend Architecture
 
-This project contains two separate directories for Firebase Functions: `/api` and `/functions`.
+This project has a multi-faceted backend, which is a combination of a traditional Node.js/Express server and serverless Firebase Functions. This structure is the result of evolving development and will be consolidated over time.
 
--   **/functions**: This is the primary, modern, and organized location for all new Firebase Functions. All new serverless logic should be added here.
+-   **/backend**: A traditional Node.js/Express server responsible for core business logic, services, and API routes. This server is intended to be the primary backend for the application.
+-   **/functions**: The primary, modern, and organized location for all new Firebase Functions. All new serverless logic should be added here.
 -   **/api**: This directory contains legacy Firebase Functions that are critical to the platform's operation. **Do not add new functions to this directory.** A future effort should be made to migrate these legacy functions to the `/functions` directory to consolidate the architecture.
 
 This separation is a temporary measure to ensure the stability of the existing system while allowing for new, more organized development. By following these guidelines, we can maintain a clean and maintainable codebase.
