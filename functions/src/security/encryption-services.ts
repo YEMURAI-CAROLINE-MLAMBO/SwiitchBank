@@ -1,35 +1,39 @@
 import * as crypto from 'crypto';
 import * as functions from 'firebase-functions';
+const { encrypt, decrypt } = require('../utils/encryption');
 
-const ENCRYPTION_MASTER_KEY = process.env.ENCRYPTION_MASTER_KEY; // Placeholder
+const ENCRYPTION_MASTER_KEY = process.env.ENCRYPTION_MASTER_KEY;
+// A unique, static salt is required for scrypt. It should be stored securely as an environment variable.
+const KEY_SALT = process.env.ENCRYPTION_KEY_SALT || 'a-default-and-insecure-salt';
 
 export class EncryptionService {
-  private algorithm = 'aes-256-cbc';
   private key: Buffer;
-  private iv: Buffer;
 
   constructor() {
     if (!ENCRYPTION_MASTER_KEY) {
       throw new Error('ENCRYPTION_MASTER_KEY environment variable is not set.');
     }
-    this.key = crypto.scryptSync(ENCRYPTION_MASTER_KEY, 'salt', 32); // Replace 'salt' with a strong, unique salt
-    this.iv = crypto.randomBytes(16); // Initialization vector
+    // The new utility expects a 32-byte Buffer for the key.
+    // We derive the key using scrypt, which is a secure key derivation function.
+    this.key = crypto.scryptSync(ENCRYPTION_MASTER_KEY, KEY_SALT, 32);
   }
 
+  /**
+   * Encrypts a string using the centralized utility.
+   * @param {string} text The plain text to encrypt.
+   * @returns {string} The encrypted text.
+   */
   encrypt(text: string): string {
-    const cipher = crypto.createCipheriv(this.algorithm, this.key, this.iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return this.iv.toString('hex') + ':' + encrypted; // Prepend IV for decryption
+    return encrypt(text, this.key);
   }
 
+  /**
+   * Decrypts a string using the centralized utility.
+   * @param {string} encryptedText The encrypted text to decrypt.
+   * @returns {string} The decrypted plain text.
+   */
   decrypt(encryptedText: string): string {
-    const [ivHex, textHex] = encryptedText.split(':');
-    const iv = Buffer.from(ivHex, 'hex');
-    const decipher = crypto.createDecipheriv(this.algorithm, this.key, iv);
-    let decrypted = decipher.update(textHex, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
+    return decrypt(encryptedText, this.key);
   }
 }
 
@@ -38,8 +42,9 @@ export function configureSecureEnvironment() {
   // related to security, like checking for required environment variables.
   if (!ENCRYPTION_MASTER_KEY) {
     functions.logger.error('ENCRYPTION_MASTER_KEY environment variable is not set!');
-    // Depending on your application's requirements, you might want to
-    // throw an error or take other action here.
+  }
+  if (KEY_SALT === 'a-default-and-insecure-salt') {
+      functions.logger.warn('ENCRYPTION_KEY_SALT is not set. Using a default salt is insecure for production.');
   }
   functions.logger.info('Secure environment configuration complete.');
 }
