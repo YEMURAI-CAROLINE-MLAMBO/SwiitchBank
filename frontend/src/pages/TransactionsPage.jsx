@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../FirebaseConfig';
 import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
-import './TransactionsPage.css';
 
 const TransactionsPage = () => {
   const { user } = useAuth();
