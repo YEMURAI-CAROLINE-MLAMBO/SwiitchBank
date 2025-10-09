@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swiitch/config/app_config.dart';
-import 'package:swiitch/registration_screen.dart';
+import 'package:swiitch/core/theme/app_theme.dart';
+import 'package:swiitch/ui/screens/dashboard_screen.dart';
 
 Future<void> main() async {
   // Ensure that Flutter bindings are initialized
@@ -16,12 +17,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Swiitch Bank',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: RegistrationScreen(), // Set RegistrationScreen as the home
+      title: 'SwiitchBank',
+      theme: AppTheme.darkTheme,
+      home: DashboardScreen(),
     );
   }
 }
