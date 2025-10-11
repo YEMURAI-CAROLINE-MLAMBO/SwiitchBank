@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "frontend/build",
+    "public": "build/web",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -40,6 +40,10 @@
           {
             "key": "X-Content-Type-Options",
             "value": "nosniff"
+          },
+          {
+            "key": "X-Environment",
+            "value": "${ENVIRONMENT}"
           }
         ]
       }
@@ -49,15 +53,22 @@
     {
       "source": "functions",
       "codebase": "default",
+      "runtime": "nodejs18",
       "ignore": [
         "node_modules",
         ".git",
         "**/node_modules/**"
-      ]
+      ],
+      "env": {
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}",
+        "STRIPE_KEY": "${STRIPE_KEY}",
+        "ENVIRONMENT": "${ENVIRONMENT}"
+      }
     },
     {
       "source": "api",
       "codebase": "api",
+      "runtime": "nodejs18",
       "ignore": [
         "node_modules",
         ".git",
@@ -68,7 +79,12 @@
         "firebase-debug.log.json",
         "firebase-debug.*.log",
         "*.local"
-      ]
+      ],
+      "env": {
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}",
+        "STRIPE_KEY": "${STRIPE_KEY}",
+        "ENVIRONMENT": "${ENVIRONMENT}"
+      }
     }
   ],
   "vpcAccess": {
