@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swiitch/config/app_config.dart';
 import 'package:swiitch/core/theme/app_theme.dart';
+import 'package:swiitch/ui/providers/user_data_provider.dart';
 import 'package:swiitch/ui/screens/dashboard_screen.dart';
 
 Future<void> main() async {
@@ -10,7 +12,12 @@ Future<void> main() async {
   // Load environment variables
   await AppConfig.load();
 
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserDataProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
