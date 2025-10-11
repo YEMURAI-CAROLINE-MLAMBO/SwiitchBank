@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:swiitch/ui/widgets/chat_message.dart';
 
 class AIAssistantScreen extends StatefulWidget {
   @override
@@ -20,15 +21,23 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
 
   void _addInitialMessage() {
     setState(() {
-      _messages.insert(
-          0, {'sender': 'Jools', 'message': 'Hi! How can I help you today?'});
+      _messages.insert(0, {
+        'sender': 'Jools',
+        'message': 'Hi! How can I help you today?',
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+      });
     });
   }
 
   Future<void> _handleSubmitted(String text) async {
     _textController.clear();
+    final userMessage = {
+      'sender': 'user',
+      'message': text,
+      'id': DateTime.now().millisecondsSinceEpoch.toString(),
+    };
     setState(() {
-      _messages.insert(0, {'sender': 'user', 'message': text});
+      _messages.insert(0, userMessage);
       _isLoading = true;
     });
 
@@ -72,7 +81,11 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
       }
     } else {
       setState(() {
-        _messages.insert(0, {'sender': 'Jools', 'message': response});
+        _messages.insert(0, {
+          'sender': 'Jools',
+          'message': response,
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+        });
       });
     }
   }
@@ -81,7 +94,8 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
     setState(() {
       _messages.insert(0, {
         'sender': 'Jools',
-        'message': 'Sorry, something went wrong. Please try again.'
+        'message': 'Sorry, something went wrong. Please try again.',
+        'id': DateTime.now().millisecondsSinceEpoch.toString(),
       });
     });
   }
@@ -99,31 +113,11 @@ class _AIAssistantScreenState extends State<AIAssistantScreen> {
               itemCount: _messages.length,
               itemBuilder: (BuildContext context, int index) {
                 final message = _messages[index];
-                final isUser = message['sender'] == 'user';
-                return Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment:
-                        isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-                    children: <Widget>[
-                      Flexible(
-                        child: Container(
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                            color: isUser ? Colors.blue : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          child: Text(
-                            message['message']!,
-                            style: TextStyle(
-                                color: isUser ? Colors.white : Colors.black,
-                                fontSize: 16),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                // Using the new ChatMessage widget with a stable ValueKey.
+                return ChatMessage(
+                  key: ValueKey(message['id']), // Using the stable ID as the key
+                  sender: message['sender']!,
+                  message: message['message']!,
                 );
               },
             ),
