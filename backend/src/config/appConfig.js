@@ -4,13 +4,13 @@ const configs = {
   development: {
     name: 'Development',
     firebase: {
-      apiKey: "AIzaSyDxPY90kj3ueTNF9IGYQLyuHiDOa_CCv-E",
-      authDomain: "swiitchbank-09410265.firebaseapp.com",
-      projectId: "swiitchbank-09410265",
-      storageBucket: "swiitchbank-09410265.appspot.com",
-      messagingSenderId: "24016491102",
-      appId: "1:24016491102:web:4f1c72e3895e0b69401acf",
-      measurementId: "G-F9W3SZ2GCC"
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_APP_ID,
+      measurementId: process.env.FIREBASE_MEASUREMENT_ID,
     },
     marqeta: {
       // These will be populated from GitHub environment secrets
@@ -26,13 +26,13 @@ const configs = {
   staging: {
     name: 'Staging',
     firebase: {
-      apiKey: "AIzaSyDxPY90kj3ueTNF9IGYQLyuHiDOa_CCv-E",
-      authDomain: "swiitchbank-09410265.firebaseapp.com",
-      projectId: "swiitchbank-09410265",
-      storageBucket: "swiitchbank-09410265.appspot.com",
-      messagingSenderId: "24016491102",
-      appId: "1:24016491102:web:4f1c72e3895e0b69401acf",
-      measurementId: "G-F9W3SZ2GCC"
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_APP_ID,
+      measurementId: process.env.FIREBASE_MEASUREMENT_ID,
     },
     marqeta: {
       // These will be populated from GitHub environment secrets
@@ -48,13 +48,13 @@ const configs = {
   production: {
     name: 'Production',
     firebase: {
-      apiKey: "AIzaSyDxPY90kj3ueTNF9IGYQLyuHiDOa_CCv-E",
-      authDomain: "swiitchbank-09410265.firebaseapp.com",
-      projectId: "swiitchbank-09410265",
-      storageBucket: "swiitchbank-09410265.appspot.com",
-      messagingSenderId: "24016491102",
-      appId: "1:24016491102:web:4f1c72e3895e0b69401acf",
-      measurementId: "G-F9W3SZ2GCC"
+      apiKey: process.env.FIREBASE_API_KEY,
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+      appId: process.env.FIREBASE_APP_ID,
+      measurementId: process.env.FIREBASE_MEASUREMENT_ID,
     },
     marqeta: {
       // These will be populated from GitHub environment secrets
