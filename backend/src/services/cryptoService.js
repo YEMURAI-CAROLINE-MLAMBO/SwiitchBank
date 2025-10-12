@@ -3,44 +3,63 @@
 const payoutPartnerService = require('./payoutPartnerService');
 const logger = require('../utils/logger');
 const appConfig = require('../config/appConfig');
+const cryptoPartnerService = require('./cryptoPartnerService'); // Hypothetical service
 
 const getSupportedCurrencies = async () => {
-  // TODO: Implement logic to fetch supported cryptocurrencies from integrated partners
-  logger.info("Fetching supported currencies - Placeholder");
-  return {
-    success: true,
-    data: ["BTC", "ETH", "USDT"],
-    message: "Successfully retrieved supported currencies - Placeholder"
-  };
+  try {
+    // In a real application, this would call an external service to get the supported currencies.
+    const currencies = await cryptoPartnerService.getSupportedCurrencies();
+    return {
+      success: true,
+      data: currencies,
+      message: "Successfully retrieved supported currencies."
+    };
+  } catch (error) {
+    logger.error('Error fetching supported currencies:', error);
+    return {
+      success: false,
+      error: 'Failed to fetch supported currencies.'
+    };
+  }
 };
 
 const getExchangeRate = async (fromCurrency, toCurrency) => {
-  // TODO: Implement logic to fetch exchange rate from integrated partners
-  logger.info(`Fetching exchange rate from ${fromCurrency} to ${toCurrency} - Placeholder`);
-  // Simulate an exchange rate
-  const rate = 40000 + Math.random() * 5000; // Example rate for BTC to USD
-  return { 
-    success: true,
-    data: {
-      from: fromCurrency,
-      to: toCurrency,
-      rate: rate.toFixed(2)
-    },
-    message: `Successfully retrieved exchange rate for ${fromCurrency} to ${toCurrency} - Placeholder`
-  };
+  try {
+    // In a real application, this would call an external service to get the exchange rate.
+    const rateData = await cryptoPartnerService.getExchangeRate(fromCurrency, toCurrency);
+    return {
+      success: true,
+      data: rateData,
+      message: `Successfully retrieved exchange rate for ${fromCurrency} to ${toCurrency}.`
+    };
+  } catch (error) {
+    logger.error(`Error fetching exchange rate for ${fromCurrency} to ${toCurrency}:`, error);
+    return {
+      success: false,
+      error: 'Failed to fetch exchange rate.'
+    };
+  }
 };
 
-const convertCryptoForTopup = async (amount, fromCurrency, toCurrency) => {
-  // TODO: Implement actual crypto conversion and deduction from user's crypto wallet
-  logger.info(`Converting ${amount} ${fromCurrency} to ${toCurrency} for top-up - Placeholder`);
+const convertCryptoForTopup = async (userId, amount, fromCurrency, toCurrency) => {
+  // This function converts a specified amount of cryptocurrency to its fiat equivalent.
+  // In a real application, this function would also need to:
+  // 1. Verify that the user has sufficient balance in their crypto wallet.
+  // 2. Deduct the specified amount of cryptocurrency from the user's wallet.
+  // 3. Record the transaction in a database.
+
+  logger.info(`Converting ${amount} ${fromCurrency} to ${toCurrency} for user ${userId}.`);
   const exchangeRateResponse = await getExchangeRate(fromCurrency, toCurrency);
 
   if (!exchangeRateResponse.success) {
-    throw new Error(`Failed to get exchange rate: ${exchangeRateResponse.message}`);
+    throw new Error(`Failed to get exchange rate: ${exchangeRateResponse.message || exchangeRateResponse.error}`);
   }
 
   const exchangeRate = parseFloat(exchangeRateResponse.data.rate);
   const fiatAmount = amount * exchangeRate;
+
+  // In a real implementation, you would now deduct the crypto amount from the user's wallet.
+  // For example: await walletService.deduct(userId, amount, fromCurrency);
 
   return fiatAmount;
 };

@@ -64,7 +64,7 @@ class RoundUpEngine {
     if (!userPrefs.roundUp.enabled) return null;
 
     // Calculate round-up amount
-    const roundUpAmount = this.calculateRoundUp(amount, userPrefs.roundUp.mode);
+    const roundUpAmount = this.calculateRoundUp(amount, userPrefs.roundUp.mode, userPrefs.roundUp.customRule);
 
     if (roundUpAmount > 0) {
       // Create savings transaction
@@ -81,8 +81,8 @@ class RoundUpEngine {
     return roundUpAmount;
   }
 
-  // Different round-up modes (placeholder)
-  calculateRoundUp(amount, mode) {
+  // Different round-up modes
+  calculateRoundUp(amount, mode, customRule) {
     const roundedAmount = parseFloat(amount.toFixed(2)); // Ensure we are working with two decimal places
     let roundUpAmount = 0;
 
@@ -104,8 +104,14 @@ class RoundUpEngine {
         roundUpAmount = Math.ceil(roundedAmount / 10) * 10 - roundedAmount;
         break;
       case 'custom':
-        // TODO: Implement custom round-up logic
-        roundUpAmount = 0; // Placeholder for custom logic
+        if (customRule && customRule.type === 'fixed' && customRule.value > 0) {
+          roundUpAmount = customRule.value;
+        } else if (customRule && customRule.type === 'percentage' && customRule.value > 0) {
+          roundUpAmount = roundedAmount * (customRule.value / 100);
+        } else {
+          // Default to 0 if custom rule is not valid or not implemented
+          roundUpAmount = 0;
+        }
         break;
       default:
         // Default to traditional if mode is not recognized
@@ -150,10 +156,36 @@ class RoundUpEngine {
     }
   }
 
-  // Check for milestone achievements (placeholder)
+  // Check for milestone achievements
   async checkMilestones(userId) {
-    console.log('Placeholder: Check milestones for user', userId);
-    // TODO: Implement actual milestone checking logic here.
+    const goalsRef = this.db.collection('savings_goals').where('userId', '==', userId).where('status', '==', 'active');
+    const snapshot = await goalsRef.get();
+
+    if (snapshot.empty) {
+      return;
+    }
+
+    snapshot.forEach(async (doc) => {
+      const goal = doc.data();
+      const goalId = doc.id;
+      const progress = (goal.currentAmount / goal.targetAmount) * 100;
+
+      const milestones = goal.milestones || [];
+      let milestonesUpdated = false;
+
+      milestones.forEach((milestone) => {
+        if (!milestone.achieved && progress >= milestone.percentage) {
+          milestone.achieved = true;
+          milestonesUpdated = true;
+          // Here you could trigger a reward or notification
+          console.log(`Milestone of ${milestone.percentage}% achieved for goal ${goalId}!`);
+        }
+      });
+
+      if (milestonesUpdated) {
+        await this.db.collection('savings_goals').doc(goalId).update({ milestones });
+      }
+    });
   }
 }
 

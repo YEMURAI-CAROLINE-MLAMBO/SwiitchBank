@@ -3,7 +3,7 @@
 const { query } = require('/workspace/backend/src/config/database');
 const cryptoService = require('/workspace/backend/src/services/cryptoService');
 const bankTransferService = require('/workspace/backend/src/services/bankTransferService');
-const marqetaService = require('/workspace/backend/src/services/marqetaService');
+const marqetaService = require('../../../shared/services/marqetaService');
 
 /**
  * @swagger
@@ -118,29 +118,26 @@ exports.withdrawVirtualCard = async (req, res) => {
 };
 exports.createVirtualCard = async (req, res) => {
   try {
-    // TODO: Integrate with Mastercard API (or chosen BaaS provider) to issue a virtual card.
-    // This would involve making an API call with necessary details (e.g., user info)
-    // and receiving card details (card number, expiry, CVV, etc.) in return.
+    const userId = req.user.id; // Assuming user ID is available from authentication middleware
 
-    // For now, simulate a response with placeholder data
-    const issuedCardDetails = {
-      cardNumber: 'xxxx-xxxx-xxxx-' + Math.random().toString().slice(2, 6), // Placeholder
-      expiryDate: '12/25', // Placeholder
-      cvv: Math.random().toString().slice(2, 5), // Placeholder
-      // ... other card details from API response
-    };
+    // Call Marqeta service to create a virtual card
+    const cardData = await marqetaService.createCard({ userToken: userId /* other details */ });
 
-    // Example of saving to database using a hypothetical VirtualCard model:
-    // const createdCard = await VirtualCard.create({
-    //   userId: req.user.id, // Assuming user is authenticated and available in req.user
-    //   cardNumber: issuedCardDetails.cardNumber, // Store securely (tokenized)
-    //   expiryDate: issuedCardDetails.expiryDate,
-    //   cvv: issuedCardDetails.cvv, // Store securely (tokenized)
-    //   balance: 0,
-    //   status: 'active',
-    // });
+    // IMPORTANT: In a production environment, you must encrypt all sensitive card data before storing it.
+    // The pan, expiration, and cvv should be handled securely (e.g., tokenized or stored in a vault).
+    const { pan, expiration, cvv } = cardData;
 
-    // res.status(201).json(createdCard);
+    // Save the new card to the database
+    const result = await query(
+      'INSERT INTO virtual_cards (user_id, card_number, expiry_date, cvv, balance, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [userId, pan, expiration, cvv, 0, 'active']
+    );
+
+    const createdCard = result.rows[0];
+
+    // Do not return sensitive data like full card number or CVV.
+    // This is just for demonstration. In a real app, you would return a token or masked data.
+    res.status(201).json(createdCard);
   } catch (error) {
     console.error('Error creating virtual card:', error);
     res.status(500).json({ message: 'Error creating virtual card' });
@@ -178,11 +175,8 @@ exports.topupVirtualCard = async (req, res) => {
   }
 
  try {
- // TODO: Replace with database query to find a virtual card by ID for the authenticated user
- // const card = await VirtualCard.findOne({ where: { id: cardId, userId: req.user.id } });
-
- // Placeholder for now
- const card = null;
+    const result = await query('SELECT * FROM virtual_cards WHERE id = $1 AND user_id = $2', [cardId, req.user.id]);
+    const card = result.rows[0];
 
  if (card) {
     card.balance = (card.balance || 0) + amount;

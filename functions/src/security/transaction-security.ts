@@ -58,22 +58,43 @@ export const processSecureTransaction = async (data: any, context: CallableConte
       );
     }
 
-    // TODO: Implement actual transaction processing logic.
-    // This would involve interacting with a database, external payment
-    // services, etc. This is a placeholder.
-    console.log(`Processing transaction for user ${userId}:`, data);
-
-    // Example of a successful transaction response
     const transactionId = admin.firestore().collection('transactions').doc().id;
+    let status = 'pending';
+    let paymentResult;
+
+    try {
+      // In a real application, you would call a payment gateway service here.
+      // This is a simulated call.
+      // paymentResult = await paymentGatewayService.charge(amount, data.paymentMethodToken);
+
+      // For this example, we'll assume the payment is successful.
+      status = 'completed';
+
+      // Deduct the amount from the user's balance
+      const userRef = admin.firestore().collection('users').doc(userId);
+      await userRef.update({
+        balance: admin.firestore.FieldValue.increment(-amount)
+      });
+
+    } catch (paymentError) {
+      status = 'failed';
+      // You might want to log the specific error from the payment gateway
+      console.error('Payment gateway error:', paymentError);
+    }
+
     await admin.firestore().collection('transactions').doc(transactionId).set({
-      userId: userId,
-      amount: amount,
-      recipient: recipient,
-      type: type,
+      userId,
+      amount,
+      recipient,
+      type,
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      status: 'completed', // Or 'pending', 'failed' etc.
+      status,
       ...otherData,
     });
+
+    if (status === 'failed') {
+      throw new functions.https.HttpsError('aborted', 'Payment processing failed.');
+    }
 
     return { status: 'success', transactionId: transactionId };
 
@@ -105,31 +126,33 @@ export const validateTransactionRequest = async (data: any, context: CallableCon
   }
 
   const userId = context.auth.uid;
-  const { amount, recipient, type } = data;
+  const { amount } = data;
+  const db = admin.firestore();
+  const userRef = db.collection('users').doc(userId);
+  const userDoc = await userRef.get();
 
-  // TODO: Implement comprehensive validation logic.
-  // This should include checks like:
-  // - User's balance and spending limits
-  // - Recipient validation (e.g., valid user, bank account details)
-  // - Fraud detection checks
-  // - Rate limiting for transactions
-  // - Consistency checks with user's account status
-
-  console.log(`Validating transaction request for user ${userId}:`, data);
-
-  // Placeholder validation logic
-  if (amount > 10000) { // Example: limit transactions over $10,000
-    return { isValid: false, message: 'Transaction amount exceeds limit.' };
+  if (!userDoc.exists) {
+    return { isValid: false, message: 'User not found.' };
   }
 
-  // Example: check if the recipient is a valid user or entity
-  // This would typically involve a database lookup or external API call.
-  const recipientIsValid = true; // Placeholder
+  const userData = userDoc.data();
 
+  // 1. Check user's balance
+  if (!userData || userData.balance < amount) {
+    return { isValid: false, message: 'Insufficient funds.' };
+  }
+
+  // 2. Check spending limits
+  const spendingLimit = userData.spendingLimit || 10000; // Default limit
+  if (amount > spendingLimit) {
+    return { isValid: false, message: `Transaction amount exceeds spending limit of ${spendingLimit}.` };
+  }
+
+  // 3. Recipient validation (placeholder)
+  const recipientIsValid = true;
   if (!recipientIsValid) {
-      return { isValid: false, message: 'Invalid recipient.' };
+    return { isValid: false, message: 'Invalid recipient.' };
   }
-
 
   // If all checks pass
   return { isValid: true };

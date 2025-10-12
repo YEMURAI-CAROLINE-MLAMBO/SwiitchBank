@@ -23,7 +23,16 @@ const logger = require('../utils/logger');
  *                   type: string
  *                 completedReferrals:
  *                   type: array
- *                   items: {} # TODO: Define schema for completed referrals
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       referralId:
+ *                         type: string
+ *                       referredUserId:
+ *                         type: string
+ *                       status:
+ *                         type: string
+ *                         enum: [pending, completed, expired]
  *       500:
  *         description: Internal server error
  */
@@ -111,7 +120,15 @@ exports.applyReferralCode = async (req, res) => {
  *                 code:
  *                   type: string
  *                 reward:
- *                   type: object # TODO: Define schema for referral reward
+ *                   type: object
+ *                   properties:
+ *                     rewardId:
+ *                       type: string
+ *                     rewardType:
+ *                       type: string
+ *                       enum: [cash, points, crypto]
+ *                     amount:
+ *                       type: number
  *                 shareMessage:
  *                   type: string
  *                 shareableImage:

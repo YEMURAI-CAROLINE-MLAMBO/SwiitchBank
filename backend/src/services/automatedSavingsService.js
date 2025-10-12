@@ -11,7 +11,7 @@ class AutomatedSavingsService {
    * @param {number} incomingAmount The amount of incoming funds.
    * @param {string} currency The currency of the funds.
    */
-  async triggerSavings(userId, incomingAmount, currency) {
+  async triggerSavings(userId, incomingAmount, currency, fromAccountId, toAccountId) {
     const settings = await automatedSavingsSettingsService.getSettings(userId);
 
     if (!settings.enabled) {
@@ -27,10 +27,8 @@ class AutomatedSavingsService {
       return;
     }
 
-    // TODO: In a real application, we would need to know the user's main and savings account IDs.
-    // For this simulation, we'll use placeholder account IDs.
-    const fromAccountId = `user_${userId}_main_account`;
-    const toAccountId = `user_${userId}_savings_account`;
+    // The fromAccountId and toAccountId are now passed in as arguments.
+    // This makes the service more flexible and reusable.
 
     try {
       const transferResult = await internalTransferService.createTransfer(

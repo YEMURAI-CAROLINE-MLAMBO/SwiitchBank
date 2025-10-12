@@ -1,6 +1,11 @@
 // functions/src/paymentProcessors/moonpayService.js
 const functions = require('firebase-functions');
 const CryptoJS = require('crypto-js');
+const admin = require('firebase-admin');
+
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
 
 class MoonPayService {
     constructor() {
@@ -9,6 +14,7 @@ class MoonPayService {
             : 'https://api.sandbox.moonpay.com';
         this.publicKey = process.env.MOONPAY_PUBLIC_KEY;
         this.secretKey = process.env.MOONPAY_SECRET_KEY;
+        this.db = admin.firestore();
     }
 
     // Create crypto buy transaction
@@ -67,17 +73,31 @@ class MoonPayService {
 
     async handleTransactionCreated(data) {
         console.log('Transaction created:', data);
-        // TODO: Implement logic to handle transaction creation
+        await this.db.collection('moonpay_transactions').doc(data.id).set({
+          moonpayTransactionId: data.id,
+          userId: data.externalCustomerId,
+          status: data.status,
+          cryptoAmount: data.quoteCurrencyAmount,
+          fiatAmount: data.baseCurrencyAmount,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
     }
 
     async handleTransactionUpdated(data) {
         console.log('Transaction updated:', data);
-        // TODO: Implement logic to handle transaction updates
+        await this.db.collection('moonpay_transactions').doc(data.id).update({
+          status: data.status,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
     }
 
     async handleTransactionFailed(data) {
         console.log('Transaction failed:', data);
-        // TODO: Implement logic to handle failed transactions
+        await this.db.collection('moonpay_transactions').doc(data.id).update({
+          status: 'failed',
+          failureReason: data.failureReason,
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
     }
 }
 

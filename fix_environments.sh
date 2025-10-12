@@ -1,6 +1,8 @@
 #!/bin/bash
 echo "🔧 SWIITCHBANK ENVIRONMENT FIXER"
 
+source ./setup_flutter.sh
+
 # 1. Flutter Environment
 flutter clean
 flutter pub get
