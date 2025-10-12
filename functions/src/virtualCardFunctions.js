@@ -1,107 +1,9 @@
-// #############################################################################
-// #  ARCHITECTURAL NOTE (2025-10-09)
-// #############################################################################
-// # This 'api' directory is one of TWO locations for Firebase Functions in this
-// # project. The other, more modern, and more organized location is the
-// # 'functions' directory at the root of the repository.
-// #
-// # It is strongly recommended that:
-// #  1. All NEW Firebase Functions be added to the 'functions' directory.
-// #  2. A plan be made to migrate the functions from this 'api' directory to the
-// #     'functions' directory to consolidate the architecture.
-// #
-// # This will reduce confusion and improve the overall maintainability of the
-// # project. Do not add new functions here.
-// #############################################################################
-
-
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
 const admin = require('firebase-admin');
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
+const { onRequest } = require("firebase-functions/https");
 const logger = require("firebase-functions/logger");
-const marqetaService = require('../shared/services/marqetaService');
+const marqetaService = require('../../shared/services/marqetaService');
+const { encrypt, decrypt } = require('./utils/crypto');
 const crypto = require('crypto');
-
-const ALGORITHM = 'aes-256-cbc';
-const IV_LENGTH = 16; // For AES, this is always 16
-
-/**
- * Encrypts text using AES-256-CBC. A new, random IV is generated for each
- * encryption and prepended to the output.
- *
- * @param {string} text The text to encrypt.
- * @param {Buffer} key The encryption key, which must be 32 bytes long.
- * @returns {string} The encrypted text, formatted as 'iv:encryptedData'.
- * @throws {Error} If encryption fails.
- */
-function encrypt(text, key) {
-  if (!key || key.length !== 32) {
-    throw new Error('A 32-byte encryption key is required.');
-  }
-
-  try {
-    const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
-    let encrypted = cipher.update(text, 'utf8');
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return `${iv.toString('hex')}:${encrypted.toString('hex')}`;
-  } catch (error) {
-    throw new Error(`Encryption failed: ${error.message}`);
-  }
-}
-
-/**
- * Decrypts text that was encrypted with the encrypt function.
- *
- * @param {string} text The encrypted text ('iv:encryptedData').
- * @param {Buffer} key The encryption key, which must be 32 bytes long.
- * @returns {string} The decrypted text.
- * @throws {Error} If decryption fails.
- */
-function decrypt(text, key) {
-  if (!key || key.length !== 32) {
-    throw new Error('A 32-byte encryption key is required.');
-  }
-
-  try {
-    const parts = text.split(':');
-    if (parts.length !== 2) {
-      throw new Error('Invalid encrypted text format. Expected "iv:encryptedData".');
-    }
-    const iv = Buffer.from(parts.shift(), 'hex');
-    const encryptedText = Buffer.from(parts.join(':'), 'hex');
-    const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString('utf8');
-  } catch (error) {
-    throw new Error(`Decryption failed: ${error.message}`);
-  }
-}
-
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
-
-// Initialize Firebase Admin SDK
-admin.initializeApp();
 
 // Firebase Function to create a virtual card
 exports.createVirtualCard = onRequest(async (request, response) => {
@@ -164,6 +66,7 @@ exports.createVirtualCard = onRequest(async (request, response) => {
     response.status(500).send("Error creating virtual card.");
   }
 });
+
 // Firebase Function to top up a virtual card
 exports.topUpVirtualCard = onRequest(async (request, response) => {
   logger.info("Topping up virtual card...", { structuredData: true });

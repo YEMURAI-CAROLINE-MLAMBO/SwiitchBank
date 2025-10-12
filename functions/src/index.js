@@ -28,4 +28,8 @@ exports.processTransactionForRoundup = functions.firestore
     }
   });
 
-// You will define and export other Cloud Functions here
+const { createVirtualCard, topUpVirtualCard, getVirtualCard } = require('./virtualCardFunctions');
+
+exports.createVirtualCard = createVirtualCard;
+exports.topUpVirtualCard = topUpVirtualCard;
+exports.getVirtualCard = getVirtualCard;
