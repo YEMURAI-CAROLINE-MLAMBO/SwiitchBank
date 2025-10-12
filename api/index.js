@@ -28,6 +28,7 @@ const admin = require('firebase-admin');
 const {setGlobalOptions} = require("firebase-functions");
 const {onRequest} = require("firebase-functions/https");
 const logger = require("firebase-functions/logger");
+const marqetaService = require('../shared/services/marqetaService');
 
 // For cost control, you can set the maximum number of containers that can be
 // running at the same time. This helps mitigate the impact of unexpected
@@ -64,18 +65,15 @@ exports.createVirtualCard = onRequest(async (request, response) => {
   }
 
   try {
-    // TODO: Replace with actual virtual card generation logic from a provider
-    const cardNumber = 'xxxx-xxxx-xxxx-xxxx'; // Placeholder
-    const expiryDate = 'MM/YY'; // Placeholder
-    const cvv = 'xxx'; // Placeholder
+    // Create the virtual card using the Marqeta service
+    const cardData = await marqetaService.createCard({ userToken: userId /* additional details */ });
 
-    // TODO: Securely encrypt sensitive card data before storing
+    // IMPORTANT: In a production environment, you must encrypt all sensitive card data before storing it.
+    // The following is a placeholder and does not represent a secure implementation.
     const cardDetails = {
-      cardNumber: cardNumber,
-      expiryDate: expiryDate,
-      // In a real application, CVV should be handled with extreme caution and not typically stored directly.
-      // If stored, it must be heavily encrypted and access strictly controlled.
-      cvv: cvv,
+      cardNumber: cardData.pan,
+      expiryDate: cardData.expiration,
+      cvv: cardData.cvv,
       userId: userId,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     };

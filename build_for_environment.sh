@@ -1,6 +1,8 @@
 #!/bin/bash
 # build_for_environment.sh
 
+source ./setup_flutter.sh
+
 ENVIRONMENT=${1:-development}
 
 echo "🏗️ Building SwiitchBank for $ENVIRONMENT"

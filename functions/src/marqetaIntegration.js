@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const marqetaService = require('../../backend/src/services/marqetaService.js');
+const marqetaService = require('../../shared/services/marqetaService.js');
 
 admin.initializeApp();
 

@@ -68,7 +68,37 @@ const marqetaService = {
     }
   },
 
-  // TODO: Add other necessary Marqeta API interactions (e.g., get card details, get transactions, etc.)
+  /**
+   * Retrieves the details of a virtual card.
+   * @param {string} cardToken - The token of the card to retrieve.
+   * @returns {Promise<object>} - A promise that resolves with the card details.
+   */
+  getCardDetails: async (cardToken) => {
+    try {
+      console.log('Retrieving details for card:', cardToken);
+      const response = await marqetaApi.get(`/cards/${cardToken}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error retrieving details for card ${cardToken}:`, error.response ? error.response.data : error.message);
+      throw new Error('Failed to retrieve card details');
+    }
+  },
+
+  /**
+   * Retrieves the transactions for a virtual card.
+   * @param {string} cardToken - The token of the card to retrieve transactions for.
+   * @returns {Promise<object>} - A promise that resolves with the list of transactions.
+   */
+  getCardTransactions: async (cardToken) => {
+    try {
+      console.log('Retrieving transactions for card:', cardToken);
+      const response = await marqetaApi.get(`/transactions/card/${cardToken}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error retrieving transactions for card ${cardToken}:`, error.response ? error.response.data : error.message);
+      throw new Error('Failed to retrieve card transactions');
+    }
+  },
 };
 
 module.exports = marqetaService;

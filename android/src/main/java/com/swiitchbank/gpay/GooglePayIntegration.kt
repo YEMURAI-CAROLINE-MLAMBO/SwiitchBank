@@ -85,13 +85,13 @@ class GooglePayIntegration(private val activity: Activity) {
     }
 
     private fun getGatewayTokenizationSpecification(): JSONObject {
-        // TODO: Ensure you have the Stripe SDK dependency in your build.gradle.
+        // NOTE: Could not locate a build.gradle file to verify the Stripe SDK dependency.
         // TODO: Replace with your actual Stripe Publishable Key.
         return JSONObject().apply {
             put("type", "PAYMENT_GATEWAY")
             put("parameters", JSONObject().apply {
                 put("gateway", "stripe")
-                put("stripe:publishableKey", "pk_test_YOUR_PUBLISHABLE_KEY")
+                put("stripe:publishableKey", "YOUR_STRIPE_PUBLISHABLE_KEY_HERE")
                 put("stripe:version", "2020-08-27")
             })
         }
