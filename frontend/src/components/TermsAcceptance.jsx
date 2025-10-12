@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 
 const TermsAcceptance = ({ onAccept }) => {
@@ -43,7 +44,7 @@ const TermsAcceptance = ({ onAccept }) => {
       <h2>Terms and Conditions</h2>
       <div style={{ border: '1px solid #ccc', padding: '10px', maxHeight: '200px', overflowY: 'scroll' }}>
         {termsContent ? (
-          <div dangerouslySetInnerHTML={{ __html: termsContent }} />
+          <ReactMarkdown>{termsContent}</ReactMarkdown>
         ) : (
           <p>Terms and conditions content is not available.</p>
         )}
