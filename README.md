@@ -123,6 +123,12 @@ Create a `.env` in each package (backend, functions, frontend as needed). Use `.
     npm install
     firebase emulators:start --only functions,firestore,auth
     ```
+5.  **Flutter (Mobile)**
+    ```bash
+    cd ../
+    flutter pub get
+    flutter run
+    ```
 
 ## Development checklist / best practices
 - Add ESLint + Prettier and shared config for consistent formatting
@@ -165,6 +171,17 @@ This project has a multi-faceted backend, which is a combination of a traditiona
 -   **/api**: This directory contains legacy Firebase Functions that are critical to the platform's operation. **Do not add new functions to this directory.** A future effort should be made to migrate these legacy functions to the `/functions` directory to consolidate the architecture.
 
 This separation is a temporary measure to ensure the stability of the existing system while allowing for new, more organized development. By following these guidelines, we can maintain a clean and maintainable codebase.
+
+## Project Status & Documentation
+
+This project is currently in the MVP phase. The documentation is a work in progress, and there are some known gaps.
+
+- **AGENTS.md**: This file, which typically contains instructions for AI agents, is not yet present in the repository.
+- **API Documentation**: The documentation for the backend APIs is not yet complete.
+- **Code Comments**: While the code is generally well-structured, more detailed comments are needed in some areas to clarify the implementation.
+- **Dependency Discrepancy**: The `@google/generative-ai` package is used in the backend but is not listed in the `backend/package.json` file. This needs to be addressed.
+
+We are actively working to improve the documentation. In the meantime, if you have any questions, please don't hesitate to reach out to the development team.
 
 ## Known Limitations & Issues (MVP Phase)
 
