@@ -1,24 +1,11 @@
 :root {
   --primary-color: #0A0F2D;
   --accent-color: #00F5FF;
-  --background-color: #F7F9FC;
-  --text-color: #333;
+  --background-color: #0A0F2D;
+  --text-color: #FFFFFF;
   --error-color: #e74c3c;
   --success-color: #2ecc71;
-  --border-color: #ddd;
-}
-
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-
-#root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  --border-color: #FFFFFF;
 }
 
 .container {
