@@ -20,18 +20,6 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 
 <br>
 
-### Jools AI Assistant
-
-The Jools AI Assistant is an intelligent chatbot that provides users with a conversational interface for a variety of tasks, including:
-
-*   **Transaction Analysis:** Ask questions about your spending habits, and Jools will provide you with insights and analysis.
-*   **Navigation Assistance:** Can't find something in the app? Just ask Jools, and it will guide you to the right place.
-*   **Onboarding Guidance:** New to SwitchBank? Jools will help you get started and make the most of the platform.
-
-To use the Jools AI Assistant, simply tap on the chat icon in the app and start a conversation.
-
-<br>
-
 ### 📈 Should-Have Features (Post-MVP)
 - Yield vaults/reward earning post-trade
 - Cross-chain swap capabilities
@@ -50,25 +38,18 @@ To use the Jools AI Assistant, simply tap on the chat icon in the app and start 
 | **Frontend** | React (Web), Flutter (Mobile) |
 
 ## Repository layout
-- /backend — Express/Node API, business logic, services, migrations
-  - src/
-    - controllers/
-    - services/
-    - routes/
-    - middleware/
-    - config/
-- /frontend — React app for web UI
-  - src/
-    - components/
-    - pages/ (or routes)
-    - context/
-- /lib — Flutter application for mobile UI
-- /functions — Firebase Cloud Functions (serverless logic)
-- /api — **Legacy** Firebase Cloud Functions (do not add new functions here)
-- /dataconnect-generated — generated SDK connectors (do not edit manually)
-- /docker — dockerization (images, compose)
-- firebase.json, firestore.rules, FirebaseConfig.js — Firebase configuration
-- README.md — this file
+- **/backend** — Express/Node API, business logic, services, migrations
+- **/frontend** — React app for web UI
+- **/lib** — Flutter application for mobile UI. Follows a feature-first structure.
+  - **ui/**
+    - **screens/** — Contains all the screen widgets for the app.
+    - **widgets/** — Contains reusable widgets.
+  - **core/** — Core services, models, and utilities.
+  - **services/** — Business logic services (e.g., authentication, API calls).
+- **/functions** — Firebase Cloud Functions (serverless logic)
+- **/api** — **Legacy** Firebase Cloud Functions (do not add new functions here)
+- **/.env.example** — A master template of all environment variables.
+- **/build_for_environment.sh** — Script for building the Flutter app for different environments.
 
 ## Installation & Local Development
 
@@ -76,21 +57,17 @@ To use the Jools AI Assistant, simply tap on the chat icon in the app and start 
 - Node.js (v18 or higher)
 - npm or yarn
 - Firebase CLI tools
-- Marqeta developer account (for card processing)
-- Gemini API credentials (for AI services)
+- Flutter SDK
 
-### Environment variables
-Create a `.env` in each package (backend, functions, frontend as needed). Use `.env.example` (do not commit secrets). Example keys:
-- PORT=3000
-- NODE_ENV=development
-- DATABASE_URL=<your-db-url>
-- JWT_SECRET=<secret>
-- FIREBASE_API_KEY=<your_firebase_api_key>
-- FIREBASE_AUTH_DOMAIN=<your_project>.firebaseapp.com
-- FIREBASE_PROJECT_ID=<your_firebase_project_id>
-- FIREBASE_PRIVATE_KEY=<firebase_private_key_json_or_base64>
-- STRIPE_SECRET_KEY=<stripe_secret>
-- MAILER_HOST, MAILER_USER, MAILER_PASS
+### Environment Variables Setup
+This project uses `.env` files for managing environment variables for local development. A master template, `.env.example`, is provided in the root directory. For local development, you should create a `.env` file inside each package (`backend/`, `frontend/`, `functions/`) that requires it. **Do not commit `.env` files.**
+
+**Example for the backend:**
+1. Navigate to the `backend` directory: `cd backend`
+2. Copy the `.env.example` file: `cp ../.env.example .env`
+3. Fill in the required secrets in the new `backend/.env` file.
+
+For the Flutter app, environment variables are passed in at compile time by the build script.
 
 ### Quick start (local dev)
 
@@ -103,7 +80,8 @@ Create a `.env` in each package (backend, functions, frontend as needed). Use `.
 2.  **Backend**
     ```bash
     cd backend
-    cp .env.example .env
+    # Create .env from .env.example and fill in secrets
+    cp ../.env.example .env
     npm install
     npm run dev
     ```
@@ -111,7 +89,8 @@ Create a `.env` in each package (backend, functions, frontend as needed). Use `.
 3.  **Frontend**
     ```bash
     cd ../frontend
-    cp .env.example .env
+    # Create .env from .env.example and fill in secrets
+    cp ../.env.example .env
     npm install
     npm start
     ```
@@ -119,27 +98,31 @@ Create a `.env` in each package (backend, functions, frontend as needed). Use `.
 4.  **Firebase functions (emulator)**
     ```bash
     cd ../functions
-    cp .env.example .env
+    # Create .env from .env.example and fill in secrets
+    cp ../.env.example .env
     npm install
     firebase emulators:start --only functions,firestore,auth
     ```
 5.  **Flutter (Mobile)**
+    For local development, you can run the app with a specific API endpoint like this:
     ```bash
-    cd ../
-    flutter pub get
-    flutter run
+    flutter run --dart-define=API_BASE_URL=http://localhost:3000/api
     ```
 
-## Development checklist / best practices
-- Add ESLint + Prettier and shared config for consistent formatting
-- Add commit hooks with Husky + lint-staged to lint & format staged files
-- Unit and integration tests for critical flows (auth, payments, transfers) have been added.
-- Validate env variables on startup with joi/convict/zod
-- Centralized error handling and consistent error response format
-- Avoid committing secrets — use GitHub Secrets for CI + Firebase environment config for deployment
-- Add logging (e.g., winston or pino) and avoid console.log in production
-- Add rate limiting and input validation for public endpoints
-- Review firebase security rules before production deployment
+## Building the Flutter App for an Environment
+The `build_for_environment.sh` script is used to build the Flutter web app for a specific environment. This script will automatically select the correct API_BASE_URL.
+
+**Usage:**
+```bash
+# To build for development (default)
+./build_for_environment.sh
+
+# To build for staging
+./build_for_environment.sh staging
+
+# To build for production
+./build_for_environment.sh production
+```
 
 ## Deployment
 
@@ -149,49 +132,28 @@ Deploy securely using the provided script:
 chmod +x deploy-secure.sh
 ./deploy-secure.sh
 ```
-
 This deployment process includes:
-
 · Cloud Function deployment
 · Firestore rules configuration
 · Data Connect schema implementation
 · Security rule validation
 
-- Use CI/CD that runs lint, tests, and build steps.
-- Deploy backend to a managed host (Heroku, Render, Cloud Run) or container registry.
-- Use Firebase Hosting + Functions for serverless parts if desired. Use `firebase deploy --only hosting,functions`.
-- Use environment-specific Firebase project configs and secrets in CI (do not embed private keys in repo).
-
 ## Backend Architecture
-
-This project has a multi-faceted backend, which is a combination of a traditional Node.js/Express server and serverless Firebase Functions. This structure is the result of evolving development and will be consolidated over time.
-
--   **/backend**: A traditional Node.js/Express server responsible for core business logic, services, and API routes. This server is intended to be the primary backend for the application.
--   **/functions**: The primary, modern, and organized location for all new Firebase Functions. All new serverless logic should be added here.
--   **/api**: This directory contains legacy Firebase Functions that are critical to the platform's operation. **Do not add new functions to this directory.** A future effort should be made to migrate these legacy functions to the `/functions` directory to consolidate the architecture.
-
-This separation is a temporary measure to ensure the stability of the existing system while allowing for new, more organized development. By following these guidelines, we can maintain a clean and maintainable codebase.
+This project has a multi-faceted backend, which is a combination of a traditional Node.js/Express server and serverless Firebase Functions.
+-   **/backend**: A traditional Node.js/Express server responsible for core business logic.
+-   **/functions**: The primary, modern, and organized location for all new Firebase Functions.
+-   **/api**: This directory contains legacy Firebase Functions. **Do not add new functions to this directory.**
 
 ## Project Status & Documentation
-
-This project is currently in the MVP phase. The documentation is a work in progress, and there are some known gaps.
-
-- **API Documentation**: The documentation for the backend APIs is not yet complete.
-- **Code Comments**: While the code is generally well-structured, more detailed comments are needed in some areas to clarify the implementation.
-
-We are actively working to improve the documentation. In the meantime, if you have any questions, please don't hesitate to reach out to the development team.
+This project is currently in the MVP phase. The documentation is a work in progress.
 
 ## Known Limitations & Issues (MVP Phase)
-
-· Jools Onboarding: Business account onboarding via Jools is currently a guided assistant rather than fully autonomous implementation
-· Currency Support: Limited to primary currency (USD) and major cryptocurrencies (BTC, ETH)
-· Transaction Limits: Reduced limits during MVP testing phase
-· Browser Support: Optimized for Chrome and Safari browsers
+· Jools Onboarding: Business account onboarding via Jools is currently a guided assistant.
+· Currency Support: Limited to primary currency (USD) and major cryptocurrencies (BTC, ETH).
+· Transaction Limits: Reduced limits during MVP testing phase.
 
 ## Contributing
-
 We welcome contributions! Please read our contributing guidelines before submitting pull requests.
 
 ## License
-
 This project is licensed under the terms contained in the LICENSE file.

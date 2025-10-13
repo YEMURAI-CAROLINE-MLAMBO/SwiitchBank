@@ -1,37 +1,36 @@
 #!/bin/bash
 # build_for_environment.sh
 
-source ./setup_flutter.sh
+# Exit immediately if a command exits with a non-zero status.
+set -e
 
+# 1. Select Environment
 ENVIRONMENT=${1:-development}
+echo "🚀 Starting build for $ENVIRONMENT environment..."
 
-echo "🏗️ Building SwiitchBank for $ENVIRONMENT"
+# 2. Define Environment-Specific Variables
+# A more secure approach is to define the variables directly here
+# or source them from a file that is NOT checked into version control.
 
-# Placeholder functions for get_api_url and use_mock_apis
-get_api_url() {
-  case "$1" in
-    production) echo "https://api.swiitchbank.com" ;;
-    staging) echo "https://staging.swiitchbank.com" ;;
-    *) echo "http://localhost:3000" ;;
-  esac
-}
+API_BASE_URL=""
+case $ENVIRONMENT in
+  production)
+    API_BASE_URL="https://api.swiitchbank.com/api"
+    ;;
+  staging)
+    API_BASE_URL="https://staging.swiitchbank.com/api"
+    ;;
+  *)
+    API_BASE_URL="http://localhost:3000/api"
+    ;;
+esac
 
-use_mock_apis() {
-  if [ "$1" = "development" ]; then
-    echo "true"
-  else
-    echo "false"
-  fi
-}
+echo "API_BASE_URL set to: $API_BASE_URL"
 
-# Set environment variables
-export ENVIRONMENT=$ENVIRONMENT
-export APP_NAME="SwiitchBank $ENVIRONMENT"
+# 3. Build the Flutter Web App
+echo "🏗️ Building SwiitchBank for $ENVIRONMENT..."
+# Use --dart-define to pass compile-time variables to the app.
+# This is more secure than using .env files for build scripts.
+flutter build web --dart-define=API_BASE_URL=$API_BASE_URL
 
-# Build with environment flags
-flutter build web \
-  --dart-define=ENVIRONMENT=$ENVIRONMENT \
-  --dart-define=API_BASE_URL=$(get_api_url $ENVIRONMENT) \
-  --dart-define=USE_MOCK_APIS=$(use_mock_apis $ENVIRONMENT)
-
-echo "✅ Build complete for $ENVIRONMENT"
+echo "✅ Build complete for $ENVIRONMENT. The output is in the build/web directory."

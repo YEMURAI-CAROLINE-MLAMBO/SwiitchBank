@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:swiitch/live_chat_screen.dart';
+import 'live_chat_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
