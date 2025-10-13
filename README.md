@@ -26,6 +26,30 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 - Advanced gamification milestones
 - Multi-currency support for global users
 
+### 🤖 Autonomous Communication System
+
+SwiitchBank features a sophisticated, autonomous communication system to handle all user and developer notifications. This system operates with zero required human intervention, ensuring timely, relevant, and personalized communication.
+
+The system is built around a `CoreCommunication` engine that manages two primary channels: **Email** and **In-App Messaging**.
+
+#### Key Capabilities:
+
+-   **Automated Message Triggers**: The system automatically sends messages based on user behavior and system events.
+    -   **Welcome Sequence**: New users receive a welcome message and a follow-up to guide them through onboarding.
+    -   **Security Alerts**: High-priority security events (e.g., suspicious logins) instantly trigger alerts to the user's email and in-app inbox.
+    -   **Weekly Financial Insights**: Jools AI generates and sends a personalized financial summary to each active user every week.
+
+-   **Dual-Channel Delivery**:
+    -   **In-App Messaging**: All notifications are delivered as in-app messages, accessible through a dedicated message center. A real-time notification badge with an unread count keeps users informed.
+    -   **Email Notifications**: Critical messages, such as security alerts and high-priority financial updates, are also sent via email to ensure they are not missed.
+
+-   **Developer & System Notifications**:
+    -   The system keeps the development team informed about its operational status.
+    -   **System Health Alerts**: Important events, like system startup or critical errors, trigger an email notification to a designated developer address (`ymlamo21@gmail.com`).
+    -   **High-Priority CC**: The developer email is automatically CC'd on high-priority user communications, like security alerts, for oversight.
+
+-   **Intelligent Scheduling & Prioritization**: The system uses a priority system (`high`, `medium`, `low`) and message type (`security`, `financial`, `system`) to determine the appropriate communication channel and timing, preventing user spam.
+
 ## Technology Stack
 
 | **Layer** | **Technology** |
