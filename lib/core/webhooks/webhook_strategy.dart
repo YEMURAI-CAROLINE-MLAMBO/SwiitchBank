@@ -114,9 +114,4 @@ class WebhookReceiver {
   }
 }
 
-// Placeholder for GeminiJoolsService
-class GeminiJoolsService {
-  static Future<void> initialize() async {
-    print('Placeholder: GeminiJoolsService initialized');
-  }
-}
+import '../../services/jools/gemini_jools_service.dart';

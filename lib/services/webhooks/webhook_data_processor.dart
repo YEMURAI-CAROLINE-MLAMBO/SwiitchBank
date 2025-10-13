@@ -2,8 +2,11 @@
 // lib/services/webhooks/webhook_data_processor.dart
 
 import '../../core/models/webhook_payloads.dart';
-import '../../core/services/mock_services.dart';
-import '../../core/webhooks/webhook_strategy.dart';
+import '../../ui/providers/user_data_provider.dart';
+import '../database/database_service.dart';
+import '../jools/gemini_jools_service.dart';
+import '../payment/payment_service.dart';
+import '../portfolio/portfolio_service.dart';
 
 /// 🔄 Webhook Data Processor
 /// Processes incoming webhooks WITHOUT making outgoing API calls
@@ -14,18 +17,20 @@ class WebhookDataProcessor {
     // ✅ RECEIVE data from Plaid webhook and parse it into a structured model
     final transaction = _convertWebhookToTransaction(payload);
 
-    // ✅ Process internally with mock security system
-    await mockSecurityOrchestrator.processTransaction(transaction);
+    // In a real app, you'd get the provider from the context.
+    // For this static method, we'll create a new instance.
+    final userDataProvider = UserDataProvider();
 
     // ✅ Analyze with existing Gemini API (internal call)
     final aiAnalysis = await GeminiJoolsService.analyzeTransaction(transaction);
 
-    // ✅ Store locally in mock database
-    await mockLocalDatabase.storeTransaction(transaction);
-    await mockLocalDatabase.storeAIAnalysis(transaction.transactionId, aiAnalysis);
+    // ✅ Store locally in database
+    final dbService = DatabaseService();
+    await dbService.storeTransaction(transaction);
+    await dbService.storeAIAnalysis(transaction.transactionId, aiAnalysis);
 
-    // ✅ Update mock UI state
-    await mockAppState.updateTransactionList(transaction);
+    // ✅ Update UI state
+    userDataProvider.updateTransactionList(transaction);
 
     print('✅ Processed transaction via webhook: ${transaction.transactionId}');
   }
@@ -35,14 +40,18 @@ class WebhookDataProcessor {
     // ✅ RECEIVE payment data from Stripe webhook and parse it
     final payment = _convertWebhookToPayment(payload);
 
-    // ✅ Process internally with mock payment service
-    await mockPaymentService.recordPayment(payment);
+    // In a real app, you'd get the provider from the context.
+    final userDataProvider = UserDataProvider();
+
+    // ✅ Process internally with payment service
+    final paymentService = PaymentService();
+    await paymentService.recordPayment(payment);
 
     // ✅ Analyze with Gemini AI
     final paymentInsight = await GeminiJoolsService.analyzePaymentPattern(payment);
 
-    // ✅ Update mock user interface state
-    await mockAppState.updatePaymentStatus(payment);
+    // ✅ Update user interface state
+    userDataProvider.updatePaymentStatus(payment);
 
     print('✅ Processed payment via webhook: ${payment.id}');
   }
@@ -55,8 +64,9 @@ class WebhookDataProcessor {
     // ✅ Analyze with Gemini AI
     final cryptoAnalysis = await GeminiJoolsService.analyzeCryptoPattern(cryptoUpdate);
 
-    // ✅ Update mock portfolio locally
-    await mockPortfolioService.updateCryptoHoldings(cryptoUpdate);
+    // ✅ Update portfolio locally
+    final portfolioService = PortfolioService();
+    await portfolioService.updateCryptoHoldings(cryptoUpdate);
 
     print('✅ Processed crypto update via webhook');
   }
@@ -79,25 +89,3 @@ class WebhookDataProcessor {
   }
 }
 
-// ============== Placeholder Classes for Dependencies Not Yet Mocked ==============
-
-class CryptoUpdate {}
-class AIAnalysis {}
-class PaymentInsight {}
-class CryptoAnalysis {}
-
-// Extending the GeminiJoolsService placeholder from webhook_strategy.dart
-extension GeminiJoolsServiceAnalytics on GeminiJoolsService {
-  static Future<AIAnalysis> analyzeTransaction(PlaidTransaction transaction) async {
-    print('Placeholder: Analyzing transaction with Gemini for ${transaction.merchantName}');
-    return AIAnalysis();
-  }
-  static Future<PaymentInsight> analyzePaymentPattern(StripePayment payment) async {
-    print('Placeholder: Analyzing payment pattern with Gemini for payment ${payment.id}');
-    return PaymentInsight();
-  }
-    static Future<CryptoAnalysis> analyzeCryptoPattern(CryptoUpdate cryptoUpdate) async {
-    print('Placeholder: Analyzing crypto pattern with Gemini');
-    return CryptoAnalysis();
-  }
-}

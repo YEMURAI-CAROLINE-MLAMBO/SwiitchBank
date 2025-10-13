@@ -1,6 +1,8 @@
 // backend/src/services/referralService.js
 const { v4: uuidv4 } = require('uuid');
-const { query } = require('../config/database');
+const User = require('../models/User');
+const Wallet = require('../models/Wallet');
+const Referral = require('../models/Referral');
 const logger = require('../utils/logger');
 
 /**
@@ -13,14 +15,17 @@ const predictReferralLikelihood = async (userId) => {
   try {
     // Simple heuristic (to be replaced with ML model)
     const [txCount, balance, cardCount] = await Promise.all([
-      query(`SELECT COUNT(*) FROM transactions WHERE user_id = $1`, [userId]),
-      query(`SELECT SUM(balance) FROM wallets WHERE user_id = $1`, [userId]),
-      query(`SELECT COUNT(*) FROM cards WHERE user_id = $1`, [userId])
+      Transaction.countDocuments({ userId }),
+      Wallet.aggregate([
+        { $match: { userId } },
+        { $group: { _id: null, totalBalance: { $sum: '$balance' } } },
+      ]),
+      VirtualCard.countDocuments({ userId }),
     ]);
-    
-    const tx = parseInt(txCount.rows[0].count);
-    const bal = parseFloat(balance.rows[0].sum || 0);
-    const cards = parseInt(cardCount.rows[0].count);
+
+    const tx = txCount;
+    const bal = balance.length > 0 ? balance[0].totalBalance : 0;
+    const cards = cardCount;
     
     const score = Math.min(1, 
       (tx / 20 * 0.4) + 
@@ -56,18 +61,12 @@ const generateReferralOffer = async (userId) => {
     }
     
     // Create referral code if doesn't exist
-    const userResult = await query(
-      `SELECT referral_code FROM users WHERE id = $1`,
-      [userId]
-    );
-    
-    let referralCode = userResult.rows[0]?.referral_code;
+    const user = await User.findById(userId);
+    let referralCode = user.referralCode;
     if (!referralCode) {
       referralCode = `SWIITCH-${uuidv4().split('-')[0].toUpperCase()}`;
-      await query(
-        `UPDATE users SET referral_code = $1 WHERE id = $2`,
-        [referralCode, userId]
-      );
+      user.referralCode = referralCode;
+      await user.save();
     }
     
     return {
@@ -94,29 +93,25 @@ const generateReferralOffer = async (userId) => {
 const processReferral = async (referralCode, newUserId) => {
   try {
     // Get referrer user
-    const referrerResult = await query(
-      `SELECT id FROM users WHERE referral_code = $1`,
-      [referralCode]
-    );
-    
-    if (referrerResult.rows.length === 0) return false;
-    
-    const referrerId = referrerResult.rows[0].id;
+    const referrer = await User.findOne({ referralCode });
+    if (!referrer) return false;
+
+    const referrerId = referrer._id;
     const offer = await generateReferralOffer(referrerId);
-    
+
     // Apply rewards
-    await query(
-      `UPDATE wallets SET balance = balance + $1 
-       WHERE user_id = $2 AND currency = $3`,
-      [offer.reward.amount, referrerId, offer.reward.currency]
+    await Wallet.findOneAndUpdate(
+      { userId: referrerId, currency: offer.reward.currency },
+      { $inc: { balance: offer.reward.amount } }
     );
-    
-    await query(
-      `INSERT INTO referrals 
-       (referrer_id, referred_id, reward_amount, reward_currency, status) 
-       VALUES ($1, $2, $3, $4, 'completed')`,
-      [referrerId, newUserId, offer.reward.amount, offer.reward.currency]
-    );
+
+    await Referral.create({
+      referrerId,
+      referredId: newUserId,
+      rewardAmount: offer.reward.amount,
+      rewardCurrency: offer.reward.currency,
+      status: 'completed',
+    });
     
     return true;
   } catch (error) {
@@ -133,21 +128,16 @@ const processReferral = async (referralCode, newUserId) => {
 const getReferralDetails = async (userId) => {
   try {
     // Get user's referral code
-    const userResult = await query(
-      `SELECT referral_code FROM users WHERE id = $1`,
-      [userId]
-    );
-    const referralCode = userResult.rows[0]?.referral_code || null;
+    const user = await User.findById(userId);
+    const referralCode = user ? user.referralCode : null;
 
     // Get completed referrals for this user
-    const completedReferralsResult = await query(
-      `SELECT id, referred_id, reward_amount, reward_currency, created_at
-       FROM referrals
-       WHERE referrer_id = $1 AND status = 'completed'`,
-      [userId]
-    );
+    const completedReferrals = await Referral.find({
+      referrerId: userId,
+      status: 'completed',
+    });
 
-    return { referralCode, completedReferrals: completedReferralsResult.rows };
+    return { referralCode, completedReferrals };
   } catch (error) {
     logger.error('Error fetching referral details:', error);
     throw new Error('Failed to fetch referral details');

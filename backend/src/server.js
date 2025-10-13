@@ -1,9 +1,9 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import connectDB from './config/db.js';
-import userRoutes from './routes/userRoutes.js';
-import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+const express = require('express');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const connectDB = require('./config/db.js');
+const userRoutes = require('./routes/userRoutes.js');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware.js');
 
 // Load environment variables
 dotenv.config();
@@ -37,4 +37,4 @@ app.listen(PORT, () => {
   console.log(`Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
 
-export default app;
+module.exports = app;

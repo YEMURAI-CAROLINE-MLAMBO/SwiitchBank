@@ -1,6 +1,6 @@
 // backend/src/controllers/virtualCardController.js
 
-const { query } = require('/workspace/backend/src/config/database');
+const VirtualCard = require('../models/VirtualCard');
 const cryptoService = require('/workspace/backend/src/services/cryptoService');
 const bankTransferService = require('/workspace/backend/src/services/bankTransferService');
 const marqetaService = require('../../../shared/services/marqetaService');
@@ -26,13 +26,12 @@ const marqetaService = require('../../../shared/services/marqetaService');
  *         description: Internal server error
  */
 exports.listVirtualCards = async (req, res) => {
- try {
+  try {
     const userId = req.user.id; // Assuming user ID is available from authentication middleware
-    const result = await query('SELECT * FROM virtual_cards WHERE user_id = $1', [userId]); 
-    const virtualCards = result.rows;
+    const virtualCards = await VirtualCard.find({ userId });
     res.status(200).json(virtualCards); // Send the retrieved cards in the response
   } catch (error) {
- console.error('Error listing virtual cards:', error);
+    console.error('Error listing virtual cards:', error);
     res.status(500).json({ message: 'Error listing virtual cards' });
   }
 };
@@ -67,17 +66,20 @@ exports.listVirtualCards = async (req, res) => {
 exports.getVirtualCardById = async (req, res) => {
   const cardId = req.params.cardId;
 
- try {
+  try {
     const userId = req.user.id; // Assuming user ID is available from authentication middleware
-    const result = await query('SELECT * FROM virtual_cards WHERE id = $1 AND user_id = $2', [cardId, userId]);
-    const card = result.rows[0];
+    const card = await VirtualCard.findOne({ _id: cardId, userId });
 
     if (card) {
       // Ensure card details are handled securely (e.g., tokenized) before sending
       // For this example, we are returning raw data as a placeholder
       res.status(200).json(card);
-  } else {
+    } else {
       res.status(404).json({ message: 'Virtual card not found or unauthorized' });
+    }
+  } catch (error) {
+    console.error('Error getting virtual card by ID:', error);
+    res.status(500).json({ message: 'Error getting virtual card by ID' });
   }
 };
 
@@ -92,48 +94,52 @@ exports.withdrawVirtualCard = async (req, res) => {
     return res.status(400).json({ message: 'Invalid withdrawal amount' });
   }
 
- try {
+  try {
     // Find the virtual card for the authenticated user
-    const cardResult = await query('SELECT * FROM virtual_cards WHERE id = $1 AND user_id = $2', [cardId, userId]);
-    const card = cardResult.rows[0];
+    const card = await VirtualCard.findOne({ _id: cardId, userId });
 
     if (!card) {
       return res.status(404).json({ message: 'Virtual card not found or unauthorized' });
     }
 
     // Check for sufficient funds
-    if ((card.balance || 0) < amount) {
+    if (card.balance < amount) {
       return res.status(400).json({ message: 'Insufficient funds' });
     }
 
     // Update card balance in the database
-    const newBalance = (card.balance || 0) - amount;
-    await query('UPDATE virtual_cards SET balance = $1 WHERE id = $2 AND user_id = $3', [newBalance, cardId, userId]);
+    card.balance -= amount;
+    await card.save();
 
- res.status(200).json(card);
+    res.status(200).json(card);
   } catch (error) {
- console.error('Error withdrawing from virtual card:', error);
+    console.error('Error withdrawing from virtual card:', error);
     res.status(500).json({ message: 'Error withdrawing from virtual card' });
   }
 };
 exports.createVirtualCard = async (req, res) => {
   try {
     const userId = req.user.id; // Assuming user ID is available from authentication middleware
+    const { type, nickname } = req.body;
 
     // Call Marqeta service to create a virtual card
-    const cardData = await marqetaService.createCard({ userToken: userId /* other details */ });
+    const cardData = await marqetaService.createCard({ userToken: userId, type, nickname });
 
     // IMPORTANT: In a production environment, you must encrypt all sensitive card data before storing it.
     // The pan, expiration, and cvv should be handled securely (e.g., tokenized or stored in a vault).
     const { pan, expiration, cvv } = cardData;
 
     // Save the new card to the database
-    const result = await query(
-      'INSERT INTO virtual_cards (user_id, card_number, expiry_date, cvv, balance, status) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [userId, pan, expiration, cvv, 0, 'active']
-    );
-
-    const createdCard = result.rows[0];
+    const createdCard = await VirtualCard.create({
+      userId,
+      cardNumber: pan,
+      expiryDate: expiration,
+      cvv,
+      balance: 0,
+      status: 'active',
+      type,
+      nickname,
+    });
 
     // Do not return sensitive data like full card number or CVV.
     // This is just for demonstration. In a real app, you would return a token or masked data.
@@ -174,18 +180,18 @@ exports.topupVirtualCard = async (req, res) => {
     return res.status(400).json({ message: 'Invalid top-up amount' });
   }
 
- try {
-    const result = await query('SELECT * FROM virtual_cards WHERE id = $1 AND user_id = $2', [cardId, req.user.id]);
-    const card = result.rows[0];
+  try {
+    const card = await VirtualCard.findOne({ _id: cardId, userId: req.user.id });
 
- if (card) {
-    card.balance = (card.balance || 0) + amount;
-    res.status(200).json(card);
-  } else {
-    res.status(404).json({ message: 'Virtual card not found' });
-  }
+    if (card) {
+      card.balance += amount;
+      await card.save();
+      res.status(200).json(card);
+    } else {
+      res.status(404).json({ message: 'Virtual card not found' });
+    }
   } catch (error) {
- console.error('Error topping up virtual card:', error);
+    console.error('Error topping up virtual card:', error);
     res.status(500).json({ message: 'Error topping up virtual card' });
   }
 };

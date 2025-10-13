@@ -1,6 +1,8 @@
 // backend/src/services/marqetaWebhookService.js
 
-const { query } = require('../config/database');
+const Transaction = require('../models/Transaction');
+const VirtualCard = require('../models/VirtualCard');
+const User = require('../models/User');
 const logger = require('../utils/logger');
 
 const processWebhookEvent = async (event) => {
@@ -20,33 +22,39 @@ const processWebhookEvent = async (event) => {
       case 'transaction.authorization':
       case 'transaction.clearing':
         logger.info(`Processing transaction event: ${type}`);
-        await query(
-          'INSERT INTO transactions (marqeta_transaction_token, marqeta_card_token, marqeta_user_token, amount, currency, state, transaction_type, merchant_details) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-          [payload.token, payload.card_token, payload.user_token, payload.amount, payload.currency, payload.state, type, payload.merchant]
-        );
+        await Transaction.create({
+          marqetaTransactionToken: payload.token,
+          marqetaCardToken: payload.card_token,
+          marqetaUserToken: payload.user_token,
+          amount: payload.amount,
+          currency: payload.currency,
+          state: payload.state,
+          transactionType: type,
+          merchantDetails: payload.merchant,
+        });
         break;
 
       case 'card.state.change':
         logger.info(`Processing card state change event: ${type}`);
-        await query(
-          'UPDATE virtual_cards SET status = $1 WHERE marqeta_card_token = $2',
-          [payload.state, payload.card_token]
+        await VirtualCard.updateOne(
+          { marqetaCardToken: payload.card_token },
+          { status: payload.state }
         );
         break;
 
       case 'user.state.change':
         logger.info(`Processing user state change event: ${type}`);
-        await query(
-          'UPDATE users SET status = $1 WHERE marqeta_user_token = $2',
-          [payload.state, payload.user_token]
+        await User.updateOne(
+          { marqetaUserToken: payload.user_token },
+          { status: payload.state }
         );
         break;
 
       case 'balance.impact':
         logger.info(`Processing balance impact event: ${type}`);
-        await query(
-          'UPDATE virtual_cards SET balance = balance + $1 WHERE marqeta_card_token = $2',
-          [payload.amount, payload.card_token]
+        await VirtualCard.updateOne(
+          { marqetaCardToken: payload.card_token },
+          { $inc: { balance: payload.amount } }
         );
         break;
 

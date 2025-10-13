@@ -313,23 +313,52 @@ class BehavioralAnalyticsEngine {
   // ========== MOCK DATA METHODS ========== //
 
   static List<UserAction> _getRecentUserEvents(String userId) {
-    // TODO: Implement real event tracking
-    return [];
+    // In a real implementation, this would fetch from a database or event stream.
+    // For now, returning a mock list of recent actions.
+    return [
+      UserAction(type: 'login', timestamp: DateTime.now().subtract(Duration(hours: 1))),
+      UserAction(type: 'view_balance', timestamp: DateTime.now().subtract(Duration(minutes: 30))),
+      UserAction(type: 'initiate_transfer', timestamp: DateTime.now().subtract(Duration(minutes: 5))),
+    ];
   }
 
   static List<BehaviorPattern> _getHistoricalPatterns(String userId) {
-    // TODO: Implement pattern storage/retrieval
-    return [];
+    // In a real implementation, this would fetch from a pre-computed analytics store.
+    // For now, returning a mock list of historical patterns.
+    return [
+      BehaviorPattern(type: 'spending_category', value: 'groceries', confidence: 0.8),
+      BehaviorPattern(type: 'transaction_hour', value: '18', confidence: 0.7),
+      BehaviorPattern(type: 'login_location', value: 'New York, NY', confidence: 0.9),
+    ];
   }
 
   static double _calculateDriftScore(List<UserAction> recent, List<BehaviorPattern> historical) {
-    // TODO: Implement drift calculation
-    return 0.3;
+    // A simple drift calculation: Compare recent actions to historical patterns.
+    if (historical.isEmpty) return 0.0;
+
+    double mismatches = 0;
+    for (final action in recent) {
+      final matches = historical.where((pattern) =>
+        pattern.type == action.type && pattern.value == action.metadata.toString()
+      ).length;
+      if (matches == 0) {
+        mismatches++;
+      }
+    }
+    return mismatches / recent.length;
   }
 
   static List<String> _identifyChangingPatterns(List<UserAction> recent, List<BehaviorPattern> historical) {
-    // TODO: Implement pattern change detection
-    return [];
+    final changing = <String>{};
+    for (final action in recent) {
+      final hasMatchingPattern = historical.any(
+        (p) => p.type == action.type && p.value == action.metadata.toString()
+      );
+      if (!hasMatchingPattern) {
+        changing.add(action.type);
+      }
+    }
+    return changing.toList();
   }
 
   static double _calculateDriftConfidence(UserBehaviorProfile profile) {
@@ -337,17 +366,48 @@ class BehavioralAnalyticsEngine {
   }
 
   static List<String> _generateDriftRecommendations(UserBehaviorProfile profile) {
-    // TODO: Implement recommendation engine
-    return ['Continue monitoring behavioral patterns'];
+    if (profile.riskScore > 0.7) {
+      return ['High risk detected. Consider temporary transaction limits.', 'Review recent high-risk activities.'];
+    }
+    if (profile.profileStrength < 0.3) {
+      return ['Behavioral profile is still learning. Continue normal activity to strengthen it.'];
+    }
+    return ['Behavioral patterns appear stable. No immediate action recommended.'];
   }
 
   static SequenceMatch? _findSequenceMatch(List<UserAction> actions, List<BehaviorSequence> sequences) {
-    // TODO: Implement sequence matching
+    // Simple sequence matching: Check if the end of the recent actions list
+    // matches any known common sequence.
+    for (final sequence in sequences) {
+      if (actions.length >= sequence.actions.length) {
+        final sublist = actions.sublist(actions.length - sequence.actions.length);
+        bool match = true;
+        for (int i = 0; i < sublist.length; i++) {
+          if (sublist[i].type != sequence.actions[i]) {
+            match = false;
+            break;
+          }
+        }
+        if (match) {
+          return SequenceMatch(sequenceId: sequence.id, confidence: 0.9);
+        }
+      }
+    }
     return null;
   }
 
   static Location _parseLocationCoordinates(String location) {
-    // TODO: Implement location parsing
+    // Basic parsing for "lat,lng" format.
+    try {
+      final parts = location.split(',');
+      if (parts.length == 2) {
+        return Location(lat: double.parse(parts[0]), lng: double.parse(parts[1]));
+      }
+    } catch (e) {
+      // Fallback for invalid format
+      return Location(lat: 0.0, lng: 0.0);
+    }
+    // Fallback for other formats
     return Location(lat: 0.0, lng: 0.0);
   }
 
@@ -356,7 +416,31 @@ class BehavioralAnalyticsEngine {
     Map<String, dynamic> transaction,
     BehavioralAnalysisResult analysis
   ) async {
-    // TODO: Implement profile updating logic
+    // This is a critical function that would update the user's profile
+    // in a database based on the new transaction and analysis.
+    // For this mock implementation, we'll just update a few fields in memory.
+    final amount = (transaction['amount'] as double?)?.abs() ?? 0.0;
+    final category = transaction['category'] as String? ?? 'unknown';
+
+    // Update spending habits
+    profile.spendingHabits.typicalAmounts[category] =
+        (profile.spendingHabits.typicalAmounts[category] ?? [])..add(amount);
+
+    // Update location data
+    if (transaction['location'] != null) {
+      profile.geographicPatterns.lastKnownLocation = Location(
+        lat: _parseLocationCoordinates(transaction['location']).lat,
+        lng: _parseLocationCoordinates(transaction['location']).lng,
+        timestamp: transaction['timestamp'],
+      );
+    }
+
+    // Update risk score (e.g., moving average)
+    profile.riskScore = (profile.riskScore * 0.9) + (analysis.overallRiskScore * 0.1);
+
+    // Strengthen profile with more data
+    profile.profileStrength = (profile.profileStrength + 0.01).clamp(0.0, 1.0);
+
     profile.lastUpdated = DateTime.now();
   }
 }
