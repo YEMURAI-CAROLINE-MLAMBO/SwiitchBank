@@ -14,6 +14,8 @@ dependencies:
   flutter_dotenv: ^5.0.2
   http: ^0.13.3
   provider: ^6.0.0
+  shelf: ^1.2.0
+  shelf_router: ^1.1.0
 
 
   cupertino_icons: ^1.0.2
