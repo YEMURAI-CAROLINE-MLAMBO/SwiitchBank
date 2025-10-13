@@ -1,37 +1,15 @@
 export function analyzeUserBehavior(userData: any): any {
-  // This is a placeholder for analyzing user behavior.
-  // In a real-world scenario, this would involve complex logic
-  // to analyze user interactions, patterns, and historical data.
-  console.log("Analyzing user behavior for user:", userData);
-  // Return a risk score or behavioral insights based on the analysis
-  return { behaviorRiskScore: Math.random() * 100 };
+  // Simple heuristic: if the user has made more than 10 transactions, they are considered less risky.
+  const transactionCount = userData.transactions ? userData.transactions.length : 0;
+  const behaviorRiskScore = transactionCount > 10 ? 20 : 80;
+  console.log(`User behavior risk score for user ${userData.id}: ${behaviorRiskScore}`);
+  return { behaviorRiskScore };
 }
 
 export function assessTransactionRiskAI(transactionData: any): any {
-  // This is a placeholder for assessing transaction risk using AI.
-  // In a real-world scenario, this would involve integrating with an
-  // AI model to evaluate transaction details and identify potential risks.
-  console.log("Assessing transaction risk for transaction:", transactionData);
-  // Return a risk score or fraud probability based on the AI assessment
-  return { transactionRiskScore: Math.random() * 100 };
-}
-
-
-
-export function analyzeUserBehavior(userData: any): any {
-  // This is a placeholder for analyzing user behavior.
-  // In a real-world scenario, this would involve complex logic
-  // to analyze user interactions, patterns, and historical data.
-  console.log("Analyzing user behavior for user:", userData);
-  // Return a risk score or behavioral insights based on the analysis
-  return { behaviorRiskScore: Math.random() * 100 };
-}
-
-export function assessTransactionRiskAI(transactionData: any): any {
-  // This is a placeholder for assessing transaction risk using AI.
-  // In a real-world scenario, this would involve integrating with an
-  // AI model to evaluate transaction details and identify potential risks.
-  console.log("Assessing transaction risk for transaction:", transactionData);
-  // Return a risk score or fraud probability based on the AI assessment
-  return { transactionRiskScore: Math.random() * 100 };
+  // Simple heuristic: if the transaction amount is over 1000, it's considered high risk.
+  const amount = transactionData.amount || 0;
+  const transactionRiskScore = amount > 1000 ? 90 : 30;
+  console.log(`Transaction risk score for transaction ${transactionData.id}: ${transactionRiskScore}`);
+  return { transactionRiskScore };
 }
