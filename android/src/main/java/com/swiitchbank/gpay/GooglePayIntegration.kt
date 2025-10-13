@@ -91,7 +91,7 @@ class GooglePayIntegration(private val activity: Activity) {
             put("type", "PAYMENT_GATEWAY")
             put("parameters", JSONObject().apply {
                 put("gateway", "stripe")
-                put("stripe:publishableKey", "YOUR_STRIPE_PUBLISHABLE_KEY_HERE")
+                put("stripe:publishableKey", "pk_test_51H5I2E2eZvKYlo2C9g9f6L3d9Z4jZ3jZ3jZ3jZ3jZ3jZ3jZ3jZ3jZ3jZ3jZ3jZ3jZ3")
                 put("stripe:version", "2020-08-27")
             })
         }
