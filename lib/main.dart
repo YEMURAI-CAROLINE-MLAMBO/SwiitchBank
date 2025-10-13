@@ -1,45 +1,40 @@
+// lib/main.dart - Fully Autonomous Business
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:swiitch/config/app_config.dart';
 import 'package:swiitch/core/theme/app_theme.dart';
-import 'package:swiitch/ui/providers/user_data_provider.dart';
-import 'package:swiitch/ui/screens/dashboard_screen.dart';
+import 'automation/ceo_ai.dart';
+import 'ui/screens/autonomous_business_dashboard.dart';
 
-import 'core/security/security_orchestrator.dart';
-import 'core/webhooks/webhook_strategy.dart';
-
-Future<void> main() async {
-  // Ensure that Flutter bindings are initialized
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment variables (part of the old API-based approach, now handled by webhooks)
-  // await AppConfig.load();
+  print('''
 
-  // 🎯 USE THIS instead of API-based approach:
-  await WebhookOnlyStrategy.initializeWebhookOnlyMode();
+  🏦 SWIITCHBANK AUTONOMOUS BUSINESS
+  ===================================
 
-  // ✅ Your existing Gemini API still works internally
-  await GeminiJoolsService.initialize();
+  STARTING FULLY AUTOMATED OPERATION:
+  ✅ No Sales Team - AI handles customer acquisition
+  ✅ No Support Team - AI provides 24/7 customer service
+  ✅ No Product Team - AI develops and optimizes features
+  ✅ No Operations Team - AI manages infrastructure
+  ✅ No Management - AI makes strategic decisions
 
-  // ✅ Your existing security system still works
-  await SecurityOrchestrator.initializeSecurityFramework();
+  ''');
 
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserDataProvider(),
-      child: SwiitchBankApp(),
-    ),
-  );
+  // Start completely autonomous business
+  await AutonomousCEO.startAutonomousBusiness();
+
+  // The business now runs itself entirely
+  runApp(FullyAutonomousSwiitchBankApp());
 }
 
-class SwiitchBankApp extends StatelessWidget {
+class FullyAutonomousSwiitchBankApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'SwiitchBank',
       theme: AppTheme.darkTheme,
-      home: DashboardScreen(),
+      home: AutonomousBusinessDashboard(),
     );
   }
 }
-
