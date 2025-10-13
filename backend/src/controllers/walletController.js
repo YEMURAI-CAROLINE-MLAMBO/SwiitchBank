@@ -1,25 +1,26 @@
-const pool = require('../config/database'); // Import the database connection pool
-const logger = require('../../utils/logger'); // Import the logger utility
+const Wallet = require('../models/Wallet');
+const logger = require('../utils/logger');
 
-const createWallet = (req, res) => { // Removed async since there are no await calls in this function
-  const { wallet_type, currency, balance } = req.body;
+const createWallet = async (req, res) => {
+  const { walletType, currency, balance } = req.body;
   const userId = req.user.id; // Assuming user ID is available from authenticated user
 
-  if (!wallet_type || !currency || balance === undefined) {
+  if (!walletType || !currency || balance === undefined) {
     return res.status(400).json({ message: 'Missing required wallet details' });
   }
 
-  pool.query(
-    'INSERT INTO wallets (user_id, wallet_type, currency, balance) VALUES (?, ?, ?, ?)',
-    [userId, wallet_type, currency, balance],
-    (error, results) => {
-      if (error) {
-        logger.error('Error creating wallet:', error);
-        return res.status(500).json({ message: 'Error creating wallet' });
-      }
-      res.status(201).json({ message: 'Wallet created successfully', walletId: results.insertId });
-    }
-  );
+  try {
+    const wallet = await Wallet.create({
+      userId,
+      walletType,
+      currency,
+      balance,
+    });
+    res.status(201).json({ message: 'Wallet created successfully', wallet });
+  } catch (error) {
+    logger.error('Error creating wallet:', error);
+    res.status(500).json({ message: 'Error creating wallet' });
+  }
 };
 
 module.exports = {
@@ -36,38 +37,32 @@ module.exports = {
  *         description: Internal server error
  */
  createWallet,
- listWallets: async (req, res) => {
+  listWallets: async (req, res) => {
     const userId = req.user.id; // Assuming user ID is available from authenticated user
 
- try {
-      const [rows] = await pool.promise().query(
-        'SELECT * FROM wallets WHERE user_id = ?',
-        [userId]
- );
-      res.status(200).json(rows);
+    try {
+      const wallets = await Wallet.find({ userId });
+      res.status(200).json(wallets);
     } catch (error) {
       logger.error('Error listing wallets:', error);
       res.status(500).json({ message: 'Error listing wallets' });
     }
   },
- getWalletById: async (req, res) => {
+  getWalletById: async (req, res) => {
     const { walletId } = req.params;
     const userId = req.user.id; // Assuming user ID is available from authenticated user
 
- try {
-      const [rows] = await pool.promise().query(
-        'SELECT * FROM wallets WHERE wallet_id = ? AND user_id = ?',
-        [walletId, userId]
- );
-      if (rows.length === 0) {
+    try {
+      const wallet = await Wallet.findOne({ _id: walletId, userId });
+      if (!wallet) {
         return res.status(404).json({ message: 'Wallet not found' });
       }
-      res.status(200).json(rows[0]);
+      res.status(200).json(wallet);
     } catch (error) {
       logger.error('Error getting wallet:', error);
       res.status(500).json({ message: 'Error getting wallet' });
     }
-  }
+  },
   ,
   /**
  * @swagger
@@ -113,23 +108,19 @@ module.exports = {
     }
 
     try {
-      const [result] = await pool.promise().query(
-        'UPDATE wallets SET balance = balance + ? WHERE wallet_id = ? AND user_id = ?',
-        [amount, walletId, userId]
-      );
-
-      if (result.affectedRows === 0) {
+      const wallet = await Wallet.findOne({ _id: walletId, userId });
+      if (!wallet) {
         return res.status(404).json({ message: 'Wallet not found or does not belong to user' });
       }
 
-      // Optionally, fetch the updated wallet to return it
-      const [updatedWalletRows] = await pool.promise().query('SELECT * FROM wallets WHERE wallet_id = ?', [walletId]);
-      res.status(200).json({ message: 'Wallet topped up successfully', wallet: updatedWalletRows[0] });
+      wallet.balance += amount;
+      await wallet.save();
+      res.status(200).json({ message: 'Wallet topped up successfully', wallet });
     } catch (error) {
       logger.error('Error topping up wallet:', error);
       res.status(500).json({ message: 'Error topping up wallet' });
     }
-  }
+  },
   ,
   /**
  * @swagger
@@ -184,52 +175,39 @@ module.exports = {
       return res.status(400).json({ message: 'Cannot transfer to the same wallet' });
     }
 
-    let connection;
+    const session = await Wallet.startSession();
+    session.startTransaction();
+
     try {
-      connection = await pool.promise().getConnection();
-      await connection.beginTransaction();
-
-      // 1. Verify both wallets exist and the fromWallet belongs to the user.
-      const [fromWalletRows] = await connection.query(
-        'SELECT * FROM wallets WHERE wallet_id = ? AND user_id = ? FOR UPDATE', // Use FOR UPDATE for locking
-        [fromWalletId, userId]
-      );
-
-      if (fromWalletRows.length === 0) {
-        await connection.rollback();
-        return res.status(404).json({ message: 'Source wallet not found or does not belong to user' });
+      const fromWallet = await Wallet.findOne({ _id: fromWalletId, userId }).session(session);
+      if (!fromWallet) {
+        throw new Error('Source wallet not found or does not belong to user');
       }
 
-      const fromWallet = fromWalletRows[0];
-
-      const [toWalletRows] = await connection.query(
-        'SELECT * FROM wallets WHERE wallet_id = ? FOR UPDATE', // Use FOR UPDATE for locking
-        [toWalletId]
-      );
-
-      if (toWalletRows.length === 0) {
-        await connection.rollback();
-        return res.status(404).json({ message: 'Destination wallet not found' });
-      }
-
-      // 2. Check if the fromWallet has sufficient balance.
       if (fromWallet.balance < amount) {
-        await connection.rollback();
-        return res.status(400).json({ message: 'Insufficient funds in source wallet' });
+        throw new Error('Insufficient funds in source wallet');
       }
 
-      // 3. Deduct from fromWallet and add to toWallet in a database transaction.
-      await connection.query('UPDATE wallets SET balance = balance - ? WHERE wallet_id = ?', [amount, fromWalletId]);
-      await connection.query('UPDATE wallets SET balance = balance + ? WHERE wallet_id = ?', [amount, toWalletId]);
+      const toWallet = await Wallet.findById(toWalletId).session(session);
+      if (!toWallet) {
+        throw new Error('Destination wallet not found');
+      }
 
-      await connection.commit();
+      fromWallet.balance -= amount;
+      toWallet.balance += amount;
+
+      await fromWallet.save({ session });
+      await toWallet.save({ session });
+
+      await session.commitTransaction();
+      session.endSession();
+
       res.status(200).json({ message: 'Funds transferred successfully' });
     } catch (error) {
-      if (connection) await connection.rollback();
+      await session.abortTransaction();
+      session.endSession();
       logger.error('Error transferring funds:', error);
       res.status(500).json({ message: 'Error transferring funds' });
-    } finally {
-      if (connection) connection.release();
     }
-  }
+  },
 };

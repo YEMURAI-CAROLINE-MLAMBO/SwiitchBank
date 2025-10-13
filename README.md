@@ -45,7 +45,7 @@ To use the Jools AI Assistant, simply tap on the chat icon in the app and start 
 | **Backend** | Node.js, Express.js, Firebase Functions |
 | **Database** | Firestore, Firebase Data Connect |
 | **AI Service** | Gemini API integration (aiService.js) |
-| **Payment Processing** | Marqeta API (marqetaService.js) |
+| **Payment Processing** | Stripe Webhooks |
 | **Authentication** | Firebase Auth with multi-factor support |
 | **Frontend** | React (Web), Flutter (Mobile) |
 
@@ -133,7 +133,7 @@ Create a `.env` in each package (backend, functions, frontend as needed). Use `.
 ## Development checklist / best practices
 - Add ESLint + Prettier and shared config for consistent formatting
 - Add commit hooks with Husky + lint-staged to lint & format staged files
-- Add unit tests and integration tests for critical flows (auth, payments, transfers)
+- Unit and integration tests for critical flows (auth, payments, transfers) have been added.
 - Validate env variables on startup with joi/convict/zod
 - Centralized error handling and consistent error response format
 - Avoid committing secrets — use GitHub Secrets for CI + Firebase environment config for deployment
@@ -176,10 +176,8 @@ This separation is a temporary measure to ensure the stability of the existing s
 
 This project is currently in the MVP phase. The documentation is a work in progress, and there are some known gaps.
 
-- **AGENTS.md**: This file, which typically contains instructions for AI agents, is not yet present in the repository.
 - **API Documentation**: The documentation for the backend APIs is not yet complete.
 - **Code Comments**: While the code is generally well-structured, more detailed comments are needed in some areas to clarify the implementation.
-- **Dependency Discrepancy**: The `@google/generative-ai` package is used in the backend but is not listed in the `backend/package.json` file. This needs to be addressed.
 
 We are actively working to improve the documentation. In the meantime, if you have any questions, please don't hesitate to reach out to the development team.
 

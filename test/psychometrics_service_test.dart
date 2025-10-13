@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/core/models/psychometric_profile.dart';
-import '../lib/services/psychometrics_service.dart';
+import 'package:swiitch/core/models/transaction.dart';
+import 'package:swiitch/services/psychometrics_service.dart';
+import 'package:swiitch/core/models/psychometric_profile.dart';
 
 void main() {
   group('PsychometricsService', () {

@@ -5,8 +5,8 @@ import 'package:swiitch/core/theme/app_theme.dart';
 import 'package:swiitch/ui/providers/user_data_provider.dart';
 import 'package:swiitch/ui/screens/dashboard_screen.dart';
 
+import 'core/security/security_orchestrator.dart';
 import 'core/webhooks/webhook_strategy.dart';
-import 'services/webhooks/webhook_data_processor.dart';
 
 Future<void> main() async {
   // Ensure that Flutter bindings are initialized
@@ -43,9 +43,3 @@ class SwiitchBankApp extends StatelessWidget {
   }
 }
 
-// Placeholder for SecurityOrchestrator initialization. In a real app, this would be part of the SecurityOrchestrator class.
-extension SecurityOrchestratorInit on SecurityOrchestrator {
-  static Future<void> initializeSecurityFramework() async {
-    print('Placeholder: SecurityOrchestrator framework initialized.');
-  }
-}
