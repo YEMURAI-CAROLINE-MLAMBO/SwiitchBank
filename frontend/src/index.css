@@ -2,9 +2,9 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif; /* Updated font */
-  background-color: #F7F9FC; /* Light gray background from the new style guide */
-  color: #333; /* Dark text */
+  font-family: 'Inter', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 #root {
