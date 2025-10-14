@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const auth = require('../middleware/auth'); // Assuming your auth middleware is here
-const walletController = require('../controllers/walletController'); // We will create this controller next
+import auth from '../middleware/auth.js'; // Assuming your auth middleware is here
+import * as walletController from '../controllers/walletController.js'; // We will create this controller next
 
 // Apply authentication middleware to all wallet routes
 router.use(auth);
@@ -195,4 +195,4 @@ router.post('/:walletId/topup', walletController.topupWallet);
  */
 router.post('/:fromWalletId/transfer/:toWalletId', walletController.transferFunds);
 
-module.exports = router;
+export default router;

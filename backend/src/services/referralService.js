@@ -1,9 +1,10 @@
 // backend/src/services/referralService.js
-import { v4 as uuidv4 } from 'uuid';
 import User from '../models/User.js';
 import Wallet from '../models/Wallet.js';
 import Referral from '../models/Referral.js';
 import logger from '../utils/logger.js';
+import Transaction from '../models/Transaction.js';
+import VirtualCard from '../models/VirtualCard.js';
 
 /**
  * Predict referral likelihood (0-1 score)
@@ -11,7 +12,7 @@ import logger from '../utils/logger.js';
  * @param {string} userId - The ID of the user.
  * @returns {Promise<number>} A promise that resolves with a numerical likelihood score between 0 and 1.
  */
-const predictReferralLikelihood = async (userId) => {
+export const predictReferralLikelihood = async (userId) => {
   try {
     // Simple heuristic (to be replaced with ML model)
     const [txCount, balance, cardCount] = await Promise.all([
@@ -45,7 +46,7 @@ const predictReferralLikelihood = async (userId) => {
  * @param {string} userId - The ID of the user.
  * @returns {Promise<object>} A promise that resolves with personalized data.
  */
-const generateReferralOffer = async (userId) => {
+export const generateReferralOffer = async (userId) => {
   try {
     const referralLikelihood = await predictReferralLikelihood(userId);
     const referralScore = parseFloat(referralLikelihood);
@@ -64,6 +65,7 @@ const generateReferralOffer = async (userId) => {
     const user = await User.findById(userId);
     let referralCode = user.referralCode;
     if (!referralCode) {
+      const { v4: uuidv4 } = await import('uuid');
       referralCode = `SWIITCH-${uuidv4().split('-')[0].toUpperCase()}`;
       user.referralCode = referralCode;
       await user.save();
@@ -90,7 +92,7 @@ const generateReferralOffer = async (userId) => {
  * @param {string} newUserId - The ID of the new user who used the code.
  * @returns {Promise<boolean>} A promise that resolves with true if successful, false otherwise.
  */
-const processReferral = async (referralCode, newUserId) => {
+export const processReferral = async (referralCode, newUserId) => {
   try {
     // Get referrer user
     const referrer = await User.findOne({ referralCode });
@@ -125,7 +127,7 @@ const processReferral = async (referralCode, newUserId) => {
  * @param {string} userId - The ID of the user.
  * @returns {Promise<object>} A promise that resolves with the user's referral details.
  */
-const getReferralDetails = async (userId) => {
+export const getReferralDetails = async (userId) => {
   try {
     // Get user's referral code
     const user = await User.findById(userId);
@@ -142,11 +144,4 @@ const getReferralDetails = async (userId) => {
     logger.error('Error fetching referral details:', error);
     throw new Error('Failed to fetch referral details');
   }
-};
-
-export {
-  predictReferralLikelihood,
-  generateReferralOffer,
-  processReferral,
-  getReferralDetails,
 };

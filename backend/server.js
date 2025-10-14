@@ -3,16 +3,15 @@
  * Initializes Express server with security middleware and API routes
  */
 
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-require('dotenv').config();
-import 'dotenv/config.js';
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import 'dotenv/config';
 
-const app = require('./src/app.js');
-const { connectDB } = require('./src/config/database.js');
-const logger = require('./src/utils/logger.js');
+import app from './src/app.js';
+import { connectDB } from './src/config/database.js';
+import logger from './src/utils/logger.js';
 
 const PORT = process.env.PORT || 5000;
 
@@ -47,5 +46,3 @@ process.on('uncaughtException', (err) => {
 });
 
 startServer();
-
-export default app;
