@@ -13,6 +13,8 @@ import BusinessOnboarding from './components/BusinessOnboarding';
 import ReferralPage from './pages/ReferralPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
+import EnhancedSophiaChatPage from './pages/EnhancedSophiaChatPage';
+import BehavioralDashboardPage from './pages/BehavioralDashboardPage';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path="referral" element={<ReferralPage />} />
           <Route path="chat" element={<ChatPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="enhanced-chat" element={<EnhancedSophiaChatPage />} />
+          <Route path="behavioral-dashboard" element={<BehavioralDashboardPage />} />
         </Route>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
