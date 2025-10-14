@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const growthController = require('../controllers/growthController');
-const authenticate = require('../middleware/auth'); // Assuming your auth middleware is named authenticate
+import * as growthController from '../controllers/growthController.js';
+import authenticate from '../middleware/auth.js'; // Assuming your auth middleware is named authenticate
 
 // Apply authentication middleware to all routes in this router
 router.use(authenticate);
@@ -79,4 +79,4 @@ router.post('/referral/generate', growthController.generateReferralCode);
  *       - bearerAuth: []
  */
 router.post('/referral/apply', growthController.applyReferralCode);
-module.exports = router;
+export default router;

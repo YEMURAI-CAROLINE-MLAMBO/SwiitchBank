@@ -1,4 +1,4 @@
-const Business = require('../models/Business');
+import Business from '../models/Business.js';
 
 /**
  * Creates a new business account.
@@ -21,7 +21,7 @@ const checkBusinessNameAvailability = async (businessName) => {
   return business === null;
 };
 
-module.exports = {
+export {
   createBusinessAccount,
   checkBusinessNameAvailability,
 };

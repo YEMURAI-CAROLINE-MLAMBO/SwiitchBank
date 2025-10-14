@@ -1,7 +1,7 @@
-const express = require('express');
-const { body, query } = require('express-validator');
-const { createBusinessAccount, checkBusinessNameAvailability } = require('../controllers/businessAccountController');
-const auth = require('../middleware/auth');
+import express from 'express';
+import { body, query } from 'express-validator';
+import { createBusinessAccount, checkBusinessNameAvailability } from '../controllers/businessAccountController.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -22,4 +22,4 @@ router.get(
   checkBusinessNameAvailability
 );
 
-module.exports = router;
+export default router;

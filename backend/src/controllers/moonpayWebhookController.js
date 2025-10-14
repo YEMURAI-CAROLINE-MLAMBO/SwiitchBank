@@ -1,6 +1,6 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
-exports.handleWebhook = (req, res) => {
+export const handleWebhook = (req, res) => {
   const signatureHeader = req.header('MoonPay-Signature-V2');
   if (!signatureHeader) {
     return res.status(401).send('No signature header');

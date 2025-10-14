@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { check } = require('express-validator');
-const authController = require('../controllers/authController');
+import { check } from 'express-validator';
+import * as authController from '../controllers/authController.js';
 
 // @route   POST api/auth/register
 // @desc    Register user
@@ -32,4 +32,4 @@ router.post(
   authController.login
 );
 
-module.exports = router;
+export default router;

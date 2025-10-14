@@ -1,7 +1,7 @@
-const { validationResult } = require('express-validator');
-const moonpayService = require('../services/moonpay.js');
+import { validationResult } from 'express-validator';
+import * as moonpayService from '../services/moonpay.js';
 
-exports.getQuote = async (req, res) => {
+export const getQuote = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -22,7 +22,7 @@ exports.getQuote = async (req, res) => {
   }
 };
 
-exports.createTransaction = async (req, res) => {
+export const createTransaction = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });

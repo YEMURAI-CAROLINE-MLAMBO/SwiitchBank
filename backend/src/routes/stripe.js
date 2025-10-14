@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { check } = require('express-validator');
-const stripeController = require('../controllers/stripeController');
-const auth = require('../middleware/auth');
+import { check } from 'express-validator';
+import * as stripeController from '../controllers/stripeController.js';
+import auth from '../middleware/auth.js';
 
 // @route   POST api/stripe/customers
 // @desc    Create a Stripe customer
@@ -36,4 +36,4 @@ router.post(
   stripeController.createCharge
 );
 
-module.exports = router;
+export default router;

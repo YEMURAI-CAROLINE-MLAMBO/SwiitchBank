@@ -1,11 +1,11 @@
 // backend/src/services/marqetaWebhookService.js
 
-const Transaction = require('../models/Transaction');
-const VirtualCard = require('../models/VirtualCard');
-const User = require('../models/User');
-const logger = require('../utils/logger');
+import Transaction from '../models/Transaction.js';
+import VirtualCard from '../models/VirtualCard.js';
+import User from '../models/User.js';
+import logger from '../utils/logger.js';
 
-const processWebhookEvent = async (event) => {
+export const processWebhookEvent = async (event) => {
   try {
     logger.info('Received Marqeta webhook event:', event);
 
@@ -69,8 +69,4 @@ const processWebhookEvent = async (event) => {
     logger.error('Error processing Marqeta webhook event:', error);
     return { success: false, message: 'Error processing webhook event.' };
   }
-};
-
-module.exports = {
-  processWebhookEvent,
 };

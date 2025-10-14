@@ -1,9 +1,9 @@
 // backend/src/controllers/virtualCardController.js
 
-const VirtualCard = require('../models/VirtualCard');
-const cryptoService = require('/workspace/backend/src/services/cryptoService');
-const bankTransferService = require('/workspace/backend/src/services/bankTransferService');
-const marqetaService = require('../../../shared/services/marqetaService');
+import VirtualCard from '../models/VirtualCard.js';
+import * as cryptoService from '../services/cryptoService.js';
+import * as bankTransferService from '../services/bankTransferService.js';
+import * as marqetaService from '../../../shared/services/marqetaService.js';
 
 /**
  * @swagger
@@ -25,7 +25,7 @@ const marqetaService = require('../../../shared/services/marqetaService');
  *       500:
  *         description: Internal server error
  */
-exports.listVirtualCards = async (req, res) => {
+export const listVirtualCards = async (req, res) => {
   try {
     const userId = req.user.id; // Assuming user ID is available from authentication middleware
     const virtualCards = await VirtualCard.find({ userId });
@@ -63,7 +63,7 @@ exports.listVirtualCards = async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-exports.getVirtualCardById = async (req, res) => {
+export const getVirtualCardById = async (req, res) => {
   const cardId = req.params.cardId;
 
   try {
@@ -83,7 +83,7 @@ exports.getVirtualCardById = async (req, res) => {
   }
 };
 
-exports.withdrawVirtualCard = async (req, res) => {
+export const withdrawVirtualCard = async (req, res) => {
   const cardId = req.params.cardId;
   const { amount } = req.body;
   const userId = req.user.id;
@@ -117,7 +117,7 @@ exports.withdrawVirtualCard = async (req, res) => {
     res.status(500).json({ message: 'Error withdrawing from virtual card' });
   }
 };
-exports.createVirtualCard = async (req, res) => {
+export const createVirtualCard = async (req, res) => {
   try {
     const userId = req.user.id; // Assuming user ID is available from authentication middleware
     const { type, nickname } = req.body;
@@ -150,33 +150,11 @@ exports.createVirtualCard = async (req, res) => {
   }
 };
 
-exports.topupVirtualCard = async (req, res) => {
+export const topupVirtualCard = async (req, res) => {
   const cardId = req.params.cardId;
   const { amount, method, currency } = req.body;
 
   if (typeof amount !== 'number' || amount <= 0) {
-/**
- * @swagger
- * /api/cards/{cardId}/topup:
- *   post:
- *     summary: Top up a virtual card
- *     tags: [Virtual Cards]
- *     parameters:
- *       - in: path
- *         name: cardId
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the virtual card
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               amount:
- *                 type: number
     return res.status(400).json({ message: 'Invalid top-up amount' });
   }
 

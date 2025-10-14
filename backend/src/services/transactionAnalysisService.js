@@ -1,4 +1,4 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -16,4 +16,4 @@ async function getAnalysis(prompt, transactions) {
   return response.text();
 }
 
-module.exports = { getAnalysis };
+export { getAnalysis };

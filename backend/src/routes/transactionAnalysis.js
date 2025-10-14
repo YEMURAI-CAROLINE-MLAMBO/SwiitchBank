@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const transactionAnalysisController = require('../controllers/transactionAnalysisController');
+import * as transactionAnalysisController from '../controllers/transactionAnalysisController.js';
 
 router.post('/analyze', transactionAnalysisController.analyzeTransactions);
 
-module.exports = router;
+export default router;

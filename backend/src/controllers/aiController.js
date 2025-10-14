@@ -1,6 +1,6 @@
-const aiService = require('../services/aiService');
+import * as aiService from '../services/aiService.js';
 
-exports.getAIAssistantResponse = async (req, res) => {
+export const getAIAssistantResponse = async (req, res) => {
   try {
     const { prompt } = req.body;
     if (!prompt) {
