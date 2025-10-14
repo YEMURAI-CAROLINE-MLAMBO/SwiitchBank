@@ -1,6 +1,6 @@
 import express from 'express';
-
-// Import routes
+import { apiLimiter, aiLimiter } from './middleware/rateLimiter.js';
+import performanceMiddleware from '../monitoring/performance.js';
 import authRoutes from './routes/auth.js';
 import businessAccountRoutes from './routes/businessAccounts.js';
 import virtualCardRoutes from './routes/virtualCards.js';
@@ -14,6 +14,8 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(performanceMiddleware);
+app.use('/api/', apiLimiter);
 
 // API Routes
 app.use('/api/auth', authRoutes);
