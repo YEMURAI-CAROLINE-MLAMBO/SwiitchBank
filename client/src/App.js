@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import EnhancedDashboard from './components/dashboard/EnhancedDashboard';
+import SophiaChat from './components/SophiaChat.jsx';
 import './styles/richmont-enhancement.css';
 
 function App() {
@@ -10,7 +11,7 @@ function App() {
 
   return (
     <div className="App enhanced-switchbank-app">
-      <EnhancedDashboard />
+      <SophiaChat />
     </div>
   );
 }
