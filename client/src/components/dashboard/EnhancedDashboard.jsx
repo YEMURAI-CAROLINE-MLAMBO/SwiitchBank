@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../styles/clean-but-useful.css';
 import { RichmontEnhancements } from '../enhancements/RichmontEnhancer';
 
 // Import existing SwitchBank components
@@ -14,12 +15,11 @@ const EnhancedInsightsDashboard = RichmontEnhancements.enhanceInsightsDashboard(
 
 const EnhancedDashboard = () => {
   return (
-    <div className="enhanced-dashboard">
+    <div className="enhanced-dashboard smart-clean">
       {/* Enhanced Header */}
       <header className="richmont-header">
         <div className="richmont-logo-section">
           <h1 className="richmont-logo">SwitchBank</h1>
-          <div className="richmont-tagline">Enhanced by Richmont</div>
         </div>
         <nav className="richmont-nav">
           {/* Existing navigation enhanced */}
