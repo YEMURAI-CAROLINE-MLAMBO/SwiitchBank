@@ -6,7 +6,7 @@ import HomePage from './HomePage';
 jest.mock('../context/AuthContext');
 jest.mock('../FirebaseConfig'); // Ensure the mock from __mocks__ is used
 
-jest.mock('../components/wallet/WalletDashboard', () => () => <div data-testid="wallet-dashboard">WalletDashboard</div>);
+jest.mock('./DashboardPage', () => () => <div>Dashboard</div>);
 
 describe('HomePage', () => {
   it('renders welcome message when user is not authenticated', () => {
@@ -15,13 +15,13 @@ describe('HomePage', () => {
     expect(screen.getByText(/Welcome to SwiitchBank/i)).toBeInTheDocument();
     expect(screen.getByText(/Login/i)).toBeInTheDocument();
     expect(screen.getByText(/Sign Up/i)).toBeInTheDocument();
-    expect(screen.queryByTestId('wallet-dashboard')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Dashboard/i)).not.toBeInTheDocument();
   });
 
-  it('renders WalletDashboard when user is authenticated', () => {
+  it('renders DashboardPage when user is authenticated', () => {
     useAuth.mockReturnValue({ user: { email: 'test@example.com' } });
     render(<HomePage />);
-    expect(screen.getByTestId('wallet-dashboard')).toBeInTheDocument();
+    expect(screen.getByText(/Dashboard/i)).toBeInTheDocument();
     expect(screen.queryByText(/Welcome to SwiitchBank/i)).not.toBeInTheDocument();
   });
 });

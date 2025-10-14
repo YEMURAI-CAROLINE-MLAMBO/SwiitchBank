@@ -23,3 +23,155 @@
   padding: 20px;
   color: #888;
 }
+
+/* Onboarding */
+.welcome-screen {
+  text-align: center;
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.feature-card {
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 10px;
+  width: 200px;
+}
+
+.connect-bank .bank-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.bank-card {
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.bank-card.selected {
+  border-color: var(--accent-color);
+}
+
+/* Dashboard */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.quick-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  text-align: center;
+}
+
+.dashboard-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.dashboard-tabs button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 10px;
+  border-bottom: 2px solid transparent;
+}
+
+.dashboard-tabs button.active {
+  border-bottom-color: var(--accent-color);
+}
+
+.overview-tab .accounts-section,
+.overview-tab .spending-section,
+.overview-tab .recent-transactions {
+  margin-bottom: 20px;
+}
+
+.accounts-list .account-item,
+.transactions-preview .transaction-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+/* Sophia Chat */
+.sophia-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-header {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.messages-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.message.user {
+  text-align: right;
+}
+
+.input-area {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.input-area input {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+/* Transactions */
+.transaction-filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.transactions .transaction-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+/* Insights */
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.insight-card {
+  border: 1px solid var(--border-color);
+  padding: 20px;
+  border-radius: 10px;
+}

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout';
 import HomePage from './pages/HomePage';
 import WalletPage from './pages/WalletPage';
@@ -13,24 +13,36 @@ import BusinessOnboarding from './components/BusinessOnboarding';
 import ReferralPage from './pages/ReferralPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
+import OnboardingPage from './pages/OnboardingPage';
 
 function App() {
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AppLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="wallet" element={<WalletPage />} />
-          <Route path="cards" element={<CardsPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="transactions" element={<TransactionsPage />} />
-          <Route path="business-onboarding" element={<BusinessOnboarding />} />
-          <Route path="referral" element={<ReferralPage />} />
-          <Route path="chat" element={<ChatPage />} />
-          <Route path="profile" element={<ProfilePage />} />
-        </Route>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
+        {onboardingComplete ? (
+          <>
+            <Route path="/" element={<AppLayout />}>
+              <Route index element={<HomePage />} />
+              <Route path="wallet" element={<WalletPage />} />
+              <Route path="cards" element={<CardsPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+              <Route path="transactions" element={<TransactionsPage />} />
+              <Route path="business-onboarding" element={<BusinessOnboarding />} />
+              <Route path="referral" element={<ReferralPage />} />
+              <Route path="chat" element={<ChatPage />} />
+              <Route path="profile" element={<ProfilePage />} />
+            </Route>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+          </>
+        ) : (
+          <>
+            <Route path="/onboarding" element={<OnboardingPage onComplete={() => setOnboardingComplete(true)} />} />
+            <Route path="*" element={<Navigate to="/onboarding" />} />
+          </>
+        )}
       </Routes>
     </Router>
   );

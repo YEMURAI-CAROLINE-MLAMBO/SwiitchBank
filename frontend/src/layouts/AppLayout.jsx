@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import './AppLayout.css'; // Layout specific styles
+import SophiaChat from '../components/sophia/SophiaChat';
 
 function AppLayout() {
   return (
@@ -20,10 +21,13 @@ function AppLayout() {
           </ul>
         </nav>
       </header>
+      <div className="app-body">
+        <main className="app-content">
+          <Outlet /> {/* Renders the content of the matched nested route */}
+        </main>
+        <SophiaChat />
+      </div>
 
-      <main className="app-content">
-        <Outlet /> {/* Renders the content of the matched nested route */}
-      </main>
 
       <footer className="app-footer">
         {/* Footer content */}
