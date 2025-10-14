@@ -1,7 +1,7 @@
 // backend/src/controllers/growthController.js
 
-const referralService = require('../services/referralService');
-const logger = require('../utils/logger');
+import * as referralService from '../services/referralService.js';
+import logger from '../utils/logger.js';
 
 /**
  * @swagger
@@ -36,7 +36,7 @@ const logger = require('../utils/logger');
  *       500:
  *         description: Internal server error
  */
-exports.getReferralInfo = async (req, res) => {
+export const getReferralInfo = async (req, res) => {
   try {
     const userId = req.user.id; // Assuming user ID is available from authenticated user
 
@@ -82,7 +82,7 @@ exports.getReferralInfo = async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-exports.applyReferralCode = async (req, res) => {
+export const applyReferralCode = async (req, res) => {
   try {
     const { referralCode } = req.body;
     const userId = req.user.id;
@@ -136,7 +136,7 @@ exports.applyReferralCode = async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-exports.generateReferralCode = async (req, res) => {
+export const generateReferralCode = async (req, res) => {
   try {
     const userId = req.user.id; // Assuming user ID is available from authenticated user
 

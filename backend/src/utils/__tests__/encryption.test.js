@@ -1,5 +1,5 @@
-const { encrypt, decrypt } = require('../encryption');
-const crypto = require('crypto');
+import { encrypt, decrypt } from '../encryption.js';
+import crypto from 'crypto';
 
 describe('Encryption and Decryption', () => {
   const text = 'This is a secret message.';

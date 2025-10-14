@@ -1,7 +1,7 @@
-const { validationResult } = require('express-validator');
-const stripeService = require('../services/stripe.js');
+import { validationResult } from 'express-validator';
+import * as stripeService from '../services/stripe.js';
 
-exports.createCustomer = async (req, res) => {
+export const createCustomer = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -18,7 +18,7 @@ exports.createCustomer = async (req, res) => {
   }
 };
 
-exports.createCharge = async (req, res) => {
+export const createCharge = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });

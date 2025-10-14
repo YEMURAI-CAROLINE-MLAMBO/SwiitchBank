@@ -1,6 +1,6 @@
-const transactionAnalysisService = require('../services/transactionAnalysisService');
+import * as transactionAnalysisService from '../services/transactionAnalysisService.js';
 
-exports.analyzeTransactions = async (req, res) => {
+export const analyzeTransactions = async (req, res) => {
   try {
     const { prompt, transactions } = req.body;
     if (!prompt || !transactions) {

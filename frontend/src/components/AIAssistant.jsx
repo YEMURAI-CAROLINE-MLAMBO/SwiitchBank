@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Input } from './common';
-import { db } from '../../firebase';
-import { useAuth } from '../../context/AuthContext';
+import { db } from '../FirebaseConfig';
+import { useAuth } from '../context/AuthContext';
 
 const AIAssistant = () => {
   const { user } = useAuth();
@@ -72,6 +72,7 @@ const AIAssistant = () => {
       <p>Ask me anything about SwiitchBank!</p>
       <form onSubmit={handleSubmit}>
         <Input
+          id="ai-prompt"
           label="Your question"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}

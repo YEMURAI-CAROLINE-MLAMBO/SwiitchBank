@@ -1,9 +1,9 @@
 // backend/src/services/referralService.js
-const { v4: uuidv4 } = require('uuid');
-const User = require('../models/User');
-const Wallet = require('../models/Wallet');
-const Referral = require('../models/Referral');
-const logger = require('../utils/logger');
+import { v4 as uuidv4 } from 'uuid';
+import User from '../models/User.js';
+import Wallet from '../models/Wallet.js';
+import Referral from '../models/Referral.js';
+import logger from '../utils/logger.js';
 
 /**
  * Predict referral likelihood (0-1 score)
@@ -144,7 +144,7 @@ const getReferralDetails = async (userId) => {
   }
 };
 
-module.exports = {
+export {
   predictReferralLikelihood,
   generateReferralOffer,
   processReferral,

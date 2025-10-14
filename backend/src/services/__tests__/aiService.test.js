@@ -25,14 +25,14 @@ describe('AI Service', () => {
   let mockGetGenerativeModel;
   let mockGoogleGenerativeAI;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // Reset modules to clear cache and ensure the mock is used for a fresh instance
     jest.resetModules();
 
-    // Dynamically require the mocked module and the service inside beforeEach
+    // Dynamically import the mocked module and the service inside beforeEach
     // to ensure a fresh instance for each test.
-    const aiService = require('../aiService');
-    const mockGenAI = require('@google/generative-ai');
+    const aiService = await import('../aiService.js');
+    const mockGenAI = await import('@google/generative-ai');
 
     getAIResponse = aiService.getAIResponse;
     mockGenerateContent = mockGenAI.mockGenerateContent;

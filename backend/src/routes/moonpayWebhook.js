@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const moonpayWebhookController = require('../controllers/moonpayWebhookController');
+import * as moonpayWebhookController from '../controllers/moonpayWebhookController.js';
 
 // @route   POST api/moonpay-webhook
 // @desc    Handle MoonPay webhooks
 // @access  Public
 router.post('/', moonpayWebhookController.handleWebhook);
 
-module.exports = router;
+export default router;

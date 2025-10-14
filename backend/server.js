@@ -8,6 +8,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 require('dotenv').config();
+import 'dotenv/config.js';
 
 const app = require('./src/app.js');
 const { connectDB } = require('./src/config/database.js');
@@ -46,3 +47,5 @@ process.on('uncaughtException', (err) => {
 });
 
 startServer();
+
+export default app;

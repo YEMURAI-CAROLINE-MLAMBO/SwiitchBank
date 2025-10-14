@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const BusinessSchema = new mongoose.Schema({
   businessName: {
@@ -18,4 +18,4 @@ const BusinessSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Business', BusinessSchema);
+export default mongoose.model('Business', BusinessSchema);

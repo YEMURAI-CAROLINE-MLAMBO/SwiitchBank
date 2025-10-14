@@ -18,7 +18,7 @@ const getExchangeRate = async (fromCurrency, toCurrency) => {
   });
 };
 
-module.exports = {
+export {
   getSupportedCurrencies,
   getExchangeRate,
 };

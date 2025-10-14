@@ -1,10 +1,10 @@
-const { validationResult } = require('express-validator');
-const businessAccountService = require('../services/businessAccountService');
+import { validationResult } from 'express-validator';
+import * as businessAccountService from '../services/businessAccountService.js';
 
 // @desc    Create a new business account
 // @route   POST api/onboarding/business
 // @access  Private
-exports.createBusinessAccount = async (req, res) => {
+export const createBusinessAccount = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -23,7 +23,7 @@ exports.createBusinessAccount = async (req, res) => {
 // @desc    Check if a business name is available
 // @route   GET api/onboarding/business/availability
 // @access  Public
-exports.checkBusinessNameAvailability = async (req, res) => {
+export const checkBusinessNameAvailability = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });

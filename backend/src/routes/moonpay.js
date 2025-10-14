@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { check } = require('express-validator');
-const moonpayController = require('../controllers/moonpayController');
-const auth = require('../middleware/auth');
+import { check } from 'express-validator';
+import * as moonpayController from '../controllers/moonpayController.js';
+import auth from '../middleware/auth.js';
 
 // @route   POST api/moonpay/quote
 // @desc    Get a MoonPay quote
@@ -33,4 +33,4 @@ router.post(
   moonpayController.createTransaction
 );
 
-module.exports = router;
+export default router;
