@@ -1,25 +1,38 @@
 import mongoose from 'mongoose';
 
-export const connectDB = async () => {
+const databaseConfig = {
+  // Connection pooling
+  poolSize: 50, // Increased from default 5
+  bufferMaxEntries: 0,
+  bufferCommands: false,
+
+  // Performance optimizations
+  autoIndex: false, // Disable in production
+  maxTimeMS: 30000, // Query timeout
+  socketTimeoutMS: 45000, // Socket timeout
+};
+
+// Connection with retry logic
+export const connectWithRetry = async () => {
   try {
-    if (!process.env.MONGO_URI) {
-      throw new Error('MONGO_URI is not defined in environment variables.');
-    }
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      ...databaseConfig,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
-    console.log('MongoDB Connected...');
+    console.log('✅ Database connected with optimized settings');
   } catch (err) {
-    console.error(err.message);
-    throw new Error(`Database connection failed: ${err.message}`);
+    console.error('Database connection failed, retrying in 5 seconds:', err);
+    setTimeout(connectWithRetry, 5000);
   }
 };
 
-export const disconnectDB = async () => {
-  try {
-    await mongoose.disconnect();
-    console.log('MongoDB Disconnected...');
-  } catch (err) {
-    console.error(err.message);
-    throw new Error(`Database disconnection failed: ${err.message}`);
-  }
+// Index optimization for large datasets
+export const createOptimalIndexes = async () => {
+  await mongoose.connection.collection('transactions').createIndexes([
+    { key: { user_id: 1, date: -1 } }, // Compound index for user queries
+    { key: { user_id: 1, category: 1 } },
+    { key: { date: 1 } }, // Date-based queries
+    { key: { amount: 1 } } // Amount-based queries
+  ]);
 };

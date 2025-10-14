@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../FirebaseConfig';
 import { collection, query, where, orderBy, onSnapshot, limit, getDocs, startAfter } from 'firebase/firestore';
+import VirtualizedTransactionList from '../components/VirtualizedTransactionList';
 import './TransactionsPage.css';
 
 const TransactionsPage = () => {
@@ -23,17 +24,17 @@ const TransactionsPage = () => {
       transactionsRef,
       where('userId', '==', user.uid),
       orderBy('timestamp', 'desc'),
-      limit(10)
+      limit(20)
     );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const transactionsList = [];
       querySnapshot.forEach((doc) => {
-        transactionsList.push({ id: doc.id, ...doc.data() });
+        transactionsList.push({ id: doc.id, ...doc.data(), description: doc.data().description || 'Transaction', amount: doc.data().amount || 0, date: doc.data().timestamp?.toDate().toLocaleString() });
       });
       setTransactions(transactionsList);
       setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
-      setHasMore(querySnapshot.docs.length === 10);
+      setHasMore(querySnapshot.docs.length === 20);
       setLoading(false);
     }, (err) => {
       console.error("Error fetching transactions:", err);
@@ -53,18 +54,18 @@ const TransactionsPage = () => {
       where('userId', '==', user.uid),
       orderBy('timestamp', 'desc'),
       startAfter(lastVisible),
-      limit(10)
+      limit(20)
     );
 
     const querySnapshot = await getDocs(q);
     const newTransactions = [];
     querySnapshot.forEach((doc) => {
-      newTransactions.push({ id: doc.id, ...doc.data() });
+      newTransactions.push({ id: doc.id, ...doc.data(), description: doc.data().description || 'Transaction', amount: doc.data().amount || 0, date: doc.data().timestamp?.toDate().toLocaleString() });
     });
 
     setTransactions(prevTransactions => [...prevTransactions, ...newTransactions]);
     setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
-    setHasMore(querySnapshot.docs.length === 10);
+    setHasMore(querySnapshot.docs.length === 20);
   };
 
   if (loading) {
@@ -83,17 +84,7 @@ const TransactionsPage = () => {
     <div>
       <h1>Transactions</h1>
       {transactions.length > 0 ? (
-        <ul className="transaction-list-full">
-          {transactions.map(transaction => (
-            <li key={transaction.id} className={`transaction-item ${transaction.type}`}>
-              <div className="transaction-details">
-                <span className="transaction-description">{transaction.description || 'Transaction'}</span>
-                <span className="transaction-date">{transaction.timestamp?.toDate().toLocaleString()}</span>
-              </div>
-              <span className="transaction-amount">{transaction.type === 'debit' ? '-' : '+'}{transaction.amount?.toFixed(2) || '0.00'} {transaction.currency || ''}</span>
-            </li>
-          ))}
-        </ul>
+        <VirtualizedTransactionList transactions={transactions} />
       ) : (
         <div className="no-transactions">No transactions found.</div>
       )}

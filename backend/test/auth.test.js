@@ -1,33 +1,60 @@
 import request from 'supertest';
-import app from '../src/app.js';
-import User from '../src/models/User.js';
+import { jest, describe, it, expect, beforeEach } from '@jest/globals';
 
-jest.mock('../src/config/database.js', () => ({
-  connectDB: jest.fn(() => Promise.resolve()),
-  disconnectDB: jest.fn(() => Promise.resolve()),
+process.env.JWT_SECRET = 'test-secret';
+
+jest.unstable_mockModule('../src/middleware/rateLimiter.js', () => ({
+  apiLimiter: (req, res, next) => next(),
+  aiLimiter: (req, res, next) => next(),
+  strictLimiter: (req, res, next) => next(),
 }));
 
-jest.mock('../src/models/User.js');
+jest.unstable_mockModule('redis', () => ({
+  createClient: jest.fn(() => ({
+    connect: jest.fn(() => Promise.resolve()),
+    sendCommand: jest.fn().mockResolvedValue([1, Date.now()]),
+    get: jest.fn(),
+    setEx: jest.fn(),
+    mGet: jest.fn(),
+  })),
+}));
 
+jest.unstable_mockModule('../src/config/database.js', () => ({
+  connectWithRetry: jest.fn(() => Promise.resolve()),
+  createOptimalIndexes: jest.fn(() => Promise.resolve()),
+}));
+
+jest.unstable_mockModule('../src/models/User.js', () => {
+  const User = jest.fn(function(data) {
+    this.save = jest.fn().mockResolvedValue(data);
+    Object.assign(this, data);
+  });
+  User.findOne = jest.fn();
+  User.create = jest.fn();
+  return { default: User };
+});
+
+jest.unstable_mockModule('bcryptjs', () => ({
+  compare: jest.fn(),
+  genSalt: jest.fn(),
+  hash: jest.fn(),
+}));
+
+const { default: app } = await import('../src/app.js');
+const { default: User } = await import('../src/models/User.js');
+const bcrypt = await import('bcryptjs');
 
 describe('Auth Endpoints', () => {
 
   beforeEach(() => {
     User.findOne.mockClear();
     User.create.mockClear();
+    bcrypt.compare.mockClear();
   });
 
   describe('POST /api/auth/register', () => {
     it('should register a new user', async () => {
       User.findOne.mockResolvedValue(null);
-      User.create.mockResolvedValue({
-        _id: 'some-id',
-        firstName: 'Test',
-        lastName: 'User',
-        email: 'test@example.com',
-        // Mongoose .save() returns a promise, so we mock it.
-        save: jest.fn().mockResolvedValue(true),
-      });
 
       const res = await request(app)
         .post('/api/auth/register')
@@ -64,13 +91,14 @@ describe('Auth Endpoints', () => {
 
   describe('POST /api/auth/login', () => {
     it('should login a user with correct credentials', async () => {
-        const mockUser = {
+      const mockUser = {
         _id: 'some-id',
         email: 'test@example.com',
-        password: 'hashedpassword', // In a real scenario, this would be hashed
-        matchPassword: jest.fn().mockResolvedValue(true),
+        password: 'hashedpassword',
       };
       User.findOne.mockResolvedValue(mockUser);
+      bcrypt.compare.mockResolvedValue(true);
+
       const res = await request(app)
         .post('/api/auth/login')
         .send({
@@ -82,13 +110,14 @@ describe('Auth Endpoints', () => {
     });
 
     it('should not login a user with incorrect credentials', async () => {
-       const mockUser = {
+      const mockUser = {
         _id: 'some-id',
         email: 'test@example.com',
         password: 'hashedpassword',
-        matchPassword: jest.fn().mockResolvedValue(false),
       };
       User.findOne.mockResolvedValue(mockUser);
+      bcrypt.compare.mockResolvedValue(false);
+
       const res = await request(app)
         .post('/api/auth/login')
         .send({
