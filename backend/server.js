@@ -3,15 +3,15 @@
  * Initializes Express server with security middleware and API routes
  */
 
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import 'dotenv/config.js';
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+require('dotenv').config();
 
-import app from './src/app.js';
-import { connectDB } from './src/config/database.js';
-import logger from './src/utils/logger.js';
+const app = require('./src/app.js');
+const { connectDB } = require('./src/config/database.js');
+const logger = require('./src/utils/logger.js');
 
 const PORT = process.env.PORT || 5000;
 

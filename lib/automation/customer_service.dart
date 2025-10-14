@@ -1,6 +1,7 @@
 // lib/automation/customer_service.dart
 
 import 'dart:async';
+import '../services/log_service.dart';
 import 'customer_acquisition.dart'; // Importing to get dummy classes
 
 // Dummy classes for compilation
@@ -21,11 +22,12 @@ class SupportResponse {
 /// 🎯 Autonomous Customer Service Engine
 /// Replaces support team with AI agents
 class AutomatedCustomerService {
+  static final LogService _log = LogService();
   static final Map<String, List<SupportTicket>> _ticketHistory = {};
 
   /// 24/7 AI support system
   static Future<void> initializeAutonomousSupport() async {
-    print('🛠️ Starting 24/7 autonomous customer service...');
+    _log.log('🛠️ Starting 24/7 autonomous customer service...');
 
     // Monitor all support channels
     await _monitorSupportChannels();

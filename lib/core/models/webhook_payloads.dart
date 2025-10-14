@@ -10,6 +10,7 @@ class PlaidTransaction {
   final String merchantName;
   final String date;
   final String paymentChannel;
+  final List<String> category;
 
   PlaidTransaction({
     this.transactionId,
@@ -19,6 +20,7 @@ class PlaidTransaction {
     this.merchantName,
     this.date,
     this.paymentChannel,
+    this.category,
   });
 
   factory PlaidTransaction.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,8 @@ class PlaidTransaction {
       merchantName: json['merchant_name'],
       date: json['date'],
       paymentChannel: json['payment_channel'],
+      // Assuming 'category' is a list of strings from the JSON payload.
+      category: json['category'] != null ? List<String>.from(json['category']) : [],
     );
   }
 }

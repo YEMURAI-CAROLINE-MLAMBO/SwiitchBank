@@ -1,79 +1,78 @@
 // lib/automation/business_operations.dart
 
 import 'dart:async';
+import '../services/log_service.dart';
 import 'customer_acquisition.dart'; // Importing to get dummy classes
 
-/// ⚙️ Autonomous Business Operations
-/// Replaces operations team with AI systems
+/// ⚙️ Autonomous Business Operations Engine
+/// Replaces DevOps, finance, and legal teams
 class AutomatedBusinessOperations {
+  static final LogService _log = LogService();
 
-  /// Fully automated business operations
+  /// AI-managed infrastructure and finance
   static Future<void> initializeAutonomousOperations() async {
-    print('⚙️ Starting autonomous business operations...');
+    _log.log('⚙️ Starting autonomous business operations...');
 
-    // 1. AI manages infrastructure
-    await _autonomousInfrastructureManagement();
+    // Autonomous infrastructure management
+    await _manageInfrastructure();
 
-    // 2. AI handles compliance and legal
-    await _autonomousComplianceManagement();
+    // Autonomous compliance management
+    await _manageCompliance();
 
-    // 3. AI manages finances and reporting
-    await _autonomousFinancialManagement();
-
-    // 4. AI handles partnerships and integrations
-    await _autonomousPartnershipManagement();
+    // Autonomous financial management
+    await _manageFinances();
   }
 
-  /// AI manages cloud infrastructure and scaling
-  static Future<void> _autonomousInfrastructureManagement() async {
-    Timer.periodic(Duration(minutes: 5), (timer) async {
+  /// AI manages cloud infrastructure
+  static Future<void> _manageInfrastructure() async {
+    Timer.periodic(Duration(minutes: 15), (timer) async {
       // AI monitors system performance
       final performance = await JoolsAI.analyzeSystemPerformance();
 
-      // AI automatically scales resources
+      // AI scales resources automatically
       if (performance.load > 0.8) {
         await JoolsAI.scaleInfrastructure('up', performance.projections);
+        _log.log('📈 Infrastructure scaled up to meet demand.');
       } else if (performance.load < 0.3) {
         await JoolsAI.scaleInfrastructure('down', performance.projections);
+        _log.log('📉 Infrastructure scaled down to save costs.');
       }
 
-      // AI handles security updates
+      // AI handles security automatically
       await JoolsAI.applySecurityPatches();
     });
   }
 
-  /// AI handles legal and compliance automatically
-  static Future<void> _autonomousComplianceManagement() async {
-    // AI monitors regulatory changes
-    Timer.periodic(Duration(hours: 24), (timer) async {
-      final regulatoryUpdates = await JoolsAI.monitorRegulatoryChanges();
+  /// AI manages legal and regulatory compliance
+  static Future<void> _manageCompliance() async {
+    Timer.periodic(Duration(days: 1), (timer) async {
+      // AI monitors for regulatory changes
+      final updates = await JoolsAI.monitorRegulatoryChanges();
 
-      for (final update in regulatoryUpdates) {
-        // AI implements compliance changes
+      // AI updates systems and policies to remain compliant
+      for (final update in updates) {
         await JoolsAI.implementComplianceUpdate(update);
-
-        // AI updates terms and policies
         await JoolsAI.updateLegalDocuments(update);
+        _log.log('⚖️ Business updated for regulatory compliance.');
       }
     });
   }
 
   /// AI manages business finances
-  static Future<void> _autonomousFinancialManagement() async {
-    Timer.periodic(Duration(hours: 12), (timer) async {
-      // AI analyzes cash flow and expenses
-      final financialHealth = await JoolsAI.analyzeBusinessFinances();
+  static Future<void> _manageFinances() async {
+    Timer.periodic(Duration(hours: 8), (timer) async {
+      // AI analyzes financial health
+      final health = await JoolsAI.analyzeBusinessFinances();
 
-      // AI optimizes costs automatically
-      await JoolsAI.optimizeBusinessCosts(financialHealth);
+      // AI optimizes costs
+      await JoolsAI.optimizeBusinessCosts(health);
 
-      // AI handles tax obligations
+      // AI manages tax compliance
       await JoolsAI.manageTaxCompliance();
 
       // AI generates financial reports
       await JoolsAI.generateFinancialReports();
+      _log.log('💰 Business finances autonomously managed.');
     });
   }
-
-  static Future<void> _autonomousPartnershipManagement() async {}
 }

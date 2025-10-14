@@ -1,92 +1,77 @@
 // lib/automation/user_experience.dart
 
 import 'dart:async';
+import '../services/log_service.dart';
 import 'customer_acquisition.dart'; // Importing to get dummy classes
 
-// Dummy class for compilation
-class FeedbackService {
-  static Future<List<FeedbackItem>> getRecentFeedback() async => [];
-}
-
-/// 🎨 Autonomous UX & Product Management
-/// Replaces designers and product managers with AI
+/// 🚀 Autonomous User Experience Engine
+/// Replaces product managers and developers
 class AutomatedUserExperience {
-  static final Map<String, UXMetric> _uxMetrics = {};
+  static final LogService _log = LogService();
 
   /// AI-driven product development
   static Future<void> autonomousProductDevelopment() async {
-    print('🎨 Starting autonomous product development...');
+    _log.log('🚀 Starting autonomous product development...');
 
-    // 1. AI analyzes user behavior and feedback
-    final userInsights = await JoolsAI.analyzeUserBehaviorPatterns();
+    // Continuous feature development cycle
+    Timer.periodic(Duration(days: 14), (timer) async {
+      await _runFullDevelopmentCycle();
+    });
 
-    // 2. AI identifies feature opportunities
-    final featureOpportunities = await JoolsAI.identifyFeatureOpportunities(userInsights);
+    // Continuous UX optimization cycle
+    Timer.periodic(Duration(hours: 24), (timer) async {
+      await _runUXOptimizationCycle();
+    });
+  }
 
-    // 3. AI designs and implements features
-    for (final opportunity in featureOpportunities) {
-      if (opportunity.priority > 0.7) {
-        await _autonomousFeatureDevelopment(opportunity);
+  /// AI handles the entire feature lifecycle
+  static Future<void> _runFullDevelopmentCycle() async {
+    // 1. AI identifies user needs
+    final insights = await JoolsAI.analyzeUserBehaviorPatterns();
+    final opportunities = await JoolsAI.identifyFeatureOpportunities(insights);
+
+    // 2. AI designs and implements features
+    for (final opportunity in opportunities) {
+      if (opportunity.priority > 0.8) {
+        final design = await JoolsAI.designFeature(opportunity);
+        final implementation = await JoolsAI.implementFeature(design);
+
+        // 3. AI tests and deploys features
+        final testResults = await JoolsAI.testFeature(implementation);
+        if (testResults.success) {
+          await JoolsAI.deployFeature(implementation);
+          _log.log('✅ New feature autonomously deployed!');
+        }
       }
     }
   }
 
-  /// AI designs, implements, and tests new features
-  static Future<void> _autonomousFeatureDevelopment(FeatureOpportunity opportunity) async {
-    // 1. AI generates feature design
-    final featureDesign = await JoolsAI.designFeature(opportunity);
+  /// AI continuously improves the user experience
+  static Future<void> _runUXOptimizationCycle() async {
+    // 1. AI analyzes UX performance
+    final analysis = await JoolsAI.analyzeUXPerformance();
 
-    // 2. AI implements the feature (generates code)
-    final implementation = await JoolsAI.implementFeature(featureDesign);
-
-    // 3. AI tests the feature
-    final testResults = await JoolsAI.testFeature(implementation);
-
-    if (testResults.success) {
-      // 4. AI deploys to production
-      await JoolsAI.deployFeature(implementation);
-
-      // 5. AI monitors feature performance
-      await _monitorFeaturePerformance(featureDesign);
-    }
-  }
-
-  /// Autonomous UX optimization
-  static Future<void> optimizeUXAutonomously() async {
-    // AI continuously monitors UX metrics
-    final uxAnalysis = await JoolsAI.analyzeUXPerformance();
-
-    // AI identifies optimization opportunities
-    final optimizations = await JoolsAI.identifyUXOptimizations(uxAnalysis);
-
-    // AI implements optimizations automatically
+    // 2. AI identifies and implements optimizations
+    final optimizations = await JoolsAI.identifyUXOptimizations(analysis);
     for (final optimization in optimizations) {
-      if (optimization.impact > 0.3) {
+      if (optimization.impact > 0.5) {
         await JoolsAI.implementUXOptimization(optimization);
+        _log.log('✨ UX autonomously optimized!');
       }
     }
   }
 
-  /// AI handles user feedback and feature requests
-  static Future<void> processUserFeedbackAutonomously() async {
-    final feedback = await FeedbackService.getRecentFeedback();
+  /// AI processes and acts on user feedback
+  static Future<void> processUserFeedback(FeedbackItem item) async {
+    // AI analyzes feedback
+    final analysis = await JoolsAI.analyzeFeedback(item);
 
-    for (final item in feedback) {
-      // AI analyzes sentiment and intent
-      final analysis = await JoolsAI.analyzeFeedback(item);
+    // AI determines appropriate action
+    final action = await JoolsAI.determineFeedbackAction(analysis);
 
-      if (analysis.requiresAction) {
-        // AI decides on response (implement, decline, or gather more info)
-        final action = await JoolsAI.determineFeedbackAction(analysis);
-
-        // AI executes the decision
-        await _executeFeedbackAction(action, item);
-      }
-    }
+    // AI takes action (e.g., create ticket, reply to user)
+    await _executeFeedbackAction(action);
   }
 
-  static Future<void> _monitorFeaturePerformance(FeatureDesign design) async {}
-  static Future<void> _executeFeedbackAction(Action action, FeedbackItem item) async {}
+  static Future<void> _executeFeedbackAction(Action action) async {}
 }
-
-class UXMetric {}
