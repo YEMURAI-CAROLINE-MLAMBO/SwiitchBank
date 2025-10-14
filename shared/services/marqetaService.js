@@ -1,7 +1,7 @@
 // backend/src/services/marqetaService.js
 // Note: 'axios' is used to make HTTP requests. You'll need to add it to your project's dependencies.
 // You can do this by running `npm install axios` or `yarn add axios` in your backend directory.
-const axios = require('axios');
+import axios from 'axios';
 
 const MARQETA_API_URL = process.env.MARQETA_API_URL;
 const MARQETA_API_KEY = process.env.MARQETA_API_KEY;
@@ -101,4 +101,4 @@ const marqetaService = {
   },
 };
 
-module.exports = marqetaService;
+export default marqetaService;

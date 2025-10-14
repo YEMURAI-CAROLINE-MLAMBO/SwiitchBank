@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_API_KEY);
+import stripe from 'stripe';
+const stripeClient = stripe(process.env.STRIPE_API_KEY);
 
 /**
  * Create a new customer in Stripe.
@@ -6,9 +7,9 @@ const stripe = require('stripe')(process.env.STRIPE_API_KEY);
  * @param {string} name - The customer's full name.
  * @returns {object} The created customer object.
  */
-exports.createCustomer = async (email, name) => {
+export const createCustomer = async (email, name) => {
   try {
-    const customer = await stripe.customers.create({
+    const customer = await stripeClient.customers.create({
       email,
       name,
     });
@@ -27,9 +28,9 @@ exports.createCustomer = async (email, name) => {
  * @param {string} description - A description of the payment.
  * @returns {object} The created charge object.
  */
-exports.createCharge = async (amount, currency, source, description) => {
+export const createCharge = async (amount, currency, source, description) => {
   try {
-    const charge = await stripe.charges.create({
+    const charge = await stripeClient.charges.create({
       amount,
       currency,
       source,

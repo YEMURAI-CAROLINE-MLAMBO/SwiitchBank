@@ -1,7 +1,7 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const aiController = require('../controllers/aiController');
+import * as aiController from '../controllers/aiController.js';
 
 router.post('/ask', aiController.getAIAssistantResponse);
 
-module.exports = router;
+export default router;

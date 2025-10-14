@@ -73,4 +73,4 @@ const configs = {
 const currentEnv = process.env.NODE_ENV || 'development';
 const config = configs[currentEnv];
 
-module.exports = config;
+export default config;

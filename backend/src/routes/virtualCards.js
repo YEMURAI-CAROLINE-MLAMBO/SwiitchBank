@@ -1,9 +1,9 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const authMiddleware = require('../middleware/auth'); // Import the authentication middleware
-const { body, param } = require('express-validator');
-const virtualCardController = require('../controllers/virtualCardController');
-const marqetaWebhookService = require('../services/marqetaWebhookService');
+import authMiddleware from '../middleware/auth.js'; // Import the authentication middleware
+import { body, param } from 'express-validator';
+import * as virtualCardController from '../controllers/virtualCardController.js';
+import * as marqetaWebhookService from '../services/marqetaWebhookService.js';
 
 
 // Apply authentication middleware to all routes in this router
@@ -111,4 +111,4 @@ router.post('/:cardId/withdraw',
  */
 router.post('/webhooks/marqeta', marqetaWebhookService.processWebhookEvent);
 
-module.exports = router;
+export default router;

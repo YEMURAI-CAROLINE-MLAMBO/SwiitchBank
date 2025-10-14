@@ -1,6 +1,6 @@
 // backend/src/services/payoutPartnerService.js
 
-const logger = require('../utils/logger');
+import logger from '../utils/logger.js';
 
 /**
  * Simulates initiating a payout with a third-party partner.
@@ -35,4 +35,4 @@ const initiatePayout = async (amount, currency, bankAccountId) => {
   }
 };
 
-module.exports = { initiatePayout };
+export { initiatePayout };

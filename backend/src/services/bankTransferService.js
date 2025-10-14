@@ -1,30 +1,17 @@
 // backend/src/services/bankTransferService.js
 
-const automatedSavingsService = require('./automatedSavingsService');
-const logger = require('../utils/logger');
-
-class BankTransferService {
-  /**
-   * Simulates an incoming bank transfer and triggers automated savings.
-   * @param {string} userId The ID of the user receiving the transfer.
-   * @param {number} amount The amount of the transfer.
-   * @param {string} currency The currency of the transfer.
-   */
-  async handleIncomingTransfer(userId, amount, currency) {
-    logger.info(`Processing incoming transfer of ${amount} ${currency} for user ${userId}.`);
-
-    // In a real application, you would credit the user's main account here.
-
-    // After the main account is credited, trigger the automated savings feature.
-    try {
-      await automatedSavingsService.triggerSavings(userId, amount, currency);
-    } catch (error) {
-      logger.error(`Failed to trigger automated savings for user ${userId}:`, error);
-      // Even if savings fails, the main transfer should not be rolled back.
-    }
-
-    return { success: true, message: 'Incoming transfer processed.' };
-  }
-}
-
-module.exports = new BankTransferService();
+/**
+ * Placeholder function to simulate a bank transfer.
+ * @param {string} fromAccountId - The ID of the account to transfer from.
+ * @param {string} toAccountId - The ID of the account to transfer to.
+ * @param {number} amount - The amount to transfer.
+ * @returns {Promise<object>} The result of the bank transfer.
+ */
+export const transfer = async (fromAccountId, toAccountId, amount) => {
+  // In a real application, this would interact with a banking API.
+  return Promise.resolve({
+    success: true,
+    transactionId: `txn_${Date.now()}`,
+    message: `Successfully transferred ${amount} from ${fromAccountId} to ${toAccountId}.`,
+  });
+};

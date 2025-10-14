@@ -15,7 +15,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "scaffold": "node scripts/scaffold.js"
   },
   "eslintConfig": {
     "extends": [
@@ -34,6 +35,11 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios|react-markdown|@babel|jest-runner|remark-parse|remark-rehype|rehype-raw|rehype-stringify|hast-util-raw|hast-util-from-parse5|hast-script|hast-util-parse-selector|hast-util-has-property|hast-util-is-element|hast-util-to-string|hast-util-to-html|hast-util-select|hast-util-sanitize|hast-util-embedded|hast-util-classnames|hast-util-capitalize|hast-util-from-html|hast-util-from-string|hast-util-to-text|hast-util-inspect|vfile|vfile-message|unified|bail|trough|is-plain-obj|decode-named-character-reference|character-entities|web-namespaces|zwitch|html-void-elements|ccount|markdown-table|stringify-entities|trim-lines|space-separated-tokens|unist-util-position|unist-util-visit|unist-util-is|unist-builder|unist-util-stringify-position|devlop|hast-util-to-jsx-runtime|comma-separated-tokens|estree-util-is-identifier-name|hast-util-whitespace|property-information|space-separated-tokens|unist-util-position|html-url-attributes|mdast-util-from-markdown|mdast-util-to-string|micromark|mdast-util-to-hast)"
     ]
   },
   "devDependencies": {

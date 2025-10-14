@@ -3,10 +3,6 @@
  * Initializes Express server with security middleware and API routes
  */
 
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
 import 'dotenv/config.js';
 
 import app from './src/app.js';
@@ -46,3 +42,5 @@ process.on('uncaughtException', (err) => {
 });
 
 startServer();
+
+export default app;

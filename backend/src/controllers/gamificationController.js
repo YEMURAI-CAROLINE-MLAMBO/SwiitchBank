@@ -1,6 +1,6 @@
 // backend/src/controllers/gamificationController.js
 
-const gamificationService = require('../services/gamificationService');
+import * as gamificationService from '../services/gamificationService.js';
 
 /**
  * @swagger
@@ -30,9 +30,8 @@ const gamificationService = require('../services/gamificationService');
  *       404:
  *         description: User not found
  */
-exports.getFinancialInsights = async (req, res) => {
+export const getFinancialInsights = async (req, res) => {
   try {
-    const gamificationService = require('../services/gamificationService');
     const { userId } = req.params;
     const insights = await gamificationService.getFinancialInsights(userId);
     res.status(200).json({ userId: userId, insights: insights
@@ -81,7 +80,7 @@ exports.getFinancialInsights = async (req, res) => {
  *       404:
  *         description: User not found
  */
-exports.getGamificationChallenges = async (req, res) => {
+export const getGamificationChallenges = async (req, res) => {
   try {
     const { userId } = req.params;
     const challenges = await gamificationService.getGamificationChallenges(userId);
@@ -124,7 +123,7 @@ exports.getGamificationChallenges = async (req, res) => {
  *       404:
  *         description: User not found
  */
-exports.getGamificationLeaderboard = async (req, res) => {
+export const getGamificationLeaderboard = async (req, res) => {
   try {
     const { userId } = req.params;
     const leaderboard = await gamificationService.getGamificationLeaderboard(userId);

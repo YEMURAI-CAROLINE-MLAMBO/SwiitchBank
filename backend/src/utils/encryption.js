@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 const ALGORITHM = 'aes-256-cbc';
 const IV_LENGTH = 16; // For AES, this is always 16
@@ -57,7 +57,7 @@ function decrypt(text, key) {
   }
 }
 
-module.exports = {
+export {
   encrypt,
   decrypt,
 };

@@ -1,9 +1,9 @@
 // backend/src/services/cryptoService.js
 
-const payoutPartnerService = require('./payoutPartnerService');
-const logger = require('../utils/logger');
-const appConfig = require('../config/appConfig');
-const cryptoPartnerService = require('./cryptoPartnerService'); // Hypothetical service
+import * as payoutPartnerService from './payoutPartnerService.js';
+import logger from '../utils/logger.js';
+import appConfig from '../config/appConfig.js';
+import * as cryptoPartnerService from './cryptoPartnerService.js'; // Hypothetical service
 
 const getSupportedCurrencies = async () => {
   try {
@@ -107,7 +107,7 @@ const initiatePayout = async (walletId, bankAccountId, amount, currency) => {
   };
 };
 
-module.exports = {
+export {
   getSupportedCurrencies,
   getExchangeRate,
   initiatePayout,

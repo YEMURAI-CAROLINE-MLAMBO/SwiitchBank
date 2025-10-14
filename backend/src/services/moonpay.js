@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const moonpay = axios.create({
   baseURL: 'https://api.moonpay.com/v3',
@@ -15,7 +15,7 @@ const moonpay = axios.create({
  * @param {string} quoteCurrencyCode - The currency to buy.
  * @returns {object} The quote object.
  */
-exports.getQuote = async (
+export const getQuote = async (
   baseCurrencyCode,
   baseCurrencyAmount,
   quoteCurrencyCode
@@ -36,7 +36,7 @@ exports.getQuote = async (
  * @param {object} transactionData - The transaction data.
  * @returns {object} The created transaction object.
  */
-exports.createTransaction = async (transactionData) => {
+export const createTransaction = async (transactionData) => {
   try {
     const response = await moonpay.post('/transactions', transactionData);
     return response.data;

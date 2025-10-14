@@ -1,5 +1,5 @@
-const express = require('express');
-const gamificationController = require('../controllers/gamificationController');
+import express from 'express';
+import * as gamificationController from '../controllers/gamificationController.js';
 
 const router = express.Router();
 
@@ -12,4 +12,4 @@ router.get('/users/:userId/gamification/challenges', gamificationController.getG
 // GET the gamification leaderboard
 router.get('/users/:userId/gamification/leaderboard', gamificationController.getGamificationLeaderboard);
 
-module.exports = router;
+export default router;
