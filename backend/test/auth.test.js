@@ -1,20 +1,34 @@
 import request from 'supertest';
 import app from '../src/app.js';
 import User from '../src/models/User.js';
-import { connectDB, disconnectDB } from '../src/config/database.js';
+
+jest.mock('../src/config/database.js', () => ({
+  connectDB: jest.fn(() => Promise.resolve()),
+  disconnectDB: jest.fn(() => Promise.resolve()),
+}));
+
+jest.mock('../src/models/User.js');
+
 
 describe('Auth Endpoints', () => {
-  beforeAll(async () => {
-    await connectDB();
-  });
 
-  afterAll(async () => {
-    await User.deleteMany({});
-    await disconnectDB();
+  beforeEach(() => {
+    User.findOne.mockClear();
+    User.create.mockClear();
   });
 
   describe('POST /api/auth/register', () => {
     it('should register a new user', async () => {
+      User.findOne.mockResolvedValue(null);
+      User.create.mockResolvedValue({
+        _id: 'some-id',
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test@example.com',
+        // Mongoose .save() returns a promise, so we mock it.
+        save: jest.fn().mockResolvedValue(true),
+      });
+
       const res = await request(app)
         .post('/api/auth/register')
         .send({
@@ -23,11 +37,18 @@ describe('Auth Endpoints', () => {
           email: 'test@example.com',
           password: 'password123',
         });
+
       expect(res.statusCode).toEqual(200);
       expect(res.body).toHaveProperty('token');
     });
 
     it('should not register a user with an existing email', async () => {
+       User.findOne.mockResolvedValue({
+        _id: 'some-id',
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test@example.com',
+      });
       const res = await request(app)
         .post('/api/auth/register')
         .send({
@@ -43,6 +64,13 @@ describe('Auth Endpoints', () => {
 
   describe('POST /api/auth/login', () => {
     it('should login a user with correct credentials', async () => {
+        const mockUser = {
+        _id: 'some-id',
+        email: 'test@example.com',
+        password: 'hashedpassword', // In a real scenario, this would be hashed
+        matchPassword: jest.fn().mockResolvedValue(true),
+      };
+      User.findOne.mockResolvedValue(mockUser);
       const res = await request(app)
         .post('/api/auth/login')
         .send({
@@ -54,6 +82,13 @@ describe('Auth Endpoints', () => {
     });
 
     it('should not login a user with incorrect credentials', async () => {
+       const mockUser = {
+        _id: 'some-id',
+        email: 'test@example.com',
+        password: 'hashedpassword',
+        matchPassword: jest.fn().mockResolvedValue(false),
+      };
+      User.findOne.mockResolvedValue(mockUser);
       const res = await request(app)
         .post('/api/auth/login')
         .send({

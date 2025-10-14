@@ -1,19 +1,32 @@
-// backend/src/services/marqetaService.js
-// Note: 'axios' is used to make HTTP requests. You'll need to add it to your project's dependencies.
-// You can do this by running `npm install axios` or `yarn add axios` in your backend directory.
-import axios from 'axios';
+// shared/services/marqetaService.js
 
 const MARQETA_API_URL = process.env.MARQETA_API_URL;
 const MARQETA_API_KEY = process.env.MARQETA_API_KEY;
 
-// Create an axios instance for Marqeta API requests
-const marqetaApi = axios.create({
-  baseURL: MARQETA_API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Basic ${Buffer.from(MARQETA_API_KEY).toString('base64')}`
+let marqetaApi; // Memoized client instance
+
+/**
+ * Asynchronously initializes and returns a memoized axios instance for Marqeta API requests.
+ * This uses a dynamic import() to load axios, resolving CJS/ESM conflicts in test environments.
+ * @returns {Promise<import('axios').AxiosInstance>} A promise that resolves with the axios instance.
+ */
+const getMarqetaApiClient = async () => {
+  if (marqetaApi) {
+    return marqetaApi;
   }
-});
+
+  const { default: axios } = await import('axios');
+
+  marqetaApi = axios.create({
+    baseURL: MARQETA_API_URL,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Basic ${Buffer.from(MARQETA_API_KEY).toString('base64')}`
+    }
+  });
+
+  return marqetaApi;
+};
 
 /**
  * Service for interacting with the Marqeta API for virtual card management.
@@ -27,8 +40,9 @@ const marqetaService = {
    */
   createCard: async (cardDetails) => {
     try {
+      const client = await getMarqetaApiClient();
       console.log('Creating virtual card with Marqeta:', cardDetails);
-      const response = await marqetaApi.post('/cards', cardDetails);
+      const response = await client.post('/cards', cardDetails);
       return response.data;
     } catch (error) {
       console.error('Error creating virtual card with Marqeta:', error.response ? error.response.data : error.message);
@@ -43,8 +57,9 @@ const marqetaService = {
    */
   activateCard: async (cardToken) => {
     try {
+      const client = await getMarqetaApiClient();
       console.log('Activating virtual card with Marqeta:', cardToken);
-      const response = await marqetaApi.post(`/cards/${cardToken}/activation`);
+      const response = await client.post(`/cards/${cardToken}/activation`);
       return response.data;
     } catch (error) {
       console.error(`Error activating virtual card with Marqeta (${cardToken}):`, error.response ? error.response.data : error.message);
@@ -59,8 +74,9 @@ const marqetaService = {
    */
   suspendCard: async (cardToken) => {
     try {
+      const client = await getMarqetaApiClient();
       console.log('Suspending virtual card with Marqeta:', cardToken);
-      const response = await marqetaApi.put(`/cards/${cardToken}`, { state: 'SUSPENDED' });
+      const response = await client.put(`/cards/${cardToken}`, { state: 'SUSPENDED' });
       return response.data;
     } catch (error) {
       console.error(`Error suspending virtual card with Marqeta (${cardToken}):`, error.response ? error.response.data : error.message);
@@ -75,30 +91,32 @@ const marqetaService = {
    */
   getCardDetails: async (cardToken) => {
     try {
+      const client = await getMarqetaApiClient();
       console.log('Retrieving details for card:', cardToken);
-      const response = await marqetaApi.get(`/cards/${cardToken}`);
+      const response = await client.get(`/cards/${cardToken}`);
       return response.data;
-    } catch (error) {
-      console.error(`Error retrieving details for card ${cardToken}:`, error.response ? error.response.data : error.message);
-      throw new Error('Failed to retrieve card details');
-    }
-  },
+    } catch (error)      {
+        console.error(`Error retrieving details for card ${cardToken}:`, error.response ? error.response.data : error.message);
+        throw new Error('Failed to retrieve card details');
+      }
+    },
 
-  /**
-   * Retrieves the transactions for a virtual card.
-   * @param {string} cardToken - The token of the card to retrieve transactions for.
-   * @returns {Promise<object>} - A promise that resolves with the list of transactions.
-   */
-  getCardTransactions: async (cardToken) => {
-    try {
-      console.log('Retrieving transactions for card:', cardToken);
-      const response = await marqetaApi.get(`/transactions/card/${cardToken}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error retrieving transactions for card ${cardToken}:`, error.response ? error.response.data : error.message);
-      throw new Error('Failed to retrieve card transactions');
-    }
-  },
-};
+    /**
+     * Retrieves the transactions for a virtual card.
+     * @param {string} cardToken - The token of the card to retrieve transactions for.
+     * @returns {Promise<object>} - A promise that resolves with the list of transactions.
+     */
+    getCardTransactions: async (cardToken) => {
+      try {
+        const client = await getMarqetaApiClient();
+        console.log('Retrieving transactions for card:', cardToken);
+        const response = await client.get(`/transactions/card/${cardToken}`);
+        return response.data;
+      } catch (error) {
+        console.error(`Error retrieving transactions for card ${cardToken}:`, error.response ? error.response.data : error.message);
+        throw new Error('Failed to retrieve card transactions');
+      }
+    },
+  };
 
-export default marqetaService;
+  module.exports = marqetaService;

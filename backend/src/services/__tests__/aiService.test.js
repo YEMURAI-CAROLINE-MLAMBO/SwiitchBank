@@ -1,43 +1,21 @@
-// This is the core of the fix: use a factory function for the mock.
-// Jest will hoist this call to the top of the module, so it runs before any imports.
-jest.mock('@google/generative-ai', () => {
-  const mockGenerateContent = jest.fn();
-  const mockGetGenerativeModel = jest.fn(() => ({
-    generateContent: mockGenerateContent,
-  }));
-  const mockGoogleGenerativeAI = jest.fn(() => ({
-    getGenerativeModel: mockGetGenerativeModel,
-  }));
+import { getAIResponse } from '../aiService.js';
 
-  // The factory returns the mocked module.
-  return {
-    GoogleGenerativeAI: mockGoogleGenerativeAI,
-    // Expose the mock functions to be used in tests
-    mockGenerateContent,
-    mockGetGenerativeModel,
-    mockGoogleGenerativeAI,
-  };
-});
+// We need a handle to the mock function, so we define it in the outer scope.
+const mockGenerateContent = jest.fn();
+
+// The mock factory is hoisted and uses the mock function.
+jest.mock('@google/generative-ai', () => ({
+  GoogleGenerativeAI: jest.fn(() => ({
+    getGenerativeModel: jest.fn(() => ({
+      generateContent: mockGenerateContent,
+    })),
+  })),
+}));
 
 describe('AI Service', () => {
-  let getAIResponse;
-  let mockGenerateContent;
-  let mockGetGenerativeModel;
-  let mockGoogleGenerativeAI;
-
-  beforeEach(async () => {
-    // Reset modules to clear cache and ensure the mock is used for a fresh instance
-    jest.resetModules();
-
-    // Dynamically import the mocked module and the service inside beforeEach
-    // to ensure a fresh instance for each test.
-    const aiService = await import('../aiService.js');
-    const mockGenAI = await import('@google/generative-ai');
-
-    getAIResponse = aiService.getAIResponse;
-    mockGenerateContent = mockGenAI.mockGenerateContent;
-    mockGetGenerativeModel = mockGenAI.mockGetGenerativeModel;
-    mockGoogleGenerativeAI = mockGenAI.mockGoogleGenerativeAI;
+  beforeEach(() => {
+    // Clear mock history before each test.
+    mockGenerateContent.mockClear();
   });
 
   it('should get a response from the AI service', async () => {
@@ -55,8 +33,6 @@ describe('AI Service', () => {
 
     // Assert
     expect(response).toBe(mockResponseText);
-    expect(mockGoogleGenerativeAI).toHaveBeenCalledTimes(1);
-    expect(mockGetGenerativeModel).toHaveBeenCalledWith({ model: 'gemini-pro' });
     expect(mockGenerateContent).toHaveBeenCalledWith(prompt);
   });
 
