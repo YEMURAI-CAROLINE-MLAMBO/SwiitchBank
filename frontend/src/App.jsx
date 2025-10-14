@@ -10,6 +10,9 @@ import SignupPage from './pages/SignupPage';
 import SettingsPage from './pages/SettingsPage';
 import TransactionsPage from './pages/TransactionsPage';
 import BusinessOnboarding from './components/BusinessOnboarding';
+import ReferralPage from './pages/ReferralPage';
+import ChatPage from './pages/ChatPage';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (

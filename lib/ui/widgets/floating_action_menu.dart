@@ -42,8 +42,12 @@ class _FloatingActionMenuState extends State<FloatingActionMenu>
         MaterialPageRoute(builder: (context) => JoolsChatScreen()),
       );
     } else {
-      // Placeholder for other actions
-      print('$label tapped');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$label feature coming soon!'),
+          backgroundColor: AppColors.electricBlue,
+        ),
+      );
     }
   }
 

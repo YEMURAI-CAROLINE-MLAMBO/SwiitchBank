@@ -1,6 +1,7 @@
 // lib/automation/ceo_ai.dart
 
 import 'dart:async';
+import '../services/log_service.dart';
 import 'customer_acquisition.dart'; // Importing to get dummy classes
 import 'customer_service.dart';
 import 'user_experience.dart';
@@ -10,11 +11,12 @@ import 'business_operations.dart';
 /// 👑 Autonomous CEO AI
 /// Manages the entire business without human intervention
 class AutonomousCEO {
+  static final LogService _log = LogService();
   static final Map<String, BusinessMetric> _businessMetrics = {};
 
   /// Start completely autonomous business
   static Future<void> startAutonomousBusiness() async {
-    print('👑 Starting Autonomous SwiitchBank Business...');
+    _log.log('👑 Starting Autonomous SwiitchBank Business...');
 
     // 1. Initialize all automated departments
     await AutomatedCustomerAcquisition.runAutonomousMarketingCampaigns();
@@ -28,7 +30,7 @@ class AutonomousCEO {
     // 3. Continuous business optimization
     await _startContinuousOptimization();
 
-    print('✅ Autonomous Business Operational - Zero Human Staff Required');
+    _log.log('✅ Autonomous Business Operational - Zero Human Staff Required');
   }
 
   /// AI makes strategic business decisions

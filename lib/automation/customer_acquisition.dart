@@ -1,11 +1,21 @@
 // lib/automation/customer_acquisition.dart
 
 import 'dart:async';
+import '../services/log_service.dart';
 
 // Dummy classes to avoid errors
 class JoolsAI {
-  static Future<List<MarketSegment>> analyzeMarketSegments() async => [];
-  static Future<Campaign> createMarketingCampaign(MarketSegment segment) async => Campaign();
+  static final LogService _log = LogService();
+  static Future<List<MarketSegment>> analyzeMarketSegments() async {
+    _log.log("🧠 JoolsAI: Analyzing market segments...");
+    await Future.delayed(Duration(milliseconds: 100));
+    return [MarketSegment('Tech Startups'), MarketSegment('Gig Economy Workers')];
+  }
+  static Future<Campaign> createMarketingCampaign(MarketSegment segment) async {
+    _log.log("🎨 JoolsAI: Creating targeted campaign for ${segment.name}...");
+    await Future.delayed(Duration(milliseconds: 50));
+    return Campaign();
+  }
   static Future<List<Lead>> qualifyLeads() async => [];
   static Future<void> sendPersonalizedOutreach(Lead lead) async {}
   static Future<void> conductSalesConversation(Lead lead) async {}
@@ -53,7 +63,8 @@ class JoolsAI {
 }
 
 class MarketSegment {
-  String name = 'default';
+  String name;
+  MarketSegment(this.name);
 }
 class Campaign {}
 class Lead {
@@ -106,11 +117,12 @@ class CrisisResponse {}
 /// 🤖 Autonomous Customer Acquisition Engine
 /// Replaces sales team with AI-driven growth
 class AutomatedCustomerAcquisition {
+  static final LogService _log = LogService();
   static final Map<String, int> _conversionMetrics = {};
 
   /// AI-driven marketing campaigns
   static Future<void> runAutonomousMarketingCampaigns() async {
-    print('📈 Starting autonomous marketing campaigns...');
+    _log.log('📈 Starting autonomous marketing campaigns...');
 
     // 1. AI identifies target audiences
     final targetSegments = await JoolsAI.analyzeMarketSegments();
@@ -137,7 +149,7 @@ class AutomatedCustomerAcquisition {
     // Scale winning campaigns automatically
     await _scaleWinningCampaign(bestPerformer);
 
-    print('✅ AI Campaign deployed for segment: ${segment.name}');
+    _log.log('✅ AI Campaign deployed for segment: ${segment.name}');
   }
 
   /// Autonomous lead qualification and onboarding
