@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../FirebaseConfig';
 import { collection, query, where, orderBy, onSnapshot, limit, getDocs, startAfter } from 'firebase/firestore';
+import TransactionsList from '../components/transactions/TransactionsList';
 import './TransactionsPage.css';
 
 const TransactionsPage = () => {
@@ -82,21 +83,7 @@ const TransactionsPage = () => {
   return (
     <div>
       <h1>Transactions</h1>
-      {transactions.length > 0 ? (
-        <ul className="transaction-list-full">
-          {transactions.map(transaction => (
-            <li key={transaction.id} className={`transaction-item ${transaction.type}`}>
-              <div className="transaction-details">
-                <span className="transaction-description">{transaction.description || 'Transaction'}</span>
-                <span className="transaction-date">{transaction.timestamp?.toDate().toLocaleString()}</span>
-              </div>
-              <span className="transaction-amount">{transaction.type === 'debit' ? '-' : '+'}{transaction.amount?.toFixed(2) || '0.00'} {transaction.currency || ''}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="no-transactions">No transactions found.</div>
-      )}
+      <TransactionsList transactions={transactions} />
       {hasMore && <button onClick={fetchMoreTransactions}>Load More</button>}
     </div>
   );

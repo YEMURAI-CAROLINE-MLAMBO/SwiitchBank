@@ -1,14 +1,17 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import WalletDashboard from '../components/wallet/WalletDashboard';
+import DashboardPage from './DashboardPage';
 
 function HomePage() {
   const { user } = useAuth();
 
+  const isAuthenticated = user;
+
+
   return (
     <div className="home-page">
-      {user ? (
-        <WalletDashboard />
+      {isAuthenticated ? (
+        <DashboardPage />
       ) : (
         <>
           <h2>Welcome to SwiitchBank</h2>

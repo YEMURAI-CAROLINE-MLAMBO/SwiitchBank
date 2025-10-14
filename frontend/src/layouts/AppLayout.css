@@ -46,11 +46,24 @@
   color: #0070F3; /* Electric blue */
 }
 
+.app-body {
+  display: flex;
+  flex-grow: 1;
+}
+
 .app-content {
   flex-grow: 1;
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.sophia-chat {
+  width: 350px;
+  border-left: 1px solid var(--border-color);
+  background-color: var(--primary-color);
+  display: flex;
+  flex-direction: column;
 }
 
 .app-footer {
