@@ -17,6 +17,7 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 - **Fiat-Crypto Bridge**: Effortless trading between traditional and digital assets
 - **Referral Program**: Automated rewards system fostering community growth
 - **Basic Business Accounts**: Multi-user access with role-based permissions (Owner, Accountant, Operations)
+- **Financial Calculators**: Tools for intelligent debt repayment planning.
 
 <br>
 
@@ -25,6 +26,19 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 - Cross-chain swap capabilities
 - Advanced gamification milestones
 - Multi-currency support for global users
+
+### 💸 Financial Calculators
+
+As part of our commitment to financial intelligence, SwitchBank includes a suite of powerful backend calculators. The first available tool is the **Debt Repayment Optimizer**.
+
+#### Debt Repayment Optimizer
+
+This tool, located in the `OptimizationEngine`, provides two industry-standard strategies for paying off multiple debts:
+
+-   **Debt Snowball**: This method focuses on paying off the smallest debts first to build psychological momentum.
+-   **Debt Avalanche**: This method focuses on paying off the debts with the highest interest rates first to minimize the total interest paid over the life of the loans.
+
+These calculators can be used to provide users with a clear, actionable plan to become debt-free.
 
 ### 🤖 Autonomous Communication System
 
