@@ -1,123 +1,67 @@
 import mongoose from 'mongoose';
 
-const transactionSchema = new mongoose.Schema({
-  // User reference
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-    index: true
-  },
-
-  // Account reference
-  account: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Account',
-    required: true,
-    index: true
-  },
-
-  // Plaid transaction data
-  plaidTransactionId: {
+const TransactionSchema = new mongoose.Schema({
+  marqetaTransactionToken: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
-  plaidCategoryId: String,
-
-  // Core transaction data
-  name: {
+  marqetaCardToken: {
     type: String,
     required: true,
-    trim: true
   },
-  merchantName: {
+  marqetaUserToken: {
     type: String,
-    trim: true
+    required: true,
   },
   amount: {
     type: Number,
-    required: true
-  },
-  date: {
-    type: Date,
     required: true,
-    index: true
   },
   currency: {
     type: String,
-    default: 'USD'
+    required: true,
   },
-
-  // Enhanced categorization
-  category: {
+  state: {
     type: String,
     required: true,
-    default: 'Uncategorized',
-    index: true
   },
-  subcategory: String,
-  categoryConfidence: {
-    type: Number,
-    default: 1.0
-  },
-
-  // Location data
-  location: {
-    city: String,
-    region: String,
-    country: String,
-    address: String,
-    postalCode: String,
-    lat: Number,
-    lon: Number
-  },
-
-  // Payment metadata
-  paymentChannel: {
+  transactionType: {
     type: String,
-    enum: ['online', 'in_store', 'other']
+    required: true,
   },
-  pending: {
+  merchantDetails: {
+    type: Object,
+  },
+  // MULTI-CURRENCY TRANSACTION DATA
+  // These fields are not required to avoid a breaking change for existing documents.
+  // A data migration would be needed to make them required.
+  originalAmount: {
+    type: Number
+  },
+  originalCurrency: {
+    type: String,
+    uppercase: true
+  },
+
+  // Converted amounts (for user's base currency)
+  convertedAmount: Number,
+  convertedCurrency: String,
+  exchangeRate: Number, // Rate used for conversion
+  exchangeRateDate: Date,
+
+  // FX Metadata
+  fxFee: Number,
+  fxProvider: String,
+  crossBorder: {
     type: Boolean,
     default: false
   },
-
-  // AI-enhanced fields
-  tags: [String],
-  notes: String,
-  importance: {
-    type: String,
-    enum: ['low', 'medium', 'high'],
-    default: 'medium'
-  },
-
-  // Timestamps
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+  internationalDetails: {
+    country: String,
+    merchantCountry: String,
+    fxMarkup: Number
   }
-}, {
-  timestamps: true
-});
+}, { timestamps: true });
 
-// Compound indexes for optimal query performance
-transactionSchema.index({ user: 1, date: -1 });
-transactionSchema.index({ user: 1, category: 1 });
-transactionSchema.index({ user: 1, amount: 1 });
-transactionSchema.index({ user: 1, merchantName: 1 });
-transactionSchema.index({ date: 1, category: 1 });
-transactionSchema.index({ user: 1, pending: 1 });
-
-// Text index for search functionality
-transactionSchema.index({
-  name: 'text',
-  merchantName: 'text',
-  notes: 'text'
-});
-
-export default mongoose.model('Transaction', transactionSchema);
+export default mongoose.model('Transaction', TransactionSchema);

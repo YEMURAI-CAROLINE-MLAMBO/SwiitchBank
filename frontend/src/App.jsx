@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout';
-import UnifiedDashboard from './components/Dashboard/UnifiedDashboard';
+import HomePage from './pages/HomePage';
 import WalletPage from './pages/WalletPage';
 import CardsPage from './pages/CardsPage';
 import LoginPage from './pages/LoginPage';
@@ -24,7 +24,7 @@ function App() {
         {onboardingComplete ? (
           <>
             <Route path="/" element={<AppLayout />}>
-              <Route index element={<UnifiedDashboard />} />
+              <Route index element={<HomePage />} />
               <Route path="wallet" element={<WalletPage />} />
               <Route path="cards" element={<CardsPage />} />
               <Route path="settings" element={<SettingsPage />} />
