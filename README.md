@@ -13,7 +13,7 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 ## Core Features (MVP Scope)
 
 ### 🎯 Must-Have Features
-- **Jools AI Assistant**: Basic transaction analysis, navigation assistance, and onboarding guidance
+- **Sophia-2 AI**: Basic transaction analysis, navigation assistance, and onboarding guidance
 - **Fiat-Crypto Bridge**: Effortless trading between traditional and digital assets
 - **Referral Program**: Automated rewards system fostering community growth
 - **Basic Business Accounts**: Multi-user access with role-based permissions (Owner, Accountant, Operations)
@@ -40,6 +40,41 @@ This tool, located in the `OptimizationEngine`, provides two industry-standard s
 
 These calculators can be used to provide users with a clear, actionable plan to become debt-free.
 
+### 🚀 Advanced Financial Modeling Engine
+
+To transform SwitchBank from a simple tracking app into a sophisticated financial planning platform, we've integrated a powerful new financial modeling engine. This engine provides the mathematical foundation for truly intelligent financial advice, turning our Sophia AI into a quantitative expert.
+
+**Core Models:**
+-   **FinancialModel**: Handles personal financial statement modeling (Income, Balance Sheet, Cash Flow), DCF valuation, and sensitivity analysis.
+-   **MonteCarloEngine**: Powers probability-based simulations for retirement planning, real estate investment, and business valuation.
+-   **RiskModel**: Assesses portfolio risk (VaR, Expected Shortfall), credit risk, and liquidity risk.
+-   **BehavioralModel**: Models user spending and investment behavior to identify patterns and biases.
+-   **ScenarioEngine**: Conducts comprehensive "what-if" analysis for various financial scenarios (e.g., market crashes, recessions).
+-   **SophiaModeling**: Integrates all models to create personalized, dynamic financial plans for users.
+-   **LiveModeling**: Allows for real-time model updates with new data and generates predictive alerts.
+
+#### Financial Modeling Applications
+
+**For Users:**
+-   ✅ **Personal DCF**: Understand your lifetime financial value.
+-   ✅ **Retirement Readiness Scoring**: Probability-based retirement planning.
+-   ✅ **Goal Achievement Probability**: See the mathematical likelihood of reaching your goals.
+-   ✅ **Optimal Financial Strategy**: Make data-driven financial decisions.
+-   ✅ **Risk Quantification**: Understand and quantify your financial risks.
+
+**For Sophia AI:**
+-   ✅ **Quantitative Reasoning**: Provides a mathematical basis for recommendations.
+-   ✅ **Scenario Comparison**: Compares financial strategies with hard numbers.
+-   ✅ **Predictive Capability**: Forecasts future financial states.
+-   ✅ **Optimization Algorithms**: Finds mathematically optimal paths to financial goals.
+-   ✅ **Confidence Intervals**: Delivers probabilistic advice, not just deterministic predictions.
+
+**Technical Excellence:**
+-   ✅ **Stochastic Modeling**: Properly handles uncertainty in financial forecasts.
+-   ✅ **Numerical Methods**: Implemented with robust mathematical techniques.
+-   ✅ **Real-time Updating**: Models learn and adapt based on new user data.
+-   ✅ **Comprehensive Scenario Analysis**: Provides powerful "what-if" modeling capabilities.
+
 ### 🤖 Autonomous Communication System
 
 SwiitchBank features a sophisticated, autonomous communication system to handle all user and developer notifications. This system operates with zero required human intervention, ensuring timely, relevant, and personalized communication.
@@ -51,7 +86,7 @@ The system is built around a `CoreCommunication` engine that manages two primary
 -   **Automated Message Triggers**: The system automatically sends messages based on user behavior and system events.
     -   **Welcome Sequence**: New users receive a welcome message and a follow-up to guide them through onboarding.
     -   **Security Alerts**: High-priority security events (e.g., suspicious logins) instantly trigger alerts to the user's email and in-app inbox.
-    -   **Weekly Financial Insights**: Jools AI generates and sends a personalized financial summary to each active user every week.
+    -   **Weekly Financial Insights**: Sophia-2 AI generates and sends a personalized financial summary to each active user every week.
 
 -   **Dual-Channel Delivery**:
     -   **In-App Messaging**: All notifications are delivered as in-app messages, accessible through a dedicated message center. A real-time notification badge with an unread count keeps users informed.
@@ -186,7 +221,7 @@ This project has a multi-faceted backend, which is a combination of a traditiona
 This project is currently in the MVP phase. The documentation is a work in progress.
 
 ## Known Limitations & Issues (MVP Phase)
-· Jools Onboarding: Business account onboarding via Jools is currently a guided assistant.
+· Sophia-2 AI Onboarding: Business account onboarding via Sophia-2 AI is currently a guided assistant.
 · Currency Support: Limited to primary currency (USD) and major cryptocurrencies (BTC, ETH).
 · Transaction Limits: Reduced limits during MVP testing phase.
 

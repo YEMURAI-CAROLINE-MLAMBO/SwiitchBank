@@ -13,12 +13,7 @@ import stripeRoutes from './routes/stripe.js';
 import sophiaRoutes from './routes/sophia.js'; // Import the new Sophia route
 import transactionAnalysisRoutes from './routes/transactionAnalysis.js';
 import bridgeRoutes from './routes/bridgeRoutes.js';
-import analyticsRoutes from './routes/analyticsRoutes.js';
-
-// 1. Initialize crash protection
-CrashAnalytics.init();
-AutoRecovery.init();
-MemorySafety.initMonitoring();
+import frameworkRoutes from './routes/framework.js';
 
 const app = express();
 
@@ -38,6 +33,6 @@ app.use('/api/stripe', stripeRoutes);
 app.use('/api/sophia', sophiaRoutes); // Add the Sophia route to the app
 app.use('/api/transaction-analysis', transactionAnalysisRoutes);
 app.use('/api/bridge', bridgeRoutes);
-app.use('/api/analytics', analyticsRoutes);
+app.use('/api/framework', frameworkRoutes);
 
 export default app;
