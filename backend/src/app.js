@@ -1,4 +1,8 @@
 import express from 'express';
+import CrashAnalytics from './analytics/CrashAnalytics.js';
+import AutoRecovery from './recovery/AutoRecovery.js';
+import MemorySafety from './security/MemorySafety.js';
+import requestCounter from './middleware/requestCounter.js';
 import { apiLimiter, aiLimiter } from './middleware/rateLimiter.js';
 import performanceMiddleware from '../monitoring/performance.js';
 import authRoutes from './routes/auth.js';
@@ -18,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(performanceMiddleware);
 app.use('/api/', apiLimiter);
+app.use('/api/', requestCounter); // Add the request counter middleware
 
 // API Routes
 app.use('/api/auth', authRoutes);
