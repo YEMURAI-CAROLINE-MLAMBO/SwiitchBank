@@ -13,7 +13,7 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 ## Core Features (MVP Scope)
 
 ### 🎯 Must-Have Features
-- **Jools AI Assistant**: Basic transaction analysis, navigation assistance, and onboarding guidance
+- **Sophia-2 AI**: Basic transaction analysis, navigation assistance, and onboarding guidance
 - **Fiat-Crypto Bridge**: Effortless trading between traditional and digital assets
 - **Referral Program**: Automated rewards system fostering community growth
 - **Basic Business Accounts**: Multi-user access with role-based permissions (Owner, Accountant, Operations)
@@ -86,7 +86,7 @@ The system is built around a `CoreCommunication` engine that manages two primary
 -   **Automated Message Triggers**: The system automatically sends messages based on user behavior and system events.
     -   **Welcome Sequence**: New users receive a welcome message and a follow-up to guide them through onboarding.
     -   **Security Alerts**: High-priority security events (e.g., suspicious logins) instantly trigger alerts to the user's email and in-app inbox.
-    -   **Weekly Financial Insights**: Jools AI generates and sends a personalized financial summary to each active user every week.
+    -   **Weekly Financial Insights**: Sophia-2 AI generates and sends a personalized financial summary to each active user every week.
 
 -   **Dual-Channel Delivery**:
     -   **In-App Messaging**: All notifications are delivered as in-app messages, accessible through a dedicated message center. A real-time notification badge with an unread count keeps users informed.
@@ -221,7 +221,7 @@ This project has a multi-faceted backend, which is a combination of a traditiona
 This project is currently in the MVP phase. The documentation is a work in progress.
 
 ## Known Limitations & Issues (MVP Phase)
-· Jools Onboarding: Business account onboarding via Jools is currently a guided assistant.
+· Sophia-2 AI Onboarding: Business account onboarding via Sophia-2 AI is currently a guided assistant.
 · Currency Support: Limited to primary currency (USD) and major cryptocurrencies (BTC, ETH).
 · Transaction Limits: Reduced limits during MVP testing phase.
 
