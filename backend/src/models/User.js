@@ -1,77 +1,78 @@
 import mongoose from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-  },
+const userSchema = new mongoose.Schema({
+  // Authentication
   email: {
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
+    trim: true
   },
   password: {
     type: String,
     required: true,
+    minlength: 6
   },
+
+  // Personalization
+  firstName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true
+  },
+
+  // Financial Context (Optional)
+  lifeStage: {
+    type: String,
+    enum: ['student', 'early_career', 'established', 'planning_retirement', 'retired'],
+    default: 'early_career'
+  },
+  financialGoals: [{
+    type: String,
+    enum: ['emergency_fund', 'debt_free', 'home_ownership', 'retirement', 'investment', 'education']
+  }],
+  riskTolerance: {
+    type: String,
+    enum: ['conservative', 'moderate', 'aggressive'],
+    default: 'moderate'
+  },
+
+  // Plaid Integration
+  plaidAccessToken: {
+    type: String,
+    sparse: true // Allows null for multiple users
+  },
+  plaidItemId: {
+    type: String,
+    sparse: true
+  },
+
+  // Timestamps
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
-  // MULTI-CURRENCY CORE
-  baseCurrency: {
-    type: String,
-    default: 'USD',
-    uppercase: true
+  updatedAt: {
+    type: Date,
+    default: Date.now
   },
-  supportedCurrencies: [{
-    currency: {
-      type: String,
-      required: true,
-      uppercase: true
-    },
-    isActive: {
-      type: Boolean,
-      default: true
-    },
-    conversionRate: Number, // Latest rate to base currency
-    lastUpdated: Date
-  }],
-
-  // International Settings
-  locale: {
-    type: String,
-    default: 'en-US'
-  },
-  timezone: {
-    type: String,
-    default: 'UTC'
-  },
-  dateFormat: {
-    type: String,
-    default: 'MM/DD/YYYY'
-  },
-
-  // Currency Preferences
-  currencyPreferences: {
-    autoConvert: {
-      type: Boolean,
-      default: true
-    },
-    showOriginalCurrency: {
-      type: Boolean,
-      default: true
-    },
-    rateUpdateFrequency: {
-      type: String,
-      enum: ['realtime', 'daily', 'weekly'],
-      default: 'daily'
-    }
+  lastLogin: {
+    type: Date,
+    default: Date.now
   }
+}, {
+  timestamps: true
 });
 
-export default mongoose.model('User', UserSchema);
+// Indexes for performance
+userSchema.index({ email: 1 });
+userSchema.index({ createdAt: -1 });
+userSchema.index({ plaidItemId: 1 });
+
+export default mongoose.model('User', userSchema);

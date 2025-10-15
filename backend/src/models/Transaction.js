@@ -1,67 +1,123 @@
 import mongoose from 'mongoose';
 
-const TransactionSchema = new mongoose.Schema({
-  marqetaTransactionToken: {
-    type: String,
+const transactionSchema = new mongoose.Schema({
+  // User reference
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
-    unique: true,
+    index: true
   },
-  marqetaCardToken: {
-    type: String,
+
+  // Account reference
+  account: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Account',
     required: true,
+    index: true
   },
-  marqetaUserToken: {
+
+  // Plaid transaction data
+  plaidTransactionId: {
     type: String,
     required: true,
+    unique: true
+  },
+  plaidCategoryId: String,
+
+  // Core transaction data
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  merchantName: {
+    type: String,
+    trim: true
   },
   amount: {
     type: Number,
+    required: true
+  },
+  date: {
+    type: Date,
     required: true,
+    index: true
   },
   currency: {
     type: String,
-    required: true,
-  },
-  state: {
-    type: String,
-    required: true,
-  },
-  transactionType: {
-    type: String,
-    required: true,
-  },
-  merchantDetails: {
-    type: Object,
-  },
-  // MULTI-CURRENCY TRANSACTION DATA
-  // These fields are not required to avoid a breaking change for existing documents.
-  // A data migration would be needed to make them required.
-  originalAmount: {
-    type: Number
-  },
-  originalCurrency: {
-    type: String,
-    uppercase: true
+    default: 'USD'
   },
 
-  // Converted amounts (for user's base currency)
-  convertedAmount: Number,
-  convertedCurrency: String,
-  exchangeRate: Number, // Rate used for conversion
-  exchangeRateDate: Date,
+  // Enhanced categorization
+  category: {
+    type: String,
+    required: true,
+    default: 'Uncategorized',
+    index: true
+  },
+  subcategory: String,
+  categoryConfidence: {
+    type: Number,
+    default: 1.0
+  },
 
-  // FX Metadata
-  fxFee: Number,
-  fxProvider: String,
-  crossBorder: {
+  // Location data
+  location: {
+    city: String,
+    region: String,
+    country: String,
+    address: String,
+    postalCode: String,
+    lat: Number,
+    lon: Number
+  },
+
+  // Payment metadata
+  paymentChannel: {
+    type: String,
+    enum: ['online', 'in_store', 'other']
+  },
+  pending: {
     type: Boolean,
     default: false
   },
-  internationalDetails: {
-    country: String,
-    merchantCountry: String,
-    fxMarkup: Number
-  }
-}, { timestamps: true });
 
-export default mongoose.model('Transaction', TransactionSchema);
+  // AI-enhanced fields
+  tags: [String],
+  notes: String,
+  importance: {
+    type: String,
+    enum: ['low', 'medium', 'high'],
+    default: 'medium'
+  },
+
+  // Timestamps
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
+}, {
+  timestamps: true
+});
+
+// Compound indexes for optimal query performance
+transactionSchema.index({ user: 1, date: -1 });
+transactionSchema.index({ user: 1, category: 1 });
+transactionSchema.index({ user: 1, amount: 1 });
+transactionSchema.index({ user: 1, merchantName: 1 });
+transactionSchema.index({ date: 1, category: 1 });
+transactionSchema.index({ user: 1, pending: 1 });
+
+// Text index for search functionality
+transactionSchema.index({
+  name: 'text',
+  merchantName: 'text',
+  notes: 'text'
+});
+
+export default mongoose.model('Transaction', transactionSchema);

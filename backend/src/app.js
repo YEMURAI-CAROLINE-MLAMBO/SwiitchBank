@@ -8,7 +8,7 @@ import walletRoutesNew from './routes/wallets.js';
 import stripeRoutes from './routes/stripe.js';
 import sophiaRoutes from './routes/sophia.js'; // Import the new Sophia route
 import transactionAnalysisRoutes from './routes/transactionAnalysis.js';
-import currencyRoutes from './routes/currency.js';
+import bridgeRoutes from './routes/bridgeRoutes.js';
 
 const app = express();
 
@@ -26,6 +26,6 @@ app.use('/api/wallets', walletRoutesNew);
 app.use('/api/stripe', stripeRoutes);
 app.use('/api/sophia', sophiaRoutes); // Add the Sophia route to the app
 app.use('/api/transaction-analysis', transactionAnalysisRoutes);
-app.use('/api/currency', currencyRoutes);
+app.use('/api/bridge', bridgeRoutes);
 
 export default app;
