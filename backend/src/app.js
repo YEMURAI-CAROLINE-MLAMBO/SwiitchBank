@@ -5,6 +5,7 @@ import MemorySafety from './security/MemorySafety.js';
 import requestCounter from './middleware/requestCounter.js';
 import { apiLimiter, aiLimiter } from './middleware/rateLimiter.js';
 import performanceMiddleware from '../monitoring/performance.js';
+import { analyzeTransaction, protectLogin } from './middleware/security.js';
 import authRoutes from './routes/auth.js';
 import businessAccountRoutes from './routes/businessAccounts.js';
 import virtualCardRoutes from './routes/virtualCards.js';
@@ -25,13 +26,13 @@ app.use('/api/', apiLimiter);
 app.use('/api/', requestCounter); // Add the request counter middleware
 
 // API Routes
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', protectLogin, authRoutes);
 app.use('/api/business-accounts', businessAccountRoutes);
-app.use('/api/virtual-cards', virtualCardRoutes);
-app.use('/api/wallets', walletRoutesNew);
-app.use('/api/stripe', stripeRoutes);
+app.use('/api/virtual-cards', analyzeTransaction, virtualCardRoutes);
+app.use('/api/wallets', analyzeTransaction, walletRoutesNew);
+app.use('/api/stripe', analyzeTransaction, stripeRoutes);
 app.use('/api/sophia', sophiaRoutes); // Add the Sophia route to the app
-app.use('/api/transaction-analysis', transactionAnalysisRoutes);
+app.use('/api/transaction-analysis', analyzeTransaction, transactionAnalysisRoutes);
 app.use('/api/bridge', bridgeRoutes);
 app.use('/api/framework', frameworkRoutes);
 
