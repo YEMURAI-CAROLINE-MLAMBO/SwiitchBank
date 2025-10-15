@@ -14,36 +14,41 @@ import ReferralPage from './pages/ReferralPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
 import OnboardingPage from './pages/OnboardingPage';
+import ErrorBoundary from './security/ErrorBoundary';
+import StabilityDashboard from './components/StabilityDashboard';
 
 function App() {
   const [onboardingComplete, setOnboardingComplete] = useState(false);
 
   return (
     <Router>
-      <Routes>
-        {onboardingComplete ? (
-          <>
-            <Route path="/" element={<AppLayout />}>
-              <Route index element={<UnifiedDashboard />} />
-              <Route path="wallet" element={<WalletPage />} />
-              <Route path="cards" element={<CardsPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-              <Route path="transactions" element={<TransactionsPage />} />
-              <Route path="business-onboarding" element={<BusinessOnboarding />} />
-              <Route path="referral" element={<ReferralPage />} />
-              <Route path="chat" element={<ChatPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-            </Route>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-          </>
-        ) : (
-          <>
-            <Route path="/onboarding" element={<OnboardingPage onComplete={() => setOnboardingComplete(true)} />} />
-            <Route path="*" element={<Navigate to="/onboarding" />} />
-          </>
-        )}
-      </Routes>
+      <ErrorBoundary onReset={() => window.location.reload()}>
+        <Routes>
+          {onboardingComplete ? (
+            <>
+              <Route path="/" element={<AppLayout />}>
+                <Route index element={<UnifiedDashboard />} />
+                <Route path="wallet" element={<WalletPage />} />
+                <Route path="cards" element={<CardsPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+                <Route path="transactions" element={<TransactionsPage />} />
+                <Route path="business-onboarding" element={<BusinessOnboarding />} />
+                <Route path="referral" element={<ReferralPage />} />
+                <Route path="chat" element={<ChatPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="stability-dashboard" element={<StabilityDashboard />} />
+              </Route>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+            </>
+          ) : (
+            <>
+              <Route path="/onboarding" element={<OnboardingPage onComplete={() => setOnboardingComplete(true)} />} />
+              <Route path="*" element={<Navigate to="/onboarding" />} />
+            </>
+          )}
+        </Routes>
+      </ErrorBoundary>
     </Router>
   );
 }

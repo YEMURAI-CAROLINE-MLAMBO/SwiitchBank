@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import DatabaseResilience from '../database/Resilience.js';
 
 const databaseConfig = {
   // Connection settings
@@ -24,12 +25,17 @@ const databaseConfig = {
 };
 
 const connectDatabase = async () => {
+  const connectWithResilience = () =>
+    DatabaseResilience.withTimeout(() =>
+      mongoose.connect(process.env.MONGODB_URI, {
+        ...databaseConfig,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      })
+    );
+
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      ...databaseConfig,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const conn = await DatabaseResilience.withRetry(connectWithResilience);
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
 
