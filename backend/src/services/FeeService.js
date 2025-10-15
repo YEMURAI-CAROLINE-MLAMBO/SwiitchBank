@@ -26,5 +26,3 @@ export default class FeeService {
     };
   }
 }
-
-export default FeeService;
