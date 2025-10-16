@@ -1,86 +1,107 @@
 import React, { useState, useEffect } from 'react';
 
-// --- Placeholder Components ---
-const MetricCard = ({ title, value }) => (
-  <div className="metric-card">
-    <h4>{title}</h4>
-    <p>{value}</p>
-  </div>
-);
-
-const ThreatCard = ({ threat, onAction }) => (
-  <div className="threat-card">
-    <h5>{threat.type}</h5>
-    <p>Level: {threat.level} | {new Date(threat.timestamp).toLocaleString()}</p>
-    <p>Details: {threat.details}</p>
-    <button onClick={() => onAction(threat.id, 'view')}>View Details</button>
-    <button onClick={() => onAction(threat.id, 'quarantine')}>Quarantine</button>
-  </div>
-);
-
 const SecurityDashboard = () => {
-  const [metrics, setMetrics] = useState({});
-  const [threats, setThreats] = useState([]);
-  const [error, setError] = useState(null);
+  const [fraudAlerts, setFraudAlerts] = useState([]);
+  const [riskMetrics, setRiskMetrics] = useState({});
 
+  // Mock data for demonstration
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const metricsRes = await fetch('/api/security/metrics');
-        if (!metricsRes.ok) throw new Error('Failed to fetch metrics');
-        const metricsData = await metricsRes.json();
-        setMetrics(metricsData);
-
-        const threatsRes = await fetch('/api/security/threats');
-        if (!threatsRes.ok) throw new Error('Failed to fetch threats');
-        const threatsData = await threatsRes.json();
-        setThreats(threatsData);
-      } catch (err) {
-        setError(err.message);
-        console.error("Failed to load security data:", err);
-      }
-    };
-    fetchData();
+    setFraudAlerts([
+      { id: 1, description: 'Suspicious login from a new device.', severity: 'medium' },
+      { id: 2, description: 'Unusual transaction amount detected.', severity: 'high' },
+    ]);
+    setRiskMetrics({
+      overallRisk: 75,
+      transactionRisk: 80,
+      accountRisk: 60,
+      behavioralRisk: 70,
+    });
   }, []);
 
-  const handleThreatAction = (threatId, action) => {
-    console.log(`Action: ${action} on threat: ${threatId}`);
-    // In a real app, this would trigger a POST request to the backend.
+  const resolveAlert = (id) => {
+    setFraudAlerts(fraudAlerts.filter(alert => alert.id !== id));
   };
 
-  const runSecurityScan = () => alert('Running security scan...');
-  const viewQuarantine = () => alert('Viewing quarantine...');
-  const exportSecurityLogs = () => alert('Exporting security logs...');
+  const investigateAlert = (id) => {
+    console.log(`Investigating alert ${id}`);
+  };
 
-  if (error) {
-    return <div className="error-message">Error loading security dashboard: {error}</div>;
-  }
+  const RiskMeter = ({ score }) => (
+    <div className="risk-meter">
+      <div className="risk-meter-fill" style={{ width: `${score}%` }}></div>
+      <span>{score}%</span>
+    </div>
+  );
+
+  const RiskCategory = ({ name, score }) => (
+    <div className="risk-category">
+      <span>{name}</span>
+      <div className="risk-bar">
+        <div className="risk-bar-fill" style={{ width: `${score}%` }}></div>
+      </div>
+    </div>
+  );
+
+  const AlertCard = ({ alert, onResolve, onInvestigate }) => (
+    <div className={`alert-card ${alert.severity}`}>
+      <p>{alert.description}</p>
+      <button onClick={() => onInvestigate(alert.id)}>Investigate</button>
+      <button onClick={() => onResolve(alert.id)}>Resolve</button>
+    </div>
+  );
+
+  const ToggleControl = ({ label, enabled, onChange }) => (
+    <div className="toggle-control">
+      <span>{label}</span>
+      <label className="switch">
+        <input type="checkbox" checked={enabled} onChange={onChange} />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
 
   return (
     <div className="security-dashboard">
-      <h2>🛡️ Data Security Center</h2>
+      <h2>🛡️ Fraud Protection Center</h2>
 
-      <div className="security-metrics" style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
-        <MetricCard title="Threats Blocked" value={metrics.threatsBlocked ?? '...'} />
-        <MetricCard title="Data Quarantined" value={metrics.dataQuarantined ?? '...'} />
-        <MetricCard title="Clean Rate" value={metrics.cleanRate ? `${metrics.cleanRate}%` : '...'} />
+      <div className="risk-overview">
+        <RiskMeter score={riskMetrics.overallRisk} />
+        <div className="risk-breakdown">
+          <RiskCategory name="Transaction" score={riskMetrics.transactionRisk} />
+          <RiskCategory name="Account" score={riskMetrics.accountRisk} />
+          <RiskCategory name="Behavioral" score={riskMetrics.behavioralRisk} />
+        </div>
       </div>
 
-      <div className="recent-threats">
-        <h3>Recent Security Events</h3>
-        {threats.length > 0 ? threats.map(threat => (
-          <ThreatCard
-            key={threat.id}
-            threat={threat}
-            onAction={handleThreatAction}
+      <div className="alerts-section">
+        <h3>Active Security Alerts</h3>
+        {fraudAlerts.map(alert => (
+          <AlertCard
+            key={alert.id}
+            alert={alert}
+            onResolve={resolveAlert}
+            onInvestigate={investigateAlert}
           />
-        )) : <p>No recent threats to display.</p>}
+        ))}
       </div>
 
-      <div className="security-actions" style={{ marginTop: '20px' }}>
-        <button onClick={runSecurityScan}>Run Security Scan</button>
-        <button onClick={viewQuarantine}>View Quarantine</button>
-        <button onClick={exportSecurityLogs}>Export Security Logs</button>
+      <div className="security-controls">
+        <h3>Security Settings</h3>
+        <ToggleControl
+          label="Enhanced Fraud Detection"
+          enabled={true}
+          onChange={() => {}}
+        />
+        <ToggleControl
+          label="Transaction Limits"
+          enabled={true}
+          onChange={() => {}}
+        />
+        <ToggleControl
+          label="Login Notifications"
+          enabled={true}
+          onChange={() => {}}
+        />
       </div>
     </div>
   );
