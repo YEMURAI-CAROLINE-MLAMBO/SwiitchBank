@@ -1,5 +1,5 @@
-name: swiitch
-description: A new Flutter project.
+name: swiitchbank
+description: SwiitchBank Mobile - Anywhere Anytime Financial Management
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -11,8 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_dotenv: ^5.0.2
   http: ^0.13.3
+  web_socket_channel: ^2.1.0
+  flutter_dotenv: ^5.0.2
   provider: ^6.0.0
   shelf: ^1.2.0
   shelf_router: ^1.1.0

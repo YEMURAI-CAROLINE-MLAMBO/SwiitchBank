@@ -1,14 +1,14 @@
-# SwitchBank : AI-Powered Banking Platform
+# SwiitchBank - Anywhere Anytime
 
-![SwitchBank](https://img.shields.io/badge/Version-MVP-green.svg)
+![SwiitchBank](https://img.shields.io/badge/Version-MVP-green.svg)
 ![Firebase](https://img.shields.io/badge/Platform-Firebase-orange.svg)
 ![Node.js](https://img.shields.io/badge/Runtime-Node.js-green.svg)
 
 ## Overview
 
-SwitchBank is a next-generation, AI-powered banking platform designed to bridge traditional finance with cryptocurrency ecosystems. Our platform provides a seamless, intelligent financial experience across devices, empowering users with innovative features for managing money, growing wealth, and building community.
+SwiitchBank is a next-generation, AI-powered banking platform designed for a global user base. Our mission is to provide a seamless and intelligent financial experience that is accessible **Anywhere, Anytime**. We bridge traditional finance with digital assets, empowering users with innovative tools to manage their money, grow their wealth, and connect to the global economy.
 
-**Key Value Proposition**: Combining traditional banking security with crypto flexibility through AI-driven automation.
+**Key Value Proposition**: Global financial control in your pocket, powered by intelligent, cross-border financial technology.
 
 ## Core Features (MVP Scope)
 
@@ -29,7 +29,7 @@ SwitchBank is a next-generation, AI-powered banking platform designed to bridge 
 
 ### 💸 Financial Calculators
 
-As part of our commitment to financial intelligence, SwitchBank includes a suite of powerful backend calculators. The first available tool is the **Debt Repayment Optimizer**.
+As part of our commitment to financial intelligence, SwiitchBank includes a suite of powerful backend calculators. The first available tool is the **Debt Repayment Optimizer**.
 
 #### Debt Repayment Optimizer
 
@@ -42,7 +42,7 @@ These calculators can be used to provide users with a clear, actionable plan to 
 
 ### 🚀 Advanced Financial Modeling Engine
 
-To transform SwitchBank from a simple tracking app into a sophisticated financial planning platform, we've integrated a powerful new financial modeling engine. This engine provides the mathematical foundation for truly intelligent financial advice, turning our Sophia AI into a quantitative expert.
+To transform SwiitchBank from a simple tracking app into a sophisticated financial planning platform, we've integrated a powerful new financial modeling engine. This engine provides the mathematical foundation for truly intelligent financial advice, turning our Sophia AI into a quantitative expert.
 
 **Core Models:**
 -   **FinancialModel**: Handles personal financial statement modeling (Income, Balance Sheet, Cash Flow), DCF valuation, and sensitivity analysis.

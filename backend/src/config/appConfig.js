@@ -2,6 +2,8 @@
 
 const configs = {
   development: {
+    appName: 'SwiitchBank',
+    tagline: 'Anywhere Anytime',
     name: 'Development',
     firebase: {
       apiKey: process.env.FIREBASE_API_KEY,
@@ -24,6 +26,8 @@ const configs = {
     }
   },
   staging: {
+    appName: 'SwiitchBank',
+    tagline: 'Anywhere Anytime',
     name: 'Staging',
     firebase: {
       apiKey: process.env.FIREBASE_API_KEY,
@@ -46,6 +50,8 @@ const configs = {
     }
   },
   production: {
+    appName: 'SwiitchBank',
+    tagline: 'Anywhere Anytime',
     name: 'Production',
     firebase: {
       apiKey: process.env.FIREBASE_API_KEY,

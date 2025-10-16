@@ -1,6 +1,35 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
+  // SwiitchBank specific fields
+  swiitchBankId: {
+    type: String,
+    unique: true,
+    required: true
+  },
+
+  personalization: {
+    theme: {
+      type: String,
+      default: 'swiitchbank_standard'
+    },
+    currency: {
+      type: String,
+      default: 'USD'
+    },
+    language: {
+      type: String,
+      default: 'en'
+    }
+  },
+
+  // Anywhere Anytime features
+  accessibility: {
+    crossPlatformSync: { type: Boolean, default: true },
+    offlineMode: { type: Boolean, default: true },
+    globalAccess: { type: Boolean, default: true }
+  },
+
   // Authentication
   email: {
     type: String,
