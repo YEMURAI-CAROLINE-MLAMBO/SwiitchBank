@@ -16,6 +16,7 @@ import sophiaRoutes from './routes/sophia.js'; // Import the new Sophia route
 import transactionAnalysisRoutes from './routes/transactionAnalysis.js';
 import bridgeRoutes from './routes/bridgeRoutes.js';
 import frameworkRoutes from './routes/framework.js';
+import config from './config/appConfig.js';
 
 const app = express();
 
@@ -37,5 +38,16 @@ app.use('/api/sophia', sophiaRoutes); // Add the Sophia route to the app
 app.use('/api/transaction-analysis', analyzeTransaction, transactionAnalysisRoutes);
 app.use('/api/bridge', bridgeRoutes);
 app.use('/api/framework', frameworkRoutes);
+
+// Health check with branding
+app.get('/api/health', (req, res) => {
+  res.json({
+    app: config.appName,
+    tagline: config.tagline,
+    status: 'operational',
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
+});
 
 export default app;
