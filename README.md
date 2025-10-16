@@ -177,10 +177,11 @@ For the Flutter app, environment variables are passed in at compile time by the 
     firebase emulators:start --only functions,firestore,auth
     ```
 5.  **Flutter (Mobile)**
-    For local development, you can run the app with a specific API endpoint like this:
+    To run the Flutter app, ensure you have the Flutter SDK installed and a device or emulator running. Then, from the root of the repository, run:
     ```bash
-    flutter run --dart-define=API_BASE_URL=http://localhost:3000/api
+    flutter run
     ```
+    **Note:** The current development environment does not have the Flutter SDK installed. These instructions are for developers setting up the project locally.
 
 ## Building the Flutter App for an Environment
 The `build_for_environment.sh` script is used to build the Flutter web app for a specific environment. This script will automatically select the correct API_BASE_URL.
