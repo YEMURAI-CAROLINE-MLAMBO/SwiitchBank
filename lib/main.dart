@@ -1,73 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:swiitch/screens/dashboard_screen.dart';
-import 'package:swiitch/services/api_service.dart';
-import 'package:swiitch/screens/bridge_screen.dart';
-import 'package:swiitch/screens/transactions_screen.dart';
-
+import 'package:swiitch/screens/home_screen.dart';
+import 'package:swiitch/screens/login_screen.dart';
 
 void main() {
-  runApp(SwitchBankApp());
+  runApp(MyApp());
 }
 
-class SwitchBankApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SwitchBank',
+      title: 'SwiitchBank',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: const Color(0xFF1A365D), // Rich Navy Blue
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: MaterialColor(0xFF1A365D, <int, Color>{
+            50: Color(0xFFE3E7EB),
+            100: Color(0xFFB9C3D0),
+            200: Color(0xFF8D9DB3),
+            300: Color(0xFF627896),
+            400: Color(0xFF425D81),
+            500: Color(0xFF1A365D),
+            600: Color(0xFF173155),
+            700: Color(0xFF132A4C),
+            800: Color(0xFF0F2442),
+            900: Color(0xFF081731),
+          }),
+          accentColor: const Color(0xFF00C9A7), // Sophisticated Teal
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF4F7F6),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MainScreen(),
-    );
-  }
-}
-
-class MainScreen extends StatefulWidget {
-  @override
-  _MainScreenState createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
-  final ApiService apiService = ApiService();
-
-  late final List<Widget> _widgetOptions = <Widget>[
-    DashboardScreen(apiService: apiService),
-    TransactionsScreen(),
-    BridgeScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('SwitchBank Dashboard'),
-      ),
-      body: _widgetOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: 'Dashboard',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Transactions',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bridge),
-            label: 'Bridge',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => LoginScreen(),
+        '/home': (context) => HomeScreen(),
+      },
     );
   }
 }
