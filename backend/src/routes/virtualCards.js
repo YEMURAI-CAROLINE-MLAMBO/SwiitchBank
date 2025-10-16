@@ -1,6 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import authMiddleware from '../middleware/auth.js'; // Import the authentication middleware
+import { transactionSecurity } from '../middleware/SecurityMiddleware.js';
 import { body, param } from 'express-validator';
 import * as virtualCardController from '../controllers/virtualCardController.js';
 import * as marqetaWebhookService from '../services/marqetaWebhookService.js';
@@ -83,6 +84,7 @@ router.post('/',
 );
 
 router.post('/:cardId/topup',
+  transactionSecurity,
   [
     param('cardId').notEmpty().withMessage('Card ID is required').isString().withMessage('Card ID must be a string'),
     body('amount').notEmpty().withMessage('Amount is required').isFloat({ gt: 0 }).withMessage('Amount must be a positive number'),
@@ -91,6 +93,7 @@ router.post('/:cardId/topup',
 );
 
 router.post('/:cardId/withdraw',
+  transactionSecurity,
   [
     param('cardId').notEmpty().withMessage('Card ID is required').isString().withMessage('Card ID must be a string'),
     body('amount').notEmpty().withMessage('Amount is required').isFloat({ gt: 0 }).withMessage('Amount must be a positive number'),

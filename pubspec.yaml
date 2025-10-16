@@ -24,24 +24,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.0.16
-  integration_test:
-    sdk: flutter
-  flutter_driver:
-    sdk: flutter
-  test: any
-  golden_toolkit: ^0.10.0
-  build_runner: ^2.1.5
-
-scripts:
-  test: "flutter test"
-  test:unit: "flutter test test/unit/"
-  test:widget: "flutter test test/widget/"
-  test:integration: "flutter test test/integration/"
-  test:security: "flutter test test/security/"
-  test:coverage: "flutter test --coverage && genhtml coverage/lcov.info -o coverage/html"
-  test:ci: "scripts/test/ci_test.sh"
-  test:performance: "flutter drive --target=test_driver/app.dart"
 
 flutter:
 

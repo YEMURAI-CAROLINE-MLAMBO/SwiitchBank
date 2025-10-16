@@ -6,6 +6,7 @@ import requestCounter from './middleware/requestCounter.js';
 import { apiLimiter, aiLimiter } from './middleware/rateLimiter.js';
 import performanceMiddleware from '../monitoring/performance.js';
 import { analyzeTransaction, protectLogin } from './middleware/security.js';
+import { securityMiddleware } from './middleware/SecurityMiddleware.js';
 import authRoutes from './routes/auth.js';
 import businessAccountRoutes from './routes/businessAccounts.js';
 import virtualCardRoutes from './routes/virtualCards.js';
@@ -15,12 +16,14 @@ import sophiaRoutes from './routes/sophia.js'; // Import the new Sophia route
 import transactionAnalysisRoutes from './routes/transactionAnalysis.js';
 import bridgeRoutes from './routes/bridgeRoutes.js';
 import frameworkRoutes from './routes/framework.js';
+import securityDashboardRoutes from './routes/securityDashboard.js';
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(securityMiddleware); // Apply global security middleware
 app.use(performanceMiddleware);
 app.use('/api/', apiLimiter);
 app.use('/api/', requestCounter); // Add the request counter middleware
@@ -35,5 +38,6 @@ app.use('/api/sophia', sophiaRoutes); // Add the Sophia route to the app
 app.use('/api/transaction-analysis', analyzeTransaction, transactionAnalysisRoutes);
 app.use('/api/bridge', bridgeRoutes);
 app.use('/api/framework', frameworkRoutes);
+app.use('/api/security', securityDashboardRoutes); // Add security dashboard routes
 
 export default app;
