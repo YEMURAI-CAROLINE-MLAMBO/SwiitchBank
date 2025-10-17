@@ -9,11 +9,13 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import 'dotenv/config';
 
+import http from 'http';
 import app from './src/app.js';
 import { connectWithRetry, createOptimalIndexes } from './src/config/database.js';
 import logger from './src/utils/logger.js';
+import startWebSocketServer from './websocket.js';
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001; // Changed to 5001 to avoid frontend conflict
 
 async function startServer() {
   try {
@@ -22,9 +24,15 @@ async function startServer() {
     await createOptimalIndexes();
     logger.info('Database connected successfully');
 
+    const server = http.createServer(app);
+
+    // Initialize WebSocket server
+    startWebSocketServer(server);
+
     // Start server
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       logger.info(`Swiitch Bank API Server running on port ${PORT}`);
+      logger.info(`WebSocket Server initialized.`);
       logger.info(`Environment: ${process.env.NODE_ENV}`);
       logger.info(`API Base URL: ${process.env.API_BASE_URL || `http://localhost:${PORT}`}`);
     });

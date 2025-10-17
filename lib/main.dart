@@ -3,6 +3,7 @@ import 'package:swiitchbank/theme/swiitchbank_theme.dart';
 import 'package:swiitchbank/screens/welcome_screen.dart';
 import 'package:swiitchbank/screens/login_screen.dart';
 import 'package:swiitchbank/screens/dashboard_screen.dart';
+import 'package:swiitchbank/screens/live_dashboard.dart';
 
 void main() {
   runApp(SwiitchBankApp());
@@ -19,6 +20,7 @@ class SwiitchBankApp extends StatelessWidget {
         '/': (context) => WelcomeScreen(),
         '/login': (context) => LoginScreen(),
         '/dashboard': (context) => DashboardScreen(),
+        '/live': (context) => const LiveDashboard(),
       },
       debugShowCheckedModeBanner: false,
     );
