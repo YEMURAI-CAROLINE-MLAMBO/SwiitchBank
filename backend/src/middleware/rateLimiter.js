@@ -2,16 +2,20 @@ import rateLimit from 'express-rate-limit';
 import RedisStore from 'rate-limit-redis';
 import { createClient } from 'redis';
 
-const redisClient = createClient({
-  url: process.env.REDIS_URL
-});
+let redisClient;
+if (process.env.NODE_ENV !== 'test') {
+  redisClient = createClient({
+    url: process.env.REDIS_URL
+  });
+  redisClient.connect().catch(console.error);
+}
 
-redisClient.connect().catch(console.error);
-
-export const apiLimiter = rateLimit({
-  store: new RedisStore({
-    sendCommand: (...args) => redisClient.sendCommand(args),
-  }),
+export const apiLimiter = process.env.NODE_ENV === 'test'
+  ? (req, res, next) => next()
+  : rateLimit({
+      store: new RedisStore({
+        sendCommand: (...args) => redisClient.sendCommand(args),
+      }),
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 1000, // Increased from 100 - allow more requests per window
   message: {
