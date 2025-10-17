@@ -16,6 +16,7 @@ import sophiaRoutes from './routes/sophia.js'; // Import the new Sophia route
 import transactionAnalysisRoutes from './routes/transactionAnalysis.js';
 import bridgeRoutes from './routes/bridgeRoutes.js';
 import frameworkRoutes from './routes/framework.js';
+import qrRoutes from './routes/qr.js';
 import config from './config/appConfig.js';
 
 const app = express();
@@ -25,7 +26,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(securityMiddleware);
 app.use(performanceMiddleware);
-app.use('/api/', apiLimiter);
+
+// Use Redis-based rate limiting only in non-test environments
+if (process.env.NODE_ENV !== 'test') {
+  app.use('/api/', apiLimiter);
+}
+
 app.use('/api/', requestCounter); // Add the request counter middleware
 
 // API Routes
@@ -38,6 +44,7 @@ app.use('/api/sophia', sophiaRoutes); // Add the Sophia route to the app
 app.use('/api/transaction-analysis', analyzeTransaction, transactionAnalysisRoutes);
 app.use('/api/bridge', bridgeRoutes);
 app.use('/api/framework', frameworkRoutes);
+app.use('/api/v1/qr', qrRoutes);
 
 // Health check with branding
 app.get('/api/health', (req, res) => {

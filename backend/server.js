@@ -11,7 +11,7 @@ import 'dotenv/config';
 
 import http from 'http';
 import app from './src/app.js';
-import { connectWithRetry, createOptimalIndexes } from './src/config/database.js';
+import connectDatabase, { createOptimalIndexes } from './src/config/database.js';
 import logger from './src/utils/logger.js';
 import startWebSocketServer from './websocket.js';
 
@@ -20,7 +20,7 @@ const PORT = process.env.PORT || 5001; // Changed to 5001 to avoid frontend conf
 async function startServer() {
   try {
     // Connect to database
-    await connectWithRetry();
+    await connectDatabase(process.env.MONGODB_URI);
     await createOptimalIndexes();
     logger.info('Database connected successfully');
 
