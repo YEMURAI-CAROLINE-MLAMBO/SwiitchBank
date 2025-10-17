@@ -3,7 +3,7 @@ dotenv.config({ path: './.env' });
 
 import http from 'http';
 import app from './src/app.js';
-import connectDatabase from './src/config/database.js';
+import connectDatabase, { createOptimalIndexes } from './src/config/database.js';
 import logger from './src/utils/logger.js';
 import startWebSocketServer from './websocket.js';
 import config from './src/config/appConfig.js';
@@ -12,7 +12,8 @@ import config from './src/config/appConfig.js';
 async function startServer() {
   try {
     // Connect to database
-    await connectDatabase();
+    await connectDatabase(process.env.MONGODB_URI);
+    await createOptimalIndexes();
     logger.info('Database connected successfully');
 
     const server = http.createServer(app);

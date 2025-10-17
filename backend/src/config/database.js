@@ -17,17 +17,17 @@ const databaseConfig = {
   },
 
   // Read preferences
-  readPreference: 'primaryPreferred',
+  readPreference: 'primary',
 
   // Retry settings
   retryWrites: true,
   retryReads: true
 };
 
-const connectDatabase = async () => {
+const connectDatabase = async (uri) => {
   const connectWithResilience = () =>
     DatabaseResilience.withTimeout(() =>
-      mongoose.connect(process.env.MONGODB_URI, {
+      mongoose.connect(uri, {
         ...databaseConfig,
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -45,7 +45,10 @@ const connectDatabase = async () => {
     return conn;
   } catch (error) {
     console.error('❌ Database connection error:', error);
-    process.exit(1);
+    if (process.env.NODE_ENV !== 'test') {
+      process.exit(1);
+    }
+    throw error; // Re-throw error for test environment to handle
   }
 };
 
@@ -70,9 +73,9 @@ const createIndexes = async () => {
 
     // User indexes
     await mongoose.connection.collection('users').createIndexes([
-      { key: { email: 1 } },
+      // { key: { email: 1 } }, // This index is already created by the schema
       { key: { createdAt: -1 } },
-      { key: { plaidItemId: 1 } }
+      // { key: { plaidItemId: 1 } } // This index is also created by the schema
     ]);
 
     // Account indexes
