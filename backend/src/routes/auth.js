@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 import { check } from 'express-validator';
 import * as authController from '../controllers/authController.js';
+import { protectLogin } from '../middleware/security.js';
 
 // @route   POST api/auth/register
 // @desc    Register user
@@ -29,6 +30,7 @@ router.post(
     check('email', 'Please include a valid email').isEmail(),
     check('password', 'Password is required').exists(),
   ],
+  protectLogin,
   authController.login
 );
 

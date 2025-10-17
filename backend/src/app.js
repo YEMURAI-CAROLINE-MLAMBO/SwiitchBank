@@ -35,7 +35,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.use('/api/', requestCounter); // Add the request counter middleware
 
 // API Routes
-app.use('/api/auth', protectLogin, authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/business-accounts', businessAccountRoutes);
 app.use('/api/virtual-cards', analyzeTransaction, virtualCardRoutes);
 app.use('/api/wallets', analyzeTransaction, walletRoutesNew);
