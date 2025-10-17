@@ -27,6 +27,98 @@ SwiitchBank is a next-generation, AI-powered banking platform designed for a glo
 - Advanced gamification milestones
 - Multi-currency support for global users
 
+### 命令行界面 (CLI)
+- **SwitchBank CLI** — A powerful command-line interface for managing your SwiitchBank account, executing transactions, and interacting with the Sophia AI.
+
+### SwitchBank CLI - Command Reference
+
+SwiitchBank provides a powerful, intuitive Command-Line Interface (CLI) for full platform control directly from your terminal.
+
+#### Key Features:
+
+*   ✅ **Full Banking Operations**: Manage accounts, transfer funds, and pay bills without leaving the command line.
+*   ✅ **Sophia AI Integration**: Access financial analysis, get advice, and ask questions directly.
+*   ✅ **Scriptable Output**: Use the global `--json` flag for machine-readable output to integrate with other tools and scripts.
+*   ✅ **Secure Authentication**: Uses a secure, token-based authentication flow to protect your credentials.
+*   ✅ **Cross-platform**: Runs on Windows, Mac, and Linux.
+
+---
+
+#### 1. Installation & Setup
+
+*The CLI is currently under active development. These instructions are for the planned release.*
+
+```bash
+# Install SwitchBank CLI globally
+npm install -g switchbank-cli
+
+# Or run directly with npx for one-time commands
+npx switchbank-cli <command>
+```
+
+**Configuration:**
+The CLI uses a secure, token-based session. No API keys need to be manually configured for user sessions.
+
+1.  Run `switchbank login`.
+2.  Your session token will be securely stored in a local configuration file (`~/.switchbank/config`).
+3.  All subsequent commands will automatically use this token.
+
+---
+
+#### 2. Authentication & Session Commands
+
+```bash
+switchbank login                    # Interactive login to start a session
+switchbank logout                   # End current session and clear token
+switchbank status                   # Show login status and user info
+```
+
+---
+
+#### 3. Account Management
+
+```bash
+switchbank accounts list            # List all your accounts
+switchbank accounts info <account>  # Detailed account information
+# (Future) switchbank accounts create --type <type>
+# (Future) switchbank accounts close <account>
+```
+
+---
+
+#### 4. Balance & Transactions
+
+```bash
+switchbank balance                  # Check all account balances
+switchbank balance <account>        # Check a specific account
+switchbank transactions             # Recent transactions (all accounts)
+switchbank transactions <account>   # Transactions for a specific account
+```
+
+---
+
+#### 5. Transfers & Payments
+
+```bash
+switchbank transfer <amount> <to>   # Quick transfer
+# (Future) switchbank pay <biller> <amount>
+# (Future) switchbank schedule <amount> <to> --date <date>
+```
+
+---
+
+#### 6. Sophia AI Banking Assistant
+
+```bash
+switchbank sophia "question"        # Quick question to Sophia AI
+switchbank sophia chat              # Interactive chat mode
+# (Future) switchbank sophia analyze spending
+# (Future) switchbank sophia budget advice
+```
+
+---
+*More commands for Cards, Security, Loans, and Settings will be added in future releases.*
+
 ### 💸 Financial Calculators
 
 As part of our commitment to financial intelligence, SwiitchBank includes a suite of powerful backend calculators. The first available tool is the **Debt Repayment Optimizer**.

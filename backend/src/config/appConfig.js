@@ -5,6 +5,7 @@ const configs = {
     appName: 'SwiitchBank',
     tagline: 'Anywhere Anytime',
     name: 'Development',
+    port: process.env.PORT || 5001,
     firebase: {
       apiKey: process.env.FIREBASE_API_KEY,
       authDomain: process.env.FIREBASE_AUTH_DOMAIN,
