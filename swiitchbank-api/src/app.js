@@ -1,12 +1,9 @@
 import express from 'express';
 import { setupMiddleware } from './middleware/middleware.js';
 import authRoutes from './routes/auth.js';
-import businessAccountRoutes from './routes/businessAccounts.js';
-import virtualCardRoutes from './routes/virtualCards.js';
-import walletRoutesNew from './routes/wallets.js';
-import stripeRoutes from './routes/stripe.js';
+import accountRoutes from './routes/accounts.js';
 import sophiaRoutes from './routes/sophia.js';
-import transactionAnalysisRoutes from './routes/transactionAnalysis.js';
+import transactionRoutes from './routes/transactions.js';
 import bridgeRoutes from './routes/bridgeRoutes.js';
 import frameworkRoutes from './routes/framework.js';
 import qrRoutes from './routes/qr.js';
@@ -20,12 +17,9 @@ setupMiddleware(app);
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/business-accounts', businessAccountRoutes);
-app.use('/api/virtual-cards', virtualCardRoutes);
-app.use('/api/wallets', walletRoutesNew);
-app.use('/api/stripe', stripeRoutes);
+app.use('/api/accounts', accountRoutes);
 app.use('/api/sophia', sophiaRoutes);
-app.use('/api/transaction-analysis', transactionAnalysisRoutes);
+app.use('/api/transactions', transactionRoutes);
 app.use('/api/bridge', bridgeRoutes);
 app.use('/api/framework', frameworkRoutes);
 app.use('/api/v1/qr', qrRoutes);

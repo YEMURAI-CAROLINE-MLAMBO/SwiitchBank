@@ -17,12 +17,11 @@ async function startServer() {
 
     const server = http.createServer(app);
     const port = config.port || 5001;
-    const wsPort = config.wsPort || 5002;
 
     server.listen(port, () => {
       logger.info(`Swiitch Bank API Server running on port ${port}`);
       // Initialize WebSocket server
-      startWebSocketServer(server, wsPort);
+      startWebSocketServer(server);
     });
 
     process.on('uncaughtException', (err) => {

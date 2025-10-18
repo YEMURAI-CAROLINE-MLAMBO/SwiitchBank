@@ -1,6 +1,7 @@
 import express from 'express';
 const router = express.Router();
-import { check } from 'express-validator';
+import { celebrate, Joi, Segments } from 'celebrate';
+import { registerSchema, loginSchema } from '../utils/validators/authValidation.js';
 import * as authController from '../controllers/authController.js';
 import { protectLogin } from '../middleware/security.js';
 
@@ -9,15 +10,7 @@ import { protectLogin } from '../middleware/security.js';
 // @access  Public
 router.post(
   '/register',
-  [
-    check('firstName', 'First name is required').not().isEmpty(),
-    check('lastName', 'Last name is required').not().isEmpty(),
-    check('email', 'Please include a valid email').isEmail(),
-    check(
-      'password',
-      'Please enter a password with 6 or more characters'
-    ).isLength({ min: 6 }),
-  ],
+  celebrate({ [Segments.BODY]: registerSchema }),
   authController.register
 );
 
@@ -26,10 +19,7 @@ router.post(
 // @access  Public
 router.post(
   '/login',
-  [
-    check('email', 'Please include a valid email').isEmail(),
-    check('password', 'Password is required').exists(),
-  ],
+  celebrate({ [Segments.BODY]: loginSchema }),
   protectLogin,
   authController.login
 );

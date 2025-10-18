@@ -4,12 +4,12 @@
   "private": true,
   "dependencies": {
     "axios": "^1.12.2",
-    "firebase": "^9.22.0",
+    "firebase": "^12.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.22.3",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "5.0.1",
     "react-window": "^2.2.1"
   },
   "scripts": {
@@ -58,5 +58,9 @@
       "prettier --write",
       "eslint --fix"
     ]
+  },
+  "overrides": {
+    "svgo": "4.0.0",
+    "postcss": "8.4.31"
   }
 }

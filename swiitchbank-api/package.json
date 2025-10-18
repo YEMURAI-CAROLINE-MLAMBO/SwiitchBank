@@ -15,20 +15,20 @@
     "@google/generative-ai": "^0.11.5",
     "axios": "^1.12.2",
     "bcryptjs": "^2.4.3",
+    "celebrate": "^15.0.3",
     "cors": "^2.8.5",
-    "dompurify": "^3.3.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-rate-limit": "^8.1.0",
-    "express-validator": "^7.2.1",
     "helmet": "^7.1.0",
-    "jsdom": "^27.0.0",
+    "joi": "^18.0.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.1",
     "morgan": "^1.10.0",
     "qrcode": "^1.5.4",
     "rate-limit-redis": "^4.2.2",
     "redis": "^5.8.3",
+    "sanitize-html": "^2.17.0",
     "stripe": "^19.1.0",
     "tvm-financejs": "^0.3.0",
     "uuid": "^13.0.0",
@@ -54,5 +54,8 @@
       "./test/setup.js"
     ],
     "testTimeout": 30000
+  },
+  "overrides": {
+    "joi": "^18.0.1"
   }
 }
