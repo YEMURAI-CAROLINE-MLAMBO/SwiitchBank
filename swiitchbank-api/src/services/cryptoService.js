@@ -2,7 +2,7 @@
 
 import * as payoutPartnerService from './payoutPartnerService.js';
 import logger from '../utils/logger.js';
-import appConfig from '../config/appConfig.js';
+import appConfig from '../config/config.js';
 import * as cryptoPartnerService from './cryptoPartnerService.js'; // Hypothetical service
 
 const getSupportedCurrencies = async () => {
