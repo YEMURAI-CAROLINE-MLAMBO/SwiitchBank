@@ -1,7 +1,7 @@
 {
-  "name": "switchbank",
-  "version": "0.0.1",
-  "description": "Switch Bank Project",
+  "name": "swiitchbank-platform",
+  "version": "1.0.0",
+  "description": "SwiitchBank is a modern fintech platform integrating traditional banking with crypto services.",
   "main": "backend/src/app.js",
   "scripts": {
     "start": "node backend/src/app.js"

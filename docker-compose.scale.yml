@@ -6,7 +6,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongo:27017/switchbank
+      - MONGODB_URI=mongodb://mongo:27017/swiitchbank
       - REDIS_URL=redis://redis:6379
     deploy:
       replicas: 4

@@ -3,7 +3,7 @@ import QRCode from 'qrcode';
 
 const P2P_QR_SCHEMA_VERSION = 'v1';
 const QR_PAYLOAD_TYPE = 'p2p';
-const PLATFORM_NAME = 'switchbank';
+const PLATFORM_NAME = 'swiitchbank';
 
 class QrCodeService {
   /**
@@ -31,7 +31,7 @@ class QrCodeService {
     const signature = this.signPayload(payload, secret);
     payload.signature = signature;
 
-    const qrDataString = `switchbank://pay/${P2P_QR_SCHEMA_VERSION}/${Buffer.from(JSON.stringify(payload)).toString('base64url')}`;
+    const qrDataString = `swiitchbank://pay/${P2P_QR_SCHEMA_VERSION}/${Buffer.from(JSON.stringify(payload)).toString('base64url')}`;
     const qrDataUri = await QRCode.toDataURL(qrDataString, { errorCorrectionLevel: 'H' });
 
     return { payload, signature, qrDataUri };

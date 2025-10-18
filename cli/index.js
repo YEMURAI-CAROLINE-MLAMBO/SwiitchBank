@@ -8,9 +8,9 @@ import { getAccounts, getAccountInfo, getTransactions, getBalance, login, regist
 const program = new Command();
 
 program
-  .name('switchbank')
+  .name('swiitchbank')
   .description('A CLI for interacting with the SwiitchBank API')
-  .version('0.1.0');
+  .version('1.0.0');
 
 program.command('status')
   .description('Check login status and user info')
@@ -20,7 +20,7 @@ program.command('status')
       console.log(chalk.green('Status: Logged in. (Mocked)'));
     } else {
       console.log(chalk.yellow('Status: Not logged in.'));
-      console.log(chalk.blue('Run `switchbank login` to get started.'));
+      console.log(chalk.blue('Run `swiitchbank login` to get started.'));
     }
   });
 
