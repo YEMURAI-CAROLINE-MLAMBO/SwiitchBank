@@ -1,0 +1,200 @@
+.financial-insights-container {
+  padding: 1rem;
+}
+
+.insights-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.insights-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1A365D; /* Richmont Navy Blue */
+}
+
+.insights-header p {
+  color: #718096;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}
+
+.insights-error {
+  text-align: center;
+  padding: 2rem;
+  background-color: #FFF5F5;
+  color: #C53030;
+  border-radius: 8px;
+}
+
+.insight-spinner {
+  margin: 2rem auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border-left-color: #00C9A7; /* Sophisticated Teal */
+  animation: spin 1s ease infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.insight-card {
+  background-color: #ffffff;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.insight-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+}
+
+.insight-card.impact-high { border-left: 5px solid #E53E3E; }
+.insight-card.impact-medium { border-left: 5px solid #DD6B20; }
+.insight-card.impact-low { border-left: 5px solid #3182CE; }
+
+.insight-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.insight-content h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2D3748;
+  margin-bottom: 0.5rem;
+}
+
+.insight-content p {
+  color: #4A5568;
+  flex-grow: 1;
+  margin-bottom: 1.5rem;
+}
+
+.insight-actions .primary-action {
+  background-color: #1A365D;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.insight-actions .primary-action:hover {
+  background-color: #2D3748;
+}
+
+.ask-sophia-section {
+  background-color: #F7FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.ask-sophia-section h3 {
+  font-size: 1.5rem;
+  color: #1A365D;
+}
+
+.ask-sophia-section p {
+  color: #718096;
+  margin-top: 0.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.predefined-questions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.predefined-questions button {
+  background: white;
+  border: 1px solid #CBD5E0;
+  color: #4A5568;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.predefined-questions button:hover {
+  background-color: #EDF2F7;
+  color: #1A365D;
+}
+
+.ask-form {
+  display: flex;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ask-input {
+  flex-grow: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid #CBD5E0;
+  border-radius: 6px 0 0 6px;
+  font-size: 1rem;
+}
+
+.ask-input:focus {
+  outline: none;
+  border-color: #00C9A7;
+  box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.3);
+}
+
+.ask-button {
+  background-color: #00C9A7;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0 6px 6px 0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ask-button:hover {
+  background-color: #00A383;
+}
+
+.ask-button:disabled {
+  background-color: #A0AEC0;
+  cursor: not-allowed;
+}
+
+.sophia-answer {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  text-align: left;
+  border: 1px solid #E2E8F0;
+  color: #2D3748;
+  line-height: 1.6;
+}
+
+.sophia-answer strong {
+  color: #1A365D;
+}

@@ -1,12 +1,16 @@
 import express from 'express';
-import { handleChat } from '../controllers/sophiaController.js';
-// import auth from '../middleware/auth.js'; // Assuming auth middleware exists
+import { handleChat, getGeneratedInsights, askQuestion } from '../controllers/sophiaController.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
-// 🚀 NEW: One Unified Sophia Endpoint
-// ❌ REMOVED: /api/jools/chat
-// ✅ KEPT: /api/sophia/chat
-router.post('/chat', /* auth, */ handleChat);
+// Route for the interactive chat feature
+router.post('/chat', auth, handleChat);
+
+// Route for getting pre-generated AI insights for the dashboard
+router.get('/generated-insights', auth, getGeneratedInsights);
+
+// Route for the "Ask Sophia" feature
+router.post('/ask', auth, askQuestion);
 
 export default router;

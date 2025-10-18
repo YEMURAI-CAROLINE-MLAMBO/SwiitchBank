@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:swiitchbank/screens/dashboard_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:swiitchbank/services/auth_service.dart';
+import 'package:swiitchbank/theme/app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,13 +11,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final AuthService _authService = AuthService();
   String _email = '';
   String _password = '';
   bool _isLoading = false;
   String _errorMessage = '';
 
-  Future<void> _login() async {
+  Future<void> _login(AuthService authService) async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       setState(() {
@@ -24,31 +25,27 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       try {
-        final bool loggedIn = await _authService.login(_email, _password);
-        if (loggedIn) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => DashboardScreen()),
-          );
-        } else {
-          setState(() {
-            _errorMessage = 'Invalid email or password.';
-          });
-        }
-      } catch (e) {
+        await authService.login(email: _email, password: _password);
+        // The auth state listener in main.dart will handle navigation
+      } on Exception catch (e) {
         setState(() {
-          _errorMessage = 'An unexpected error occurred. Please try again.';
+          // Extract a user-friendly message from the exception
+          _errorMessage = e.toString().replaceFirst('Exception: ', '');
         });
       } finally {
-        setState(() {
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -56,8 +53,8 @@ class _LoginScreenState extends State<LoginScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF1A365D),
-              Color(0xFF2D3748),
+              AppTheme.richmontNavy,
+              AppTheme.charcoalGray,
             ],
           ),
         ),
@@ -69,23 +66,24 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Icon(Icons.account_balance, size: 80, color: Colors.white),
-                  SizedBox(height: 20),
-                  Text('SwiitchBank Login', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text('SwiitchBank', style: AppTheme.headline1),
+                  SizedBox(height: 8),
+                  Text('Welcome Back', style: AppTheme.subtitle1),
                   SizedBox(height: 40),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: Colors.white70),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                      prefixIcon: Icon(Icons.email, color: Colors.white70),
+                  if (_errorMessage.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        _errorMessage,
+                        style: TextStyle(color: Colors.redAccent, fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
+                  TextFormField(
+                    decoration: AppTheme.inputDecoration('Email Address', Icons.email),
                     style: TextStyle(color: Colors.white),
                     validator: (value) {
-                      if (value == null || value.isEmpty) return 'Please enter your email';
-                      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                      if (!emailRegex.hasMatch(value)) return 'Please enter a valid email address';
+                      if (value == null || !value.contains('@')) return 'Please enter a valid email';
                       return null;
                     },
                     onSaved: (value) => _email = value!,
@@ -93,38 +91,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 16),
                   TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: TextStyle(color: Colors.white70),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white70)),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-                      prefixIcon: Icon(Icons.lock, color: Colors.white70),
-                    ),
+                    decoration: AppTheme.inputDecoration('Password', Icons.lock),
                     obscureText: true,
                     style: TextStyle(color: Colors.white),
                     validator: (value) {
-                      if (value == null || value.isEmpty) return 'Please enter your password';
-                      if (value.length < 8) return 'Password must be at least 8 characters long';
+                      if (value == null || value.length < 6) return 'Password must be at least 6 characters';
                       return null;
                     },
                     onSaved: (value) => _password = value!,
                   ),
                   SizedBox(height: 24),
-                  if (_errorMessage.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: Text(_errorMessage, style: TextStyle(color: Colors.redAccent, fontSize: 14)),
-                    ),
                   _isLoading
-                      ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+                      ? CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(AppTheme.sophisticatedTeal))
                       : ElevatedButton(
-                          onPressed: _login,
-                          child: Text('Login', style: TextStyle(fontSize: 18, color: Color(0xFF1A365D))),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            minimumSize: Size(double.infinity, 50),
-                          ),
+                          onPressed: () => _login(authService),
+                          child: Text('Log In'),
+                          style: AppTheme.primaryButtonStyle,
                         ),
+                  SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () {
+                      // Navigate to signup screen
+                      // This will be implemented later, assuming a named route '/signup'
+                    },
+                    child: Text(
+                      "Don't have an account? Sign Up",
+                      style: TextStyle(color: AppTheme.sophisticatedTeal),
+                    ),
+                  )
                 ],
               ),
             ),

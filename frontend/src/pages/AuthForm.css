@@ -1,0 +1,112 @@
+/* Shared Styles for LoginPage.jsx and SignupPage.jsx */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f7fafc; /* Light Gray Background */
+  padding: 2rem;
+}
+
+.auth-form-wrapper {
+  background: white;
+  padding: 3rem;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.auth-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1A365D; /* Richmont Navy Blue */
+  margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+  color: #718096; /* Gray */
+  margin-bottom: 2rem;
+}
+
+.auth-error {
+  background-color: #FED7D7;
+  color: #9B2C2C;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input-group {
+  text-align: left;
+}
+
+.input-group label {
+  display: block;
+  font-weight: 600;
+  color: #2D3748; /* Charcoal Gray */
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #00C9A7; /* Sophisticated Teal */
+  box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.3);
+}
+
+.auth-button {
+  background-color: #1A365D; /* Richmont Navy Blue */
+  color: white;
+  font-weight: 600;
+  padding: 0.875rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.auth-button:hover:not(:disabled) {
+  background-color: #2D3748; /* Charcoal Gray */
+}
+
+.auth-button:disabled {
+  background-color: #A0AEC0; /* Lighter Gray */
+  cursor: not-allowed;
+}
+
+.auth-footer {
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  color: #4A5568; /* Darker Gray */
+}
+
+.auth-link {
+  color: #00C9A7; /* Sophisticated Teal */
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-link:hover {
+  color: #1A365D; /* Richmont Navy Blue */
+}

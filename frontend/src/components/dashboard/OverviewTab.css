@@ -1,0 +1,181 @@
+.overview-tab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.dashboard-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  /* Using a subtle border instead of shadow inside the main tab content */
+  border: 1px solid #E2E8F0;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1A365D; /* Richmont Navy Blue */
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.no-data-message {
+  color: #718096;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+/* Accounts Summary */
+.accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.account-item:hover {
+  background-color: #F7FAFC;
+}
+
+.account-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.account-icon {
+  font-size: 1.5rem;
+  background-color: #EBF4FF;
+  color: #1A365D;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.account-name {
+  font-weight: 600;
+  color: #2D3748;
+}
+
+.account-balance {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1A365D;
+}
+
+.account-value-base {
+  font-size: 0.9rem;
+  color: #718096;
+  text-align: right;
+}
+
+
+/* Spending by Category */
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.category-name {
+  font-weight: 500;
+  color: #4A5568;
+}
+
+.category-amount {
+  font-weight: 600;
+  color: #1A365D;
+}
+
+
+/* Recent Transactions */
+.transactions-preview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+}
+
+.transaction-icon {
+  font-size: 1.25rem;
+}
+
+.transaction-details {
+  flex: 1;
+}
+
+.transaction-merchant {
+  font-weight: 600;
+  color: #2D3748;
+}
+
+.transaction-date {
+  font-size: 0.8rem;
+  color: #A0AEC0;
+}
+
+.transaction-amount {
+  font-weight: 600;
+}
+
+.transaction-amount.positive {
+  color: #38A169; /* Green */
+}
+
+.transaction-amount.negative {
+  color: #E53E3E; /* Red */
+}
+
+.view-all-button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background-color: #F7FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  color: #1A365D;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.view-all-button:hover {
+  background-color: #EDF2F7;
+  border-color: #CBD5E0;
+}

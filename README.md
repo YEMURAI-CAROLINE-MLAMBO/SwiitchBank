@@ -1,325 +1,145 @@
 # SwiitchBank - Anywhere Anytime
 
-![SwiitchBank](https://img.shields.io/badge/Version-MVP-green.svg)
-![Firebase](https://img.shields.io/badge/Platform-Firebase-orange.svg)
-![Node.js](https://img.shields.io/badge/Runtime-Node.js-green.svg)
+![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)
+![Platform](https://img.shields.io/badge/Platform-Node.js%20|%20React%20|%20Flutter-brightgreen.svg)
+![Status](https://img.shields.io/badge/Status-Live-green.svg)
 
 ## Overview
 
-SwiitchBank is a next-generation, AI-powered banking platform designed for a global user base. Our mission is to provide a seamless and intelligent financial experience that is accessible **Anywhere, Anytime**. We bridge traditional finance with digital assets, empowering users with innovative tools to manage their money, grow their wealth, and connect to the global economy.
+SwiitchBank is a next-generation, AI-powered financial platform designed for a global user base. Our mission is to provide a seamless and intelligent financial experience that is accessible **Anywhere, Anytime**. We bridge traditional finance with digital assets, empowering users with innovative tools to manage their money, grow their wealth, and connect to the global economy.
 
-**Key Value Proposition**: Global financial control in your pocket, powered by intelligent, cross-border financial technology.
+**Key Value Proposition**: Global financial control in your pocket, powered by intelligent, cross-border financial technology and the sophisticated Richmont brand identity.
 
-## Core Features (MVP Scope)
+## Core Features
 
-### 🎯 Must-Have Features
-- **Sophia-2 AI**: Basic transaction analysis, navigation assistance, and onboarding guidance
-- **Fiat-Crypto Bridge**: Effortless trading between traditional and digital assets
-- **Referral Program**: Automated rewards system fostering community growth
-- **Basic Business Accounts**: Multi-user access with role-based permissions (Owner, Accountant, Operations)
-- **Financial Calculators**: Tools for intelligent debt repayment planning.
-
-<br>
-
-### 📈 Should-Have Features (Post-MVP)
-- Yield vaults/reward earning post-trade
-- Cross-chain swap capabilities
-- Advanced gamification milestones
-- Multi-currency support for global users
-
-### 命令行界面 (CLI)
-- **SwitchBank CLI** — A powerful command-line interface for managing your SwiitchBank account, executing transactions, and interacting with the Sophia AI.
-
-### SwitchBank CLI - Command Reference
-
-SwiitchBank provides a powerful, intuitive Command-Line Interface (CLI) for full platform control directly from your terminal.
-
-#### Key Features:
-
-*   ✅ **Full Banking Operations**: Manage accounts, transfer funds, and pay bills without leaving the command line.
-*   ✅ **Sophia AI Integration**: Access financial analysis, get advice, and ask questions directly.
-*   ✅ **Scriptable Output**: Use the global `--json` flag for machine-readable output to integrate with other tools and scripts.
-*   ✅ **Secure Authentication**: Uses a secure, token-based authentication flow to protect your credentials.
-*   ✅ **Cross-platform**: Runs on Windows, Mac, and Linux.
-
----
-
-#### 1. Installation & Setup
-
-*The CLI is currently under active development. These instructions are for the planned release.*
-
-```bash
-# Install SwitchBank CLI globally
-npm install -g switchbank-cli
-
-# Or run directly with npx for one-time commands
-npx switchbank-cli <command>
-```
-
-**Configuration:**
-The CLI uses a secure, token-based session. No API keys need to be manually configured for user sessions.
-
-1.  Run `switchbank login`.
-2.  Your session token will be securely stored in a local configuration file (`~/.switchbank/config`).
-3.  All subsequent commands will automatically use this token.
-
----
-
-#### 2. Authentication & Session Commands
-
-```bash
-switchbank login                    # Interactive login to start a session
-switchbank logout                   # End current session and clear token
-switchbank status                   # Show login status and user info
-```
-
----
-
-#### 3. Account Management
-
-```bash
-switchbank accounts list            # List all your accounts
-switchbank accounts info <account>  # Detailed account information
-# (Future) switchbank accounts create --type <type>
-# (Future) switchbank accounts close <account>
-```
-
----
-
-#### 4. Balance & Transactions
-
-```bash
-switchbank balance                  # Check all account balances
-switchbank balance <account>        # Check a specific account
-switchbank transactions             # Recent transactions (all accounts)
-switchbank transactions <account>   # Transactions for a specific account
-```
-
----
-
-#### 5. Transfers & Payments
-
-```bash
-switchbank transfer <amount> <to>   # Quick transfer
-# (Future) switchbank pay <biller> <amount>
-# (Future) switchbank schedule <amount> <to> --date <date>
-```
-
----
-
-#### 6. Sophia AI Banking Assistant
-
-```bash
-switchbank sophia "question"        # Quick question to Sophia AI
-switchbank sophia chat              # Interactive chat mode
-# (Future) switchbank sophia analyze spending
-# (Future) switchbank sophia budget advice
-```
-
----
-*More commands for Cards, Security, Loans, and Settings will be added in future releases.*
-
-### 💸 Financial Calculators
-
-As part of our commitment to financial intelligence, SwiitchBank includes a suite of powerful backend calculators. The first available tool is the **Debt Repayment Optimizer**.
-
-#### Debt Repayment Optimizer
-
-This tool, located in the `OptimizationEngine`, provides two industry-standard strategies for paying off multiple debts:
-
--   **Debt Snowball**: This method focuses on paying off the smallest debts first to build psychological momentum.
--   **Debt Avalanche**: This method focuses on paying off the debts with the highest interest rates first to minimize the total interest paid over the life of the loans.
-
-These calculators can be used to provide users with a clear, actionable plan to become debt-free.
-
-### 🚀 Advanced Financial Modeling Engine
-
-To transform SwiitchBank from a simple tracking app into a sophisticated financial planning platform, we've integrated a powerful new financial modeling engine. This engine provides the mathematical foundation for truly intelligent financial advice, turning our Sophia AI into a quantitative expert.
-
-**Core Models:**
--   **FinancialModel**: Handles personal financial statement modeling (Income, Balance Sheet, Cash Flow), DCF valuation, and sensitivity analysis.
--   **MonteCarloEngine**: Powers probability-based simulations for retirement planning, real estate investment, and business valuation.
--   **RiskModel**: Assesses portfolio risk (VaR, Expected Shortfall), credit risk, and liquidity risk.
--   **BehavioralModel**: Models user spending and investment behavior to identify patterns and biases.
--   **ScenarioEngine**: Conducts comprehensive "what-if" analysis for various financial scenarios (e.g., market crashes, recessions).
--   **SophiaModeling**: Integrates all models to create personalized, dynamic financial plans for users.
--   **LiveModeling**: Allows for real-time model updates with new data and generates predictive alerts.
-
-#### Financial Modeling Applications
-
-**For Users:**
--   ✅ **Personal DCF**: Understand your lifetime financial value.
--   ✅ **Retirement Readiness Scoring**: Probability-based retirement planning.
--   ✅ **Goal Achievement Probability**: See the mathematical likelihood of reaching your goals.
--   ✅ **Optimal Financial Strategy**: Make data-driven financial decisions.
--   ✅ **Risk Quantification**: Understand and quantify your financial risks.
-
-**For Sophia AI:**
--   ✅ **Quantitative Reasoning**: Provides a mathematical basis for recommendations.
--   ✅ **Scenario Comparison**: Compares financial strategies with hard numbers.
--   ✅ **Predictive Capability**: Forecasts future financial states.
--   ✅ **Optimization Algorithms**: Finds mathematically optimal paths to financial goals.
--   ✅ **Confidence Intervals**: Delivers probabilistic advice, not just deterministic predictions.
-
-**Technical Excellence:**
--   ✅ **Stochastic Modeling**: Properly handles uncertainty in financial forecasts.
--   ✅ **Numerical Methods**: Implemented with robust mathematical techniques.
--   ✅ **Real-time Updating**: Models learn and adapt based on new user data.
--   ✅ **Comprehensive Scenario Analysis**: Provides powerful "what-if" modeling capabilities.
-
-### 🤖 Autonomous Communication System
-
-SwiitchBank features a sophisticated, autonomous communication system to handle all user and developer notifications. This system operates with zero required human intervention, ensuring timely, relevant, and personalized communication.
-
-The system is built around a `CoreCommunication` engine that manages two primary channels: **Email** and **In-App Messaging**.
-
-#### Key Capabilities:
-
--   **Automated Message Triggers**: The system automatically sends messages based on user behavior and system events.
-    -   **Welcome Sequence**: New users receive a welcome message and a follow-up to guide them through onboarding.
-    -   **Security Alerts**: High-priority security events (e.g., suspicious logins) instantly trigger alerts to the user's email and in-app inbox.
-    -   **Weekly Financial Insights**: Sophia-2 AI generates and sends a personalized financial summary to each active user every week.
-
--   **Dual-Channel Delivery**:
-    -   **In-App Messaging**: All notifications are delivered as in-app messages, accessible through a dedicated message center. A real-time notification badge with an unread count keeps users informed.
-    -   **Email Notifications**: Critical messages, such as security alerts and high-priority financial updates, are also sent via email to ensure they are not missed.
-
--   **Developer & System Notifications**:
-    -   The system keeps the development team informed about its operational status.
-    -   **System Health Alerts**: Important events, like system startup or critical errors, trigger an email notification to a designated developer address (`ymlamo21@gmail.com`).
-    -   **High-Priority CC**: The developer email is automatically CC'd on high-priority user communications, like security alerts, for oversight.
-
--   **Intelligent Scheduling & Prioritization**: The system uses a priority system (`high`, `medium`, `low`) and message type (`security`, `financial`, `system`) to determine the appropriate communication channel and timing, preventing user spam.
+-   **Richmont Brand Identity**: A sophisticated and professional user experience with a clean, modern design.
+-   **Sophia-2 AI Assistant**: An advanced AI for deep transaction analysis, personalized financial insights, and real-time advice.
+-   **Multi-Currency Accounts**: Hold, manage, and convert funds in multiple fiat currencies with real-time exchange rates.
+-   **Comprehensive Security**: A multi-layered security system featuring AI-driven risk analysis, MFA enforcement, and end-to-end encryption.
+-   **Advanced Financial Modeling**: A powerful backend engine for Monte Carlo simulations, risk analysis, and quantitative financial planning.
+-   **Autonomous Communication System**: An intelligent notification system for user alerts and system-level monitoring.
+-   **Cross-Platform Accessibility**: A unified experience across a web application (React), a mobile app (Flutter), and a command-line interface (CLI).
 
 ## Technology Stack
 
-| **Layer** | **Technology** |
-| :--- | :--- |
-| **Backend** | Node.js, Express.js, Firebase Functions |
-| **Database** | Firestore, Firebase Data Connect |
-| **AI Service** | Gemini API integration (aiService.js) |
-| **Payment Processing** | Stripe Webhooks |
-| **Authentication** | Firebase Auth with multi-factor support |
-| **Frontend** | React (Web), Flutter (Mobile) |
+| Layer                | Technology                                        |
+| -------------------- | ------------------------------------------------- |
+| **Backend**          | Node.js, Express.js, Mongoose                     |
+| **Serverless**       | Firebase Functions (TypeScript)                   |
+| **Database**         | MongoDB                                           |
+| **AI Service**       | Google Gemini API                                 |
+| **Authentication**   | Firebase Auth (with JWTs for backend sessions)    |
+| **Frontend (Web)**   | React, Context API, Axios                         |
+| **Frontend (Mobile)**| Flutter, Provider                                 |
+| **CLI**              | Node.js, Commander.js                             |
+| **Real-time**        | WebSockets                                        |
 
-## Repository layout
-- **/backend** — Express/Node API, business logic, services, migrations
-- **/frontend** — React app for web UI
-- **/lib** — Flutter application for mobile UI. Follows a feature-first structure.
-  - **ui/**
-    - **screens/** — Contains all the screen widgets for the app.
-    - **widgets/** — Contains reusable widgets.
-  - **core/** — Core services, models, and utilities.
-  - **services/** — Business logic services (e.g., authentication, API calls).
-- **/functions** — Firebase Cloud Functions (serverless logic)
-- **/api** — **Legacy** Firebase Cloud Functions (do not add new functions here)
-- **/.env.example** — A master template of all environment variables.
-- **/build_for_environment.sh** — Script for building the Flutter app for different environments.
+## Repository Layout
 
-## Installation & Local Development
+-   **/backend**: The core Node.js/Express API, services, models, and business logic.
+-   **/frontend**: The React web application.
+-   **/lib**: The Flutter mobile application.
+-   **/functions**: Serverless Firebase Functions written in TypeScript.
+-   **/cli**: The command-line interface for power users.
+-   **/.env.example**: A master template of all required environment variables.
+
+## Local Development Setup
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
-- Firebase CLI tools
-- Flutter SDK
 
-### Environment Variables Setup
-This project uses `.env` files for managing environment variables for local development. A master template, `.env.example`, is provided in the root directory. For local development, you should create a `.env` file inside each package (`backend/`, `frontend/`, `functions/`) that requires it. **Do not commit `.env` files.**
+-   Node.js (v18+)
+-   npm
+-   Firebase CLI
+-   Flutter SDK (for mobile development)
+-   MongoDB instance (local or cloud)
+
+### Environment Variables
+
+This project uses `.env` files for local development. A master template, `.env.example`, is in the root. For each package (`backend/`, `frontend/`, `functions/`, `cli/`), create a `.env` file from the template and fill in the required secrets.
 
 **Example for the backend:**
-1. Navigate to the `backend` directory: `cd backend`
-2. Copy the `.env.example` file: `cp ../.env.example .env`
-3. Fill in the required secrets in the new `backend/.env` file.
+```bash
+cd backend
+cp ../.env.example .env
+# Open backend/.env and add your development secrets (e.g., MONGODB_URI, GEMINI_API_KEY)
+```
 
-For the Flutter app, environment variables are passed in at compile time by the build script.
+### Quick Start
 
-### Quick start (local dev)
-
-1.  **Clone repository**:
+1.  **Clone Repository**:
     ```bash
     git clone https://github.com/YEMURAI-CAROLINE-MLAMBO/SwiitchBank.git
     cd SwiitchBank
     ```
 
-2.  **Backend**
+2.  **Install All Dependencies**:
     ```bash
-    cd backend
-    # Create .env from .env.example and fill in secrets
-    cp ../.env.example .env
+    # From the root directory
     npm install
-    npm run dev
+    npm --prefix backend install
+    npm --prefix frontend install
+    npm --prefix functions install
+    npm --prefix cli install
     ```
 
-3.  **Frontend**
+3.  **Run the Backend Server**:
     ```bash
-    cd ../frontend
-    # Create .env from .env.example and fill in secrets
-    cp ../.env.example .env
-    npm install
-    npm start
+    # From the root directory
+    npm --prefix backend run dev
     ```
 
-4.  **Firebase functions (emulator)**
+4.  **Run the Frontend App**:
     ```bash
-    cd ../functions
-    # Create .env from .env.example and fill in secrets
-    cp ../.env.example .env
-    npm install
-    firebase emulators:start --only functions,firestore,auth
+    # From the root directory
+    npm --prefix frontend start
     ```
-5.  **Flutter (Mobile)**
-    To run the Flutter app, ensure you have the Flutter SDK installed and a device or emulator running. Then, from the root of the repository, run:
+
+5.  **Run the Firebase Emulators (for functions)**:
     ```bash
-    flutter run
+    # From the root directory
+    firebase emulators:start --only functions,auth
     ```
-    **Note:** The current development environment does not have the Flutter SDK installed. These instructions are for developers setting up the project locally.
 
-## Building the Flutter App for an Environment
-The `build_for_environment.sh` script is used to build the Flutter web app for a specific environment. This script will automatically select the correct API_BASE_URL.
+6.  **Run the Flutter App (Mobile)**:
+    -   Ensure you have a running emulator or a connected device.
+    -   From the root directory, run:
+        ```bash
+        flutter run
+        ```
 
-**Usage:**
+## Command-Line Interface (CLI)
+
+SwiitchBank includes a powerful CLI for managing your account from the terminal.
+
+### Usage
+
+First, log in to create a session:
 ```bash
-# To build for development (default)
-./build_for_environment.sh
+# Interactive login
+node cli login
 
-# To build for staging
-./build_for_environment.sh staging
-
-# To build for production
-./build_for_environment.sh production
+# Login with options
+node cli login -e myemail@example.com -p mypassword
 ```
 
-## Deployment
-
-Deploy securely using the provided script:
-
+Then, use the available commands:
 ```bash
-chmod +x deploy-secure.sh
-./deploy-secure.sh
+# Check your login status
+node cli status
+
+# List all your accounts
+node cli accounts list
+
+# Get the balance for a specific account
+node cli balance <accountId>
+
+# View recent transactions
+node cli transactions
+
+# Log out and clear your session token
+node cli logout
 ```
-This deployment process includes:
-· Cloud Function deployment
-· Firestore rules configuration
-· Data Connect schema implementation
-· Security rule validation
-
-## Backend Architecture
-This project has a multi-faceted backend, which is a combination of a traditional Node.js/Express server and serverless Firebase Functions.
--   **/backend**: A traditional Node.js/Express server responsible for core business logic.
--   **/functions**: The primary, modern, and organized location for all new Firebase Functions.
--   **/api**: This directory contains legacy Firebase Functions. **Do not add new functions to this directory.**
-
-## Project Status & Documentation
-This project is currently in the MVP phase. The documentation is a work in progress.
-
-## Known Limitations & Issues (MVP Phase)
-· Sophia-2 AI Onboarding: Business account onboarding via Sophia-2 AI is currently a guided assistant.
-· Currency Support: Limited to primary currency (USD) and major cryptocurrencies (BTC, ETH).
-· Transaction Limits: Reduced limits during MVP testing phase.
-
-## Contributing
-We welcome contributions! Please read our contributing guidelines before submitting pull requests.
 
 ## License
+
 This project is licensed under the terms contained in the LICENSE file.
