@@ -21,4 +21,24 @@ const convertFiatToCrypto = asyncHandler(async (req, res) => {
   res.status(200).json(result);
 });
 
-export { convertFiatToCrypto };
+// @desc    Convert crypto to fiat
+// @route   POST /api/exchange/crypto-to-fiat
+// @access  Private
+const convertCryptoToFiat = asyncHandler(async (req, res) => {
+  const { amount, fromCrypto, toCurrency } = req.body;
+
+  if (!amount || !fromCrypto || !toCurrency) {
+    res.status(400);
+    throw new Error('Please provide amount, fromCrypto, and toCurrency');
+  }
+
+  const result = await ExchangeService.convertCryptoToFiat(
+    amount,
+    fromCrypto,
+    toCurrency
+  );
+
+  res.status(200).json(result);
+});
+
+export { convertFiatToCrypto, convertCryptoToFiat };
