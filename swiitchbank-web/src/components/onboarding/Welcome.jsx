@@ -4,7 +4,7 @@ const Welcome = ({ onGetStarted }) => {
   return (
     <div className="welcome-screen">
       <div className="welcome-content">
-        <div className="logo">🧠 SwitchBank</div>
+        <div className="logo">🧠 SwiitchBank</div>
         <h1>Your Intelligent Financial Partner</h1>
         <p>See your finances clearly. Make smarter decisions.</p>
 

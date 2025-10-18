@@ -109,35 +109,46 @@ cp ../.env.example .env
 
 ## Command-Line Interface (CLI)
 
-SwiitchBank includes a powerful CLI for managing your account from the terminal.
+SwiitchBank includes a powerful CLI for managing your account from the terminal. To use it, you can either install it globally or run it with `npx`.
+
+**Global Installation:**
+```bash
+npm install -g ./cli
+swiitchbank login
+```
+
+**Using npx:**
+```bash
+npx ./cli <command>
+```
 
 ### Usage
 
 First, log in to create a session:
 ```bash
 # Interactive login
-node cli login
+swiitchbank login
 
 # Login with options
-node cli login -e myemail@example.com -p mypassword
+swiitchbank login -e myemail@example.com -p mypassword
 ```
 
 Then, use the available commands:
 ```bash
 # Check your login status
-node cli status
+swiitchbank status
 
 # List all your accounts
-node cli accounts list
+swiitchbank accounts list
 
 # Get the balance for a specific account
-node cli balance <accountId>
+swiitchbank balance <accountId>
 
 # View recent transactions
-node cli transactions
+swiitchbank transactions
 
 # Log out and clear your session token
-node cli logout
+swiitchbank logout
 ```
 
 ## License

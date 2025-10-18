@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 const initializeDatabase = async () => {
   try {
-    console.log('🚀 Initializing SwitchBank Database...');
+    console.log('🚀 Initializing SwiitchBank Database...');
 
     // Connect to database
     await connectDatabase();

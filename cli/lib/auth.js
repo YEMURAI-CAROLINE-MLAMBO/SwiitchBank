@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 
-const configDir = path.join(os.homedir(), '.switchbank');
+const configDir = path.join(os.homedir(), '.swiitchbank');
 const tokenPath = path.join(configDir, 'token');
 
 export async function saveToken(token) {
