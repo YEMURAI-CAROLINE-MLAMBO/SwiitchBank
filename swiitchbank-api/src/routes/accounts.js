@@ -141,58 +141,5 @@ router.get('/:walletId', walletController.getWalletById);
  *       500:
  *         description: Internal server error
  */
-router.post('/:walletId/topup', walletController.topupWallet);
-
-/**
- * @swagger
- * /api/wallets/{fromWalletId}/transfer/{toWalletId}:
- *   post:
- *     summary: Transfer funds between two wallets
- *     tags: [Wallets]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: fromWalletId
- *         schema:
- *           type: string
- *         required: true
- *         description: The ID of the source wallet
- *       - in: path
- *         name: toWalletId
- *         schema:
- *           type: string
- *         required: true
- *         description: The ID of the destination wallet
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - amount
- *             properties:
- *               amount:
- *                 type: number
- *                 format: float
- *                 description: The amount to transfer
- *     responses:
- *       200:
- *         description: Funds transferred successfully
- *         content:
- *           application/json:
- *             schema:
- *               message: string
- *       400:
- *         description: Invalid input or insufficient funds
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: One or both wallets not found or do not belong to the user
- *       500:
- *         description: Internal server error
- */
-router.post('/:fromWalletId/transfer/:toWalletId', walletController.transferFunds);
 
 export default router;

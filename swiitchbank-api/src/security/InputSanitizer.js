@@ -1,10 +1,5 @@
-import DOMPurify from 'dompurify';
-import { JSDOM } from 'jsdom';
+import sanitizeHtml from 'sanitize-html';
 import DefaultSecurityConfig from '../config/SecurityConfig.js';
-
-// We need a JSDOM window to run DOMPurify on the server-side
-const window = new JSDOM('').window;
-const purify = DOMPurify(window);
 
 export class InputSanitizer {
   /**
@@ -24,7 +19,6 @@ export class InputSanitizer {
 
   static _sanitizeRecursive(input, options, depth, maxDepth, securityConfig) {
     if (depth > maxDepth) {
-      // Prevent infinite recursion on deeply nested or circular objects
       return '[Sanitized: Max depth exceeded]';
     }
 
@@ -36,7 +30,6 @@ export class InputSanitizer {
       return this.sanitizeObject(input, options, depth, maxDepth, securityConfig);
     }
 
-    // Return numbers, booleans, dates, etc., as is
     return input;
   }
 
@@ -49,14 +42,13 @@ export class InputSanitizer {
     // 1. Trim whitespace
     sanitized = sanitized.trim();
 
-    // 2. Use DOMPurify to prevent XSS. This is the most critical step.
-    // It removes malicious HTML and scripts.
-    sanitized = purify.sanitize(sanitized, {
-      USE_PROFILES: { html: false, svg: false, mathMl: false }, // Disallow all HTML
+    // 2. Use sanitize-html to prevent XSS.
+    sanitized = sanitizeHtml(sanitized, {
+      allowedTags: [],
+      allowedAttributes: {},
     });
 
-    // 3. Prevent NoSQL Injection by removing potentially harmful characters
-    // This is a basic layer of defense. Parameterized queries are the primary defense.
+    // 3. Prevent NoSQL Injection
     if (securityConfig.validation.preventNoSQLInjection) {
       sanitized = sanitized.replace(/[$(){}[\]]/g, '');
     }
@@ -79,12 +71,8 @@ export class InputSanitizer {
   static sanitizeObject(obj, options, depth, maxDepth, securityConfig) {
     const sanitizedObj = {};
     for (const key in obj) {
-      // Sanitize the key to prevent pollution attacks
       const sanitizedKey = this.sanitizeString(key, { maxLength: 100 }, securityConfig);
-
-      // Sanitize the value
       const sanitizedValue = this._sanitizeRecursive(obj[key], options, depth + 1, maxDepth, securityConfig);
-
       sanitizedObj[sanitizedKey] = sanitizedValue;
     }
     return sanitizedObj;

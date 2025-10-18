@@ -1,11 +1,6 @@
-import { validationResult } from 'express-validator';
 import * as stripeService from '../services/stripe.js';
 
 export const createCustomer = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
 
   const { email, name } = req.body;
 
@@ -19,10 +14,6 @@ export const createCustomer = async (req, res) => {
 };
 
 export const createCharge = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
 
   const { amount, currency, source, description } = req.body;
 

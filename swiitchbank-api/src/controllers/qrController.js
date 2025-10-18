@@ -1,4 +1,3 @@
-import { validationResult } from 'express-validator';
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import QrPayment from '../models/QrPayment.js';
@@ -6,10 +5,6 @@ import User from '../models/User.js';
 import Transaction from '../models/Transaction.js';
 
 export const generateQrCode = (QrCodeService) => async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
 
   const { amount, currency, recipient_id, memo, expires_in } = req.body;
 
@@ -54,10 +49,6 @@ export const generateQrCode = (QrCodeService) => async (req, res) => {
 };
 
 export const processQrCode = (QrCodeService) => async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-  }
 
   const { qr_data } = req.body;
 
@@ -105,10 +96,6 @@ export const processQrCode = (QrCodeService) => async (req, res) => {
 };
 
 export const confirmPayment = (WebhookService) => async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
 
   const { payment_id, final_amount } = req.body;
   const payerId = req.user.id;

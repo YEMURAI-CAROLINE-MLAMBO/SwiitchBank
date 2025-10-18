@@ -1,5 +1,6 @@
 import express from 'express';
-import { body } from 'express-validator';
+import { celebrate, Joi, Segments } from 'celebrate';
+import { generateQrCodeSchema, processQrCodeSchema, confirmPaymentSchema } from '../utils/validators/qrValidation.js';
 import authMiddleware from '../middleware/auth.js';
 import { generateQrCode, processQrCode, confirmPayment } from '../controllers/qrController.js';
 import QrCodeService from '../services/QrCodeService.js';
@@ -12,15 +13,8 @@ const router = express.Router();
 // @access  Private
 router.post(
   '/generate',
-  [
-    authMiddleware,
-    body('type').equals('p2p'),
-    body('amount', 'Amount is required and must be numeric').isNumeric().toFloat(),
-    body('currency', 'Currency is required').not().isEmpty(),
-    body('recipient_id', 'Recipient ID is required').isMongoId(),
-    body('expires_in', 'Expiration is required and must be an integer').isInt({ min: 60, max: 3600 }),
-    body('memo', 'Memo must be a string').optional().isString(),
-  ],
+  authMiddleware,
+  celebrate({ [Segments.BODY]: generateQrCodeSchema }),
   generateQrCode(QrCodeService)
 );
 
@@ -29,10 +23,8 @@ router.post(
 // @access  Private
 router.post(
   '/process',
-  [
-    authMiddleware,
-    body('qr_data', 'QR data is required').not().isEmpty(),
-  ],
+  authMiddleware,
+  celebrate({ [Segments.BODY]: processQrCodeSchema }),
   processQrCode(QrCodeService)
 );
 
@@ -41,16 +33,8 @@ router.post(
 // @access  Private
 router.post(
   '/confirm',
-  [
-    authMiddleware,
-    body('payment_id', 'Payment ID is required').not().isEmpty(),
-    body('final_amount').custom((value, { req }) => {
-        if (value !== undefined && typeof value !== 'number') {
-            throw new Error('Final amount must be a number');
-        }
-        return true;
-    }),
-  ],
+  authMiddleware,
+  celebrate({ [Segments.BODY]: confirmPaymentSchema }),
   confirmPayment(WebhookService)
 );
 

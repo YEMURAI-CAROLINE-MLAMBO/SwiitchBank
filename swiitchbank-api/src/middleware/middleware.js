@@ -4,7 +4,7 @@ import express from 'express';
 import { apiLimiter } from './rateLimiter.js';
 import requestCounter from './requestCounter.js';
 import { securityMiddleware } from './SecurityMiddleware.js';
-import { analyzeTransaction } from './security.js';
+import { transactionMiddleware } from './transactionMiddleware.js';
 
 export const setupMiddleware = (app) => {
   // Core Middleware
@@ -27,8 +27,5 @@ export const setupMiddleware = (app) => {
 
   // Custom Middleware
   app.use('/api/', requestCounter);
-  app.use('/api/virtual-cards', analyzeTransaction);
-  app.use('/api/wallets', analyzeTransaction);
-  app.use('/api/stripe', analyzeTransaction);
-  app.use('/api/transaction-analysis', analyzeTransaction);
+  app.use('/api/transactions', transactionMiddleware);
 };
