@@ -17,6 +17,7 @@ import transactionAnalysisRoutes from './routes/transactionAnalysis.js';
 import bridgeRoutes from './routes/bridgeRoutes.js';
 import frameworkRoutes from './routes/framework.js';
 import qrRoutes from './routes/qr.js';
+import exchangeRoutes from './routes/exchangeRoutes.js';
 import config from './config/appConfig.js';
 
 const app = express();
@@ -45,6 +46,7 @@ app.use('/api/transaction-analysis', analyzeTransaction, transactionAnalysisRout
 app.use('/api/bridge', bridgeRoutes);
 app.use('/api/framework', frameworkRoutes);
 app.use('/api/v1/qr', qrRoutes);
+app.use('/api/exchange', exchangeRoutes);
 
 // Health check with branding
 app.get('/api/health', (req, res) => {
