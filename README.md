@@ -15,7 +15,7 @@ SwiitchBank is a next-generation, AI-powered financial platform designed for a g
 -   **Richmont Brand Identity**: A sophisticated and professional user experience with a clean, modern design.
 -   **Sophia-2 AI Assistant**: An advanced AI for deep transaction analysis, personalized financial insights, and real-time advice.
 -   **Multi-Currency Accounts**: Hold, manage, and convert funds in multiple fiat currencies with real-time exchange rates.
--   **Fiat-to-Crypto Exchange**: Seamlessly convert between fiat currencies and top-tier cryptocurrencies.
+-   **Bidirectional Crypto-Fiat Exchange**: Seamlessly convert between fiat currencies and top-tier cryptocurrencies, enabling both on-ramp and off-ramp functionality.
 -   **Comprehensive Security**: A multi-layered security system featuring AI-driven risk analysis, MFA enforcement, and end-to-end encryption.
 -   **Advanced Financial Modeling**: A powerful backend engine for Monte Carlo simulations, risk analysis, and quantitative financial planning.
 -   **Autonomous Communication System**: An intelligent notification system for user alerts and system-level monitoring.

@@ -39,6 +39,40 @@ class ExchangeService {
       throw new Error('Failed to fetch exchange rate');
     }
   }
+
+  /**
+   * Converts a cryptocurrency amount to a fiat currency using the CoinAPI.io service.
+   * @param {number} amount The amount in the 'from' crypto.
+   * @param {string} fromCrypto The cryptocurrency to convert from (e.g., 'BTC').
+   * @param {string} toCurrency The fiat currency to convert to (e.g., 'USD').
+   * @returns {Promise<object>} A promise that resolves to the result of the conversion.
+   */
+  static async convertCryptoToFiat(amount, fromCrypto, toCurrency) {
+    const url = `https://rest.coinapi.io/v1/exchangerate/${fromCrypto}/${toCurrency}`;
+
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          'X-CoinAPI-Key': COINAPI_KEY,
+        },
+      });
+
+      const rate = response.data.rate;
+      const fiatAmount = amount * rate;
+
+      return {
+        from: fromCrypto,
+        to: toCurrency,
+        amount: amount,
+        fiatAmount: fiatAmount,
+        rate: rate,
+        timestamp: new Date(),
+      };
+    } catch (error) {
+      console.error('Error fetching exchange rate from CoinAPI:', error);
+      throw new Error('Failed to fetch exchange rate');
+    }
+  }
 }
 
 export default ExchangeService;
