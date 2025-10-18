@@ -1,112 +1,123 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 
-// Initialize Firebase Admin SDK (if not already initialized elsewhere)
-// admin.initializeApp();
+// Initialize Admin SDK if not already done
+if (admin.apps.length === 0) {
+  admin.initializeApp();
+}
+
+const db = admin.firestore();
 
 /**
- * Enforces Multi-Factor Authentication (MFA) for users.
- * This is a placeholder function. The actual implementation would involve
- * checking user's MFA status and potentially blocking access or prompting for setup.
- * @param userId The ID of the user to check.
+ * A callable function that checks if the calling user has MFA enabled.
+ * Throws a 'failed-precondition' error if MFA is not set up.
  */
 export const enforceMFA = functions.https.onCall(async (data, context) => {
-  const userId = context.auth?.uid;
-
-  if (!userId) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated to enforce MFA.');
+  if (!context.auth?.uid) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
   }
+  const userId = context.auth.uid;
 
   try {
     const userRecord = await admin.auth().getUser(userId);
+    const isMfaEnabled = userRecord.multiFactor?.enrolledFactors.length > 0;
 
-    if (!userRecord.multiFactor || userRecord.multiFactor.enrolledFactors.length === 0) {
-      // User does not have MFA enrolled. Implement your logic here,
-      // e.g., throw an error, redirect to setup, etc.
-      functions.logger.log(`MFA not enforced for user: ${userId}`);
-      // Example: throw an error requiring MFA setup
-      // throw new functions.https.HttpsError('failed-precondition', 'Multi-factor authentication is required.');
-    } else {
-      functions.logger.log(`MFA enforced for user: ${userId}`);
+    if (!isMfaEnabled) {
+      functions.logger.warn(`MFA is not enabled for user ${userId}. Access denied for sensitive operation.`);
+      throw new functions.https.HttpsError(
+        'failed-precondition',
+        'Multi-factor authentication is required for this action. Please set up MFA in your security settings.'
+      );
     }
 
-    return { status: 'success', message: 'MFA check performed.' };
-
+    functions.logger.info(`MFA verified for user ${userId}.`);
+    return { status: 'success', mfaVerified: true };
   } catch (error) {
-    functions.logger.error('Error enforcing MFA:', error);
-    throw new functions.https.HttpsError('internal', 'Unable to perform MFA check.');
+    functions.logger.error(`Error during MFA check for user ${userId}:`, error);
+    if (error instanceof functions.https.HttpsError) {
+      throw error;
+    }
+    throw new functions.https.HttpsError('internal', 'An unexpected error occurred during MFA verification.');
   }
 });
 
 /**
- * Monitors user authentication attempts for suspicious activity.
- * This is a placeholder function. The actual implementation would involve
- * logging failed attempts, analyzing patterns, and potentially triggering alerts or blocks.
- * @param email The email of the user attempting to authenticate.
- * @param success Whether the authentication attempt was successful.
- * @param ipAddress The IP address of the user.
+ * Logs authentication attempts and detects potential brute-force attacks.
+ * This function should be called from the backend after a login attempt.
  */
-export const monitorAuthAttempts = functions.https.onCall(async (data, context) => {
-  const { email, success, ipAddress } = data;
+export async function monitorAuthAttempt(email: string, ipAddress: string, success: boolean) {
+  const now = admin.firestore.Timestamp.now();
+  const attemptRef = db.collection('authAttempts').doc();
 
-  if (!email || success === undefined || !ipAddress) {
-    throw new functions.https.HttpsError('invalid-argument', 'Missing required authentication attempt data.');
+  await attemptRef.set({
+    email,
+    ipAddress,
+    success,
+    timestamp: now,
+  });
+
+  // Brute-force detection logic
+  const recentFailedAttempts = await db.collection('authAttempts')
+    .where('email', '==', email)
+    .where('success', '==', false)
+    .where('timestamp', '>', new admin.firestore.Timestamp(now.seconds - 3600, 0)) // Last hour
+    .get();
+
+  const FAILED_ATTEMPTS_THRESHOLD = 10;
+  if (recentFailedAttempts.size > FAILED_ATTEMPTS_THRESHOLD) {
+    functions.logger.warn(`Potential brute-force attack detected for email: ${email} from IP: ${ipAddress}.`);
+    // Lock the account temporarily
+    const user = await admin.auth().getUserByEmail(email).catch(() => null);
+    if (user && !user.disabled) {
+      await admin.auth().updateUser(user.uid, { disabled: true });
+      functions.logger.error(`Account for ${email} has been temporarily disabled due to suspicious activity.`);
+      // In a real app, you would also trigger a notification to the user and admin.
+    }
   }
+}
 
-  functions.logger.log(`Auth attempt for ${email} from ${ipAddress}. Success: ${success}`);
+/**
+ * Creates a session cookie for the authenticated user.
+ * This is typically called after a successful login on the client-side.
+ */
+export const createSessionCookie = functions.https.onCall(async (data, context) => {
+  if (!context.auth?.token) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated with an ID token.');
+  }
+  const idToken = context.auth.token;
 
-  // Implement logic to monitor and analyze authentication attempts.
-  // This could involve storing attempts in a database, checking for brute force, etc.
-  // Example:
-  // await admin.firestore().collection('authAttempts').add({
-  //   email: email,
-  //   success: success,
-  //   ipAddress: ipAddress,
-  //   timestamp: admin.firestore.FieldValue.serverTimestamp()
-  // });
-
-  return { status: 'success', message: 'Authentication attempt logged.' };
+  // Set session expiration to 2 weeks.
+  const expiresIn = 60 * 60 * 24 * 14 * 1000;
+  try {
+    const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn });
+    functions.logger.info(`Session cookie created for user ${context.auth.uid}.`);
+    return { status: 'success', cookie: sessionCookie };
+  } catch (error) {
+    functions.logger.error(`Error creating session cookie for user ${context.auth.uid}:`, error);
+    throw new functions.https.HttpsError('internal', 'Failed to create session.');
+  }
 });
 
 /**
- * Manages user sessions, including session creation, validation, and termination.
- * This is a placeholder function. The actual implementation would involve
- * using Firebase Authentication session management features or custom session tokens.
- * @param action The action to perform (e.g., 'create', 'validate', 'terminate').
- * @param sessionId (Optional) The ID of the session to manage.
+ * Revokes all refresh tokens for a given user, effectively logging them out everywhere.
  */
-export const manageSessions = functions.https.onCall(async (data, context) => {
-  const { action, sessionId } = data;
-  const userId = context.auth?.uid;
-
-  if (!userId) {
-    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated to manage sessions.');
+export const revokeAllUserSessions = functions.https.onCall(async (data, context) => {
+  if (!context.auth?.uid) {
+    throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated.');
   }
+  const userId = context.auth.uid;
 
-  switch (action) {
-    case 'create':
-      // Implement session creation logic.
-      // This might involve generating a custom token or using Firebase Auth session cookies.
-      functions.logger.log(`Creating session for user: ${userId}`);
-      return { status: 'success', message: 'Session creation logic would go here.' };
+  try {
+    await admin.auth().revokeRefreshTokens(userId);
+    const userRecord = await admin.auth().getUser(userId);
+    // Update a metadata field to track the revocation
+    const revocationTimestamp = Math.floor(new Date().getTime() / 1000);
+    await admin.auth().setCustomUserClaims(userId, { ...userRecord.customClaims, iat: revocationTimestamp });
 
-    case 'validate':
-      if (!sessionId) {
-        throw new functions.https.HttpsError('invalid-argument', 'Session ID is required for validation.');
-      }
-      // Implement session validation logic.
-      functions.logger.log(`Validating session ${sessionId} for user: ${userId}`);
-      return { status: 'success', message: 'Session validation logic would go here.' };
-
-    case 'terminate':
-      if (!sessionId) {
-        throw new functions.https.HttpsError('invalid-argument', 'Session ID is required for termination.');
-      }
-      // Implement session termination logic.
-      functions.logger.log(`Terminating session ${sessionId} for user: ${userId}`);
-      return { status: 'success', message: 'Session termination logic would go here.' };
-
-    default:
-      throw new functions.https.HttpsError('invalid-argument', 'Invalid session action provided.');
+    functions.logger.info(`All sessions revoked for user ${userId}.`);
+    return { status: 'success', message: 'All active sessions have been terminated.' };
+  } catch (error) {
+    functions.logger.error(`Error revoking sessions for user ${userId}:`, error);
+    throw new functions.https.HttpsError('internal', 'Failed to revoke sessions.');
   }
 });

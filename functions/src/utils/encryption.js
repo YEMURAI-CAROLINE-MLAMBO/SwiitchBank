@@ -24,6 +24,7 @@ function encrypt(text, key) {
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return `${iv.toString('hex')}:${encrypted.toString('hex')}`;
   } catch (error) {
+    console.error("Encryption error:", error);
     throw new Error(`Encryption failed: ${error.message}`);
   }
 }
@@ -32,7 +33,7 @@ function encrypt(text, key) {
  * Decrypts text that was encrypted with the encrypt function.
  *
  * @param {string} text The encrypted text ('iv:encryptedData').
- *p * @param {Buffer} key The encryption key, which must be 32 bytes long.
+ * @param {Buffer} key The encryption key, which must be 32 bytes long.
  * @returns {string} The decrypted text.
  * @throws {Error} If decryption fails.
  */
@@ -46,14 +47,22 @@ function decrypt(text, key) {
     if (parts.length !== 2) {
       throw new Error('Invalid encrypted text format. Expected "iv:encryptedData".');
     }
+
     const iv = Buffer.from(parts.shift(), 'hex');
+    if (iv.length !== IV_LENGTH) {
+      throw new Error('Invalid IV length.');
+    }
+
     const encryptedText = Buffer.from(parts.join(':'), 'hex');
     const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString('utf8');
   } catch (error) {
-    throw new Error(`Decryption failed: ${error.message}`);
+    console.error("Decryption error:", error);
+    // In a real application, you might want to avoid leaking details about why decryption failed.
+    // For example, return a generic error instead of error.message.
+    throw new Error('Decryption failed. The data may be corrupt or the key incorrect.');
   }
 }
 

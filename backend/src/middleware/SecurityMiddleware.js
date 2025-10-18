@@ -1,8 +1,9 @@
 import { InputSanitizer } from '../security/InputSanitizer.js';
 
 export const securityMiddleware = (req, res, next) => {
-  req.body = InputSanitizer.sanitizeInput(req.body);
-  req.query = InputSanitizer.sanitizeInput(req.query);
-  req.params = InputSanitizer.sanitizeInput(req.params);
+  const sanitizer = req.app.get('sanitizer') || InputSanitizer;
+  req.body = sanitizer.sanitizeInput(req.body);
+  req.query = sanitizer.sanitizeInput(req.query);
+  req.params = sanitizer.sanitizeInput(req.params);
   next();
 };

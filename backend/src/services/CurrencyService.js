@@ -1,163 +1,189 @@
+import mongoose from 'mongoose';
+import User from '../models/User.js';
+import Account from '../models/Account.js';
 import ExchangeRate from '../models/ExchangeRate.js';
 import CacheService from './CacheService.js';
-import Transaction from '../models/Transaction.js';
+
+// A mock API client for fetching exchange rates
+const ExchangeRateApiClient = {
+  async fetch(base, targets) {
+    console.log(`Simulating API call to fetch rates for base ${base} against ${targets.join(',')}`);
+    // In a real app, this would be an axios call to a real API like Fixer.io or Open Exchange Rates
+    const mockRates = {
+      USD: 1.0,
+      EUR: 1.08,
+      GBP: 1.25,
+      JPY: 0.0067,
+      AUD: 0.66,
+      CAD: 0.73,
+    };
+
+    const results = {};
+    for (const target of targets) {
+      if (base === target) {
+        results[target] = 1;
+        continue;
+      }
+      const rate = (mockRates[target] || 1) / (mockRates[base] || 1);
+      const fluctuation = 1 + (Math.random() - 0.5) * 0.02; // +/- 1%
+      results[target] = rate * fluctuation;
+    }
+    return results;
+  }
+};
 
 class CurrencyService {
   /**
-   * REAL-TIME EXCHANGE RATES
+   * Fetches the exchange rate for a single currency pair.
+   * Caches the result for 5 minutes.
    */
   async getExchangeRate(baseCurrency, targetCurrency) {
-    const cacheKey = `fx:${baseCurrency}:${targetCurrency}`;
+    if (baseCurrency === targetCurrency) return 1;
 
-    // Check cache first
+    const cacheKey = `fx:${baseCurrency}:${targetCurrency}`;
     const cached = await CacheService.get(cacheKey);
     if (cached) return cached;
 
-    // Fetch from external API (placeholder)
-    const rate = await this.fetchLiveRate(baseCurrency, targetCurrency);
+    const rates = await ExchangeRateApiClient.fetch(baseCurrency, [targetCurrency]);
+    const rate = rates[targetCurrency];
 
-    // Cache for 5 minutes
-    await CacheService.set(cacheKey, rate, 300);
+    if (!rate) {
+      throw new Error(`Could not retrieve exchange rate for ${baseCurrency} to ${targetCurrency}`);
+    }
 
-    // Store in database for historical tracking
+    await CacheService.set(cacheKey, rate, 300); // Cache for 5 minutes
+
+    // Log historical rate
     await ExchangeRate.create({
       baseCurrency,
       targetCurrency,
       rate,
-      source: 'fixer' // Placeholder source
+      source: 'simulated-api'
     });
 
     return rate;
   }
 
-  // Placeholder for fetching live rate from an external API
-  async fetchLiveRate(baseCurrency, targetCurrency) {
-    console.log(`Fetching mock live rate for ${baseCurrency} to ${targetCurrency}`);
-    if (baseCurrency === targetCurrency) return 1;
-
-    // Simulate some variability
-    const baseRates = {
-      USD: 1.0,
-      EUR: 1.08,
-      GBP: 1.25,
-      JPY: 0.0067,
+  /**
+   * Converts a single amount between two currencies.
+   */
+  async convertAmount(amount, fromCurrency, toCurrency) {
+    const rate = await this.getExchangeRate(fromCurrency, toCurrency);
+    return {
+      originalAmount: amount,
+      convertedAmount: amount * rate,
+      fromCurrency,
+      toCurrency,
+      rate,
     };
-
-    const rate = (baseRates[targetCurrency] || 1) / (baseRates[baseCurrency] || 1);
-    // Add a small random fluctuation to simulate a live market
-    const fluctuation = 1 + (Math.random() - 0.5) * 0.02; // +/- 1%
-
-    return rate * fluctuation;
   }
 
-  async getExchangeRates(baseCurrency, symbols) {
-    const rates = {};
-    for (const symbol of symbols) {
-        rates[symbol] = await this.getExchangeRate(baseCurrency, symbol);
+  /**
+   * Calculates the total net worth of a user across all their currency accounts.
+   *
+   * @param {string} userId - The ID of the user.
+   * @returns {object} An object containing the total net worth, a breakdown by currency,
+   *                   the user's base currency, and the last updated timestamp.
+   */
+  async calculateMultiCurrencyNetWorth(userId) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
     }
+    const baseCurrency = user.personalization.currency || 'USD';
+
+    // Fetch all accounts for the user
+    const accounts = await Account.find({ userId });
+
+    if (accounts.length === 0) {
+      return {
+        totalNetWorth: 0,
+        currencyBreakdown: [],
+        baseCurrency,
+        lastUpdated: new Date(),
+      };
+    }
+
+    // Get unique currencies from accounts
+    const currencies = [...new Set(accounts.map(acc => acc.currency))];
+
+    // Fetch all required exchange rates in one go
+    const rates = await this.getMultipleExchangeRates(currencies, baseCurrency);
+
+    let totalNetWorth = 0;
+    const currencyBreakdown = [];
+
+    // Calculate total balance for each currency and convert to base currency
+    for (const currency of currencies) {
+      const accountsInCurrency = accounts.filter(acc => acc.currency === currency);
+      const totalBalance = accountsInCurrency.reduce((sum, acc) => sum + acc.balance, 0);
+
+      const rate = rates[currency];
+      const valueInBaseCurrency = totalBalance * rate;
+
+      totalNetWorth += valueInBaseCurrency;
+
+      currencyBreakdown.push({
+        currency,
+        totalBalance,
+        valueInBaseCurrency,
+        rate,
+      });
+    }
+
+    return {
+      totalNetWorth,
+      currencyBreakdown,
+      baseCurrency,
+      lastUpdated: new Date(),
+    };
+  }
+
+  /**
+   * Fetches multiple exchange rates relative to a single base currency.
+   */
+  async getMultipleExchangeRates(targetCurrencies, baseCurrency) {
+    const rates = {};
+    const missingFromCache = [];
+
+    // Check cache for each currency
+    for (const target of targetCurrencies) {
+      if (target === baseCurrency) {
+        rates[target] = 1;
+        continue;
+      }
+      const cacheKey = `fx:${baseCurrency}:${target}`;
+      const cachedRate = await CacheService.get(cacheKey);
+      if (cachedRate) {
+        rates[target] = cachedRate;
+      } else {
+        missingFromCache.push(target);
+      }
+    }
+
+    // Fetch missing rates from the API
+    if (missingFromCache.length > 0) {
+      const fetchedRates = await ExchangeRateApiClient.fetch(baseCurrency, missingFromCache);
+      for (const target of missingFromCache) {
+        const rate = fetchedRates[target];
+        if (rate) {
+          rates[target] = rate;
+          const cacheKey = `fx:${baseCurrency}:${target}`;
+          await CacheService.set(cacheKey, rate, 300); // Cache for 5 minutes
+          await ExchangeRate.create({ baseCurrency, targetCurrency: target, rate, source: 'simulated-api' });
+        }
+      }
+    }
+
     return rates;
   }
 
   /**
-   * CONVERT AMOUNTS ACROSS CURRENCIES
+   * Retrieves the user's preferred base currency.
    */
-  async convertAmount(amount, fromCurrency, toCurrency, date = new Date()) {
-    const rate = await this.getExchangeRate(fromCurrency, toCurrency);
-    const converted = amount * rate;
-
-    return {
-      original: { amount, currency: fromCurrency },
-      converted: { amount: converted, currency: toCurrency },
-      rate,
-      timestamp: date
-    };
-  }
-
-  /**
-   * BATCH CONVERSION FOR PERFORMANCE
-   */
-  async convertMultipleAmounts(conversions) {
-    // Group by currency pairs for efficient API calls
-    const currencyPairs = [...new Set(
-      conversions.map(c => `${c.fromCurrency}_${c.toCurrency}`)
-    )];
-
-    // Fetch all rates in parallel
-    const ratePromises = currencyPairs.map(pair => {
-      const [from, to] = pair.split('_');
-      return this.getExchangeRate(from, to);
-    });
-
-    const rates = await Promise.all(ratePromises);
-    const rateMap = Object.fromEntries(
-      currencyPairs.map((pair, i) => [pair, rates[i]])
-    );
-
-    // Convert all amounts
-    return conversions.map(conv => {
-      const rate = rateMap[`${conv.fromCurrency}_${conv.toCurrency}`];
-      return {
-        ...conv,
-        convertedAmount: conv.amount * rate,
-        rate
-      };
-    });
-  }
-
-  /**
-   * MULTI-CURRENCY PORTFOLIO AGGREGATION
-   */
-  async calculateMultiCurrencyNetWorth(userId) {
-    // FLAWED LOGIC: This is a placeholder implementation.
-    // Net worth should be calculated from account balances, not transaction history.
-    // Using Transaction model as a stand-in for the missing Account model.
-    const transactions = await Transaction.find({ marqetaUserToken: userId });
-
-    if (!transactions || transactions.length === 0) {
-      return {
-        totalNetWorth: 0,
-        currencyBreakdown: [],
-        baseCurrency: await this.getUserBaseCurrency(userId),
-        lastUpdated: new Date()
-      };
-    }
-
-    const amountsByCurrency = transactions.reduce((acc, tx) => {
-      const currency = tx.originalCurrency || tx.currency;
-      const amount = tx.originalAmount || tx.amount;
-      if (acc[currency]) {
-        acc[currency] += amount;
-      } else {
-        acc[currency] = amount;
-      }
-      return acc;
-    }, {});
-
-    const baseCurrency = await this.getUserBaseCurrency(userId);
-    const conversions = Object.keys(amountsByCurrency).map(currency => ({
-      amount: amountsByCurrency[currency],
-      fromCurrency: currency,
-      toCurrency: baseCurrency
-    }));
-
-    const convertedBalances = await this.convertMultipleAmounts(conversions);
-
-    const totalNetWorth = convertedBalances.reduce(
-      (sum, conv) => sum + conv.convertedAmount, 0
-    );
-
-    return {
-      totalNetWorth,
-      currencyBreakdown: convertedBalances,
-      baseCurrency: await this.getUserBaseCurrency(userId),
-      lastUpdated: new Date()
-    };
-  }
-
   async getUserBaseCurrency(userId) {
-      // Helper to get user's base currency
-      // This would typically involve fetching the User model
-      return 'USD';
+    const user = await User.findById(mongoose.Types.ObjectId(userId));
+    return user ? user.personalization.currency : 'USD';
   }
 }
 
