@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { jest, describe, it, expect, beforeEach } from '@jest/globals';
+import bcrypt from 'bcryptjs';
 
 process.env.JWT_SECRET = 'test-secret';
 
@@ -34,27 +35,22 @@ jest.unstable_mockModule('../src/models/User.js', () => {
   return { default: User };
 });
 
-jest.unstable_mockModule('bcryptjs', () => ({
-  compare: jest.fn(),
-  genSalt: jest.fn(),
-  hash: jest.fn(),
-}));
-
 const { default: app } = await import('../src/app.js');
 const { default: User } = await import('../src/models/User.js');
-const bcrypt = await import('bcryptjs');
 
 describe('Auth Endpoints', () => {
 
   beforeEach(() => {
     User.findOne.mockClear();
     User.create.mockClear();
-    bcrypt.compare.mockClear();
+    jest.clearAllMocks();
   });
 
   describe('POST /api/auth/register', () => {
     it('should register a new user', async () => {
       User.findOne.mockResolvedValue(null);
+      jest.spyOn(bcrypt, 'genSalt').mockResolvedValue('salt');
+      jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedpassword');
 
       const res = await request(app)
         .post('/api/auth/register')
@@ -97,7 +93,7 @@ describe('Auth Endpoints', () => {
         password: 'hashedpassword',
       };
       User.findOne.mockResolvedValue(mockUser);
-      bcrypt.compare.mockResolvedValue(true);
+      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true);
 
       const res = await request(app)
         .post('/api/auth/login')
@@ -116,7 +112,7 @@ describe('Auth Endpoints', () => {
         password: 'hashedpassword',
       };
       User.findOne.mockResolvedValue(mockUser);
-      bcrypt.compare.mockResolvedValue(false);
+      jest.spyOn(bcrypt, 'compare').mockResolvedValue(false);
 
       const res = await request(app)
         .post('/api/auth/login')

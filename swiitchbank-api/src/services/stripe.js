@@ -1,49 +1,55 @@
-import stripe from 'stripe';
+import Stripe from 'stripe';
+import dotenv from 'dotenv';
 
-const getStripeClient = () => {
-  return stripe(process.env.STRIPE_API_KEY);
-};
+dotenv.config();
 
-/**
- * Create a new customer in Stripe.
- * @param {string} email - The customer's email address.
- * @param {string} name - The customer's full name.
- * @returns {object} The created customer object.
- */
-export const createCustomer = async (email, name) => {
-  try {
-    const stripeClient = getStripeClient();
-    const customer = await stripeClient.customers.create({
-      email,
-      name,
-    });
-    return customer;
-  } catch (error) {
-    console.error('Error creating Stripe customer:', error);
-    throw error;
-  }
-};
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 /**
- * Process a payment using Stripe.
- * @param {number} amount - The payment amount in cents.
- * @param {string} currency - The currency of the payment.
- * @param {string} source - The payment source (e.g., a card token).
- * @param {string} description - A description of the payment.
- * @returns {object} The created charge object.
+ * Create a payment intent with a specified amount and currency
+ * @param {number} amount - The amount to charge
+ * @param {string} currency - The currency to charge in
+ * @returns {Promise<object>} - The payment intent object
  */
-export const createCharge = async (amount, currency, source, description) => {
+export const createPaymentIntent = async (amount, currency) => {
   try {
-    const stripeClient = getStripeClient();
-    const charge = await stripeClient.charges.create({
+    const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency,
-      source,
-      description,
     });
-    return charge;
+    return paymentIntent;
   } catch (error) {
-    console.error('Error creating Stripe charge:', error);
-    throw error;
+    throw new Error(`Error creating payment intent: ${error.message}`);
   }
+};
+
+/**
+ * Handle incoming Stripe webhooks
+ * @param {object} req - The request object
+ * @param {object} res - The response object
+ * @returns {Promise<void>}
+ */
+export const handleWebhook = async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, process.env.WEBHOOK_SECRET);
+  } catch (err) {
+    res.status(400).send(`Webhook Error: ${err.message}`);
+    return;
+  }
+
+  // Handle the event
+  switch (event.type) {
+    case 'payment_intent.succeeded':
+      const paymentIntent = event.data.object;
+      console.log('PaymentIntent was successful!', paymentIntent);
+      // Fulfill the purchase
+      break;
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  res.json({ received: true });
 };

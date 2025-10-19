@@ -36,7 +36,17 @@ app.use('/api/framework', frameworkRoutes);
 app.use('/api/v1/qr', qrRoutes);
 app.use('/api/exchange', exchangeRoutes);
 app.use('/api/payments', paymentRoutes);
+import stripeRoutes from './routes/stripe.js';
 app.use('/api/moonpay', moonpayRoutes);
+import dashboardRoutes from './routes/dashboard.js';
+app.use('/api/stripe', stripeRoutes);
+import userRoutes from './routes/user.js';
+app.use('/api/dashboard', dashboardRoutes);
+import referralRoutes from './routes/referral.js';
+app.use('/api/user', userRoutes);
+import settingsRoutes from './routes/settings.js';
+app.use('/api/referral', referralRoutes);
+app.use('/api/settings', settingsRoutes);
 app.use('/api/tickets', ticketRoutes);
 
 // Health check with branding

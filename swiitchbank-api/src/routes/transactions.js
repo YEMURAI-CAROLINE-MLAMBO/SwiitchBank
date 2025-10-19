@@ -5,10 +5,14 @@ import { celebrate, Joi, Segments } from 'celebrate';
 import { topupVirtualCardSchema, withdrawVirtualCardSchema, topupWalletSchema, transferFundsSchema, createChargeSchema } from '../utils/validators/transactionValidation.js';
 import * as virtualCardController from '../controllers/virtualCardController.js';
 import * as walletController from '../controllers/walletController.js';
-import * as stripeController from '../controllers/stripeController.js';
+import { createPaymentIntentController } from '../controllers/stripeController.js';
 import * as transactionAnalysisController from '../controllers/transactionAnalysisController.js';
+import { getTransactionsController } from '../controllers/transactionController.js';
 
 router.use(authMiddleware);
+
+// Get all transactions
+router.get('/', getTransactionsController);
 
 // Virtual Card Transactions
 router.post('/virtual-cards/:cardId/topup',
@@ -34,7 +38,7 @@ router.post('/wallets/:fromWalletId/transfer/:toWalletId',
 // Stripe Transactions
 router.post('/stripe/charges',
   celebrate({ [Segments.BODY]: createChargeSchema }),
-  stripeController.createCharge
+  createPaymentIntentController
 );
 
 // Transaction Analysis

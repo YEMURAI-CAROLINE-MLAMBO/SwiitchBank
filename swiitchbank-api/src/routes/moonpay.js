@@ -1,5 +1,5 @@
 import express from 'express';
-import * as moonpayController from '../controllers/moonpayController.js';
+import { getSupportedCurrenciesController, getQuoteController } from '../controllers/moonpayController.js';
 import auth from '../middleware/auth.js';
 
 const router = express.Router();
@@ -28,6 +28,47 @@ router.use(auth);
  *       500:
  *         description: Internal server error
  */
-router.get('/currencies', moonpayController.getCurrencies);
+router.get('/currencies', getSupportedCurrenciesController);
+
+/**
+ * @swagger
+ * /api/moonpay/quote:
+ *   get:
+ *     summary: Get a quote for a cryptocurrency purchase from MoonPay
+ *     tags: [MoonPay]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: baseCurrencyCode
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The cryptocurrency to buy (e.g., 'btc')
+ *       - in: query
+ *         name: quoteCurrencyCode
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The fiat currency to pay with (e.g., 'usd')
+ *       - in: query
+ *         name: baseCurrencyAmount
+ *         schema:
+ *           type: number
+ *         required: true
+ *         description: The amount of cryptocurrency to buy
+ *     responses:
+ *       200:
+ *         description: The quote for the transaction
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/quote', getQuoteController);
 
 export default router;
