@@ -1,20 +1,26 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (input.trim() === '') return;
 
-    // Add user's message to the chat
-    setMessages([...messages, { text: input, sender: 'user' }]);
+    const userMessage = { text: input, sender: 'user' };
+    setMessages([...messages, userMessage]);
 
-    // TODO: Send the message to the Sophia-2 AI and get a response
-    // For now, we'll just simulate a response
-    setTimeout(() => {
-      setMessages(prevMessages => [...prevMessages, { text: `Sophia-2 AI: I received your message: "${input}"`, sender: 'sophia' }]);
-    }, 1000);
+    try {
+      const { data } = await axios.post('/api/sophia/chat', {
+        message: input,
+      });
+      const sophiaMessage = { text: data.response, sender: 'sophia' };
+      setMessages(prevMessages => [...prevMessages, userMessage, sophiaMessage]);
+    } catch (error) {
+      const errorMessage = { text: 'Error: Could not connect to Sophia-2 AI', sender: 'sophia' };
+      setMessages(prevMessages => [...prevMessages, userMessage, errorMessage]);
+    }
 
     setInput('');
   };

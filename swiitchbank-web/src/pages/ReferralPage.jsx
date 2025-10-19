@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
-
-// In a real application, you would use a hook to get the authenticated user's data.
-// For example: import { useAuth } from '../context/AuthContext';
-// const { user } = useAuth();
-// For this example, we'll simulate fetching user data.
-const getSimulatedUserData = async () => {
-  return Promise.resolve({
-    name: 'Alex Doe',
-    referralCode: 'ALEXD2024',
-    referralLink: 'https://swiitchbank.com/signup?ref=ALEXD2024',
-  });
-};
+import axios from 'axios';
 
 const ReferralPage = () => {
   const [userData, setUserData] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    getSimulatedUserData().then(data => setUserData(data));
+    const fetchReferralCode = async () => {
+      try {
+        const { data } = await axios.get('/api/referral/code');
+        setUserData(data);
+      } catch (error) {
+        setError('Error fetching referral code');
+      }
+    };
+    fetchReferralCode();
   }, []);
 
   const handleShare = async () => {
@@ -32,7 +30,6 @@ const ReferralPage = () => {
         console.error('Error sharing:', error);
       }
     } else {
-      // Fallback for browsers that do not support the Web Share API
       handleCopy();
     }
   };
@@ -41,9 +38,13 @@ const ReferralPage = () => {
     if (userData) {
       navigator.clipboard.writeText(userData.referralLink);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+      setTimeout(() => setCopied(false), 2000);
     }
   };
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!userData) {
     return <div>Loading your referral information...</div>;

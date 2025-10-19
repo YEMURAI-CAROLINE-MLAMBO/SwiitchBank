@@ -1,32 +1,31 @@
-import * as stripeService from '../services/stripe.js';
+import { createPaymentIntent, handleWebhook } from '../services/stripe.js';
 
-export const createCustomer = async (req, res) => {
-
-  const { email, name } = req.body;
-
+/**
+ * Create a payment intent
+ * @param {object} req - The request object
+ * @param {object} res - The response object
+ * @returns {Promise<void>}
+ */
+export const createPaymentIntentController = async (req, res) => {
+  const { amount, currency } = req.body;
   try {
-    const customer = await stripeService.createCustomer(email, name);
-    res.json(customer);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    const paymentIntent = await createPaymentIntent(amount, currency);
+    res.status(200).json({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
-export const createCharge = async (req, res) => {
-
-  const { amount, currency, source, description } = req.body;
-
+/**
+ * Handle incoming Stripe webhooks
+ * @param {object} req - The request object
+ * @param {object} res - The response object
+ * @returns {Promise<void>}
+ */
+export const handleWebhookController = async (req, res) => {
   try {
-    const charge = await stripeService.createCharge(
-      amount,
-      currency,
-      source,
-      description
-    );
-    res.json(charge);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    await handleWebhook(req, res);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

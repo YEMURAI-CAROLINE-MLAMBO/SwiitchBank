@@ -15,6 +15,8 @@ import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
 import OnboardingPage from './pages/OnboardingPage';
 import CreateTicketPage from './pages/CreateTicketPage';
+import CheckoutPage from './pages/CheckoutPage';
+import MoonPayPage from './pages/MoonPayPage';
 import SecurityDashboard from './components/SecurityDashboard';
 import ExecutionDashboard from './components/ExecutionDashboard';
 
@@ -39,6 +41,8 @@ function App() {
               <Route path="security" element={<SecurityDashboard />} />
               <Route path="execution-dashboard" element={<ExecutionDashboard />} />
               <Route path="create-ticket" element={<CreateTicketPage />} />
+              <Route path="checkout" element={<CheckoutPage />} />
+              <Route path="moonpay" element={<MoonPayPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
