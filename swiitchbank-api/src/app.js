@@ -1,5 +1,6 @@
 import express from 'express';
 import { setupMiddleware } from './middleware/middleware.js';
+import { errors } from 'celebrate';
 import authRoutes from './routes/auth.js';
 import accountRoutes from './routes/accounts.js';
 import sophiaRoutes from './routes/sophia.js';
@@ -10,6 +11,7 @@ import qrRoutes from './routes/qr.js';
 import exchangeRoutes from './routes/exchangeRoutes.js';
 import paymentRoutes from './routes/payments.js';
 import moonpayRoutes from './routes/moonpay.js';
+import ticketRoutes from './routes/ticketRoutes.js';
 import config from './config/config.js';
 
 const app = express();
@@ -35,6 +37,7 @@ app.use('/api/v1/qr', qrRoutes);
 app.use('/api/exchange', exchangeRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/moonpay', moonpayRoutes);
+app.use('/api/tickets', ticketRoutes);
 
 // Health check with branding
 app.get('/api/health', (req, res) => {
@@ -46,5 +49,8 @@ app.get('/api/health', (req, res) => {
     version: '1.0.0'
   });
 });
+
+// Celebrate error handler
+app.use(errors());
 
 export default app;

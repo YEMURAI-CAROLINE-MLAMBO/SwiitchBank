@@ -14,6 +14,7 @@ import ReferralPage from './pages/ReferralPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
 import OnboardingPage from './pages/OnboardingPage';
+import CreateTicketPage from './pages/CreateTicketPage';
 import SecurityDashboard from './components/SecurityDashboard';
 import ExecutionDashboard from './components/ExecutionDashboard';
 
@@ -37,6 +38,7 @@ function App() {
               <Route path="profile" element={<ProfilePage />} />
               <Route path="security" element={<SecurityDashboard />} />
               <Route path="execution-dashboard" element={<ExecutionDashboard />} />
+              <Route path="create-ticket" element={<CreateTicketPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
