@@ -41,7 +41,7 @@ SwiitchBank is a next-generation, AI-powered financial platform designed for a g
 
 -   **/backend**: The core Node.js/Express API, services, models, and business logic.
 -   **/frontend**: The React web application.
--   **/lib**: The Flutter mobile application.
+-   **/swiitchbank-mobile**: The Flutter mobile application.
 -   **/functions**: Serverless Firebase Functions written in TypeScript.
 -   **/cli**: The command-line interface for power users.
 -   **/.env.example**: A master template of all required environment variables.
@@ -77,38 +77,23 @@ cp ../.env.example .env
 
 2.  **Install All Dependencies**:
     ```bash
-    # From the root directory
-    npm install
-    npm --prefix backend install
-    npm --prefix frontend install
-    npm --prefix functions install
-    npm --prefix cli install
+    ./setup.sh
     ```
 
-3.  **Run the Backend Server**:
+3.  **Run All Services**:
     ```bash
-    # From the root directory
-    npm --prefix backend run dev
+    ./start.sh
     ```
 
-4.  **Run the Frontend App**:
+4.  **Stop All Services**:
     ```bash
-    # From the root directory
-    npm --prefix frontend start
+    ./stop.sh
     ```
 
-5.  **Run the Firebase Emulators (for functions)**:
+5.  **Run All Tests**:
     ```bash
-    # From the root directory
-    firebase emulators:start --only functions,auth
+    ./test.sh
     ```
-
-6.  **Run the Flutter App (Mobile)**:
-    -   Ensure you have a running emulator or a connected device.
-    -   From the root directory, run:
-        ```bash
-        flutter run
-        ```
 
 ## Command-Line Interface (CLI)
 
