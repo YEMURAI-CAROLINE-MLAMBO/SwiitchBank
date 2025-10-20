@@ -2,9 +2,12 @@
 set -e
 
 echo "Running backend tests..."
-npm --prefix backend test
+./backend/scripts/test.sh
 
 echo "Running frontend tests..."
-npm --prefix frontend test -- --watchAll=false
+./frontend/scripts/test.sh
+
+echo "Running mobile tests..."
+./swiitchbank-mobile/scripts/test.sh
 
 echo "All tests complete!"

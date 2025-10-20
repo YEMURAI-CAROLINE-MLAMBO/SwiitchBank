@@ -2,10 +2,13 @@
 set -e
 
 echo "Starting backend..."
-npm --prefix backend run dev &
+./backend/scripts/start.sh &
 
 echo "Starting frontend..."
-npm --prefix frontend start &
+./frontend/scripts/start.sh &
+
+echo "Starting mobile..."
+./swiitchbank-mobile/scripts/start.sh &
 
 echo "Starting Firebase emulators..."
 firebase emulators:start --only functions,auth &

@@ -5,10 +5,13 @@ echo "Installing root dependencies..."
 npm install
 
 echo "Installing backend dependencies..."
-npm --prefix backend install
+./backend/scripts/setup.sh
 
 echo "Installing frontend dependencies..."
-npm --prefix frontend install
+./frontend/scripts/setup.sh
+
+echo "Setting up mobile..."
+./swiitchbank-mobile/scripts/setup.sh
 
 echo "Installing functions dependencies..."
 npm --prefix functions install
