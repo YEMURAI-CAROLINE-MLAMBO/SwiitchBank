@@ -2,8 +2,9 @@
 set -e
 
 echo "Stopping all services..."
-pkill -f "npm --prefix backend run dev"
-pkill -f "npm --prefix frontend start"
+./backend/scripts/stop.sh
+./frontend/scripts/stop.sh
+./swiitchbank-mobile/scripts/stop.sh
 pkill -f "firebase emulators:start --only functions,auth"
 
 echo "All services stopped!"
