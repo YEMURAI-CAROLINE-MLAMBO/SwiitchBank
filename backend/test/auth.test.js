@@ -4,12 +4,6 @@ import bcrypt from 'bcryptjs';
 
 process.env.JWT_SECRET = 'test-secret';
 
-jest.unstable_mockModule('../src/middleware/rateLimiter.js', () => ({
-  apiLimiter: (req, res, next) => next(),
-  aiLimiter: (req, res, next) => next(),
-  strictLimiter: (req, res, next) => next(),
-}));
-
 jest.unstable_mockModule('redis', () => ({
   createClient: jest.fn(() => ({
     connect: jest.fn(() => Promise.resolve()),
