@@ -95,3 +95,12 @@ docker-compose.override.yml
 
 # macOS
 .DS_Store
+
+# Flutter SDK
+flutter_sdk/
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock

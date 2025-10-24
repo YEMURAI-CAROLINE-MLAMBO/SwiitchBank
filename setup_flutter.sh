@@ -6,23 +6,32 @@
 
 # This script automatically detects and sets up the Flutter SDK path.
 
-# Attempt to find the Flutter SDK in a common location
-if [ -d "/app/flutter_sdk" ]; then
-    FLUTTER_SDK_PATH="/app/flutter_sdk"
-elif [ -d "$HOME/flutter_sdk" ]; then
-    FLUTTER_SDK_PATH="$HOME/flutter_sdk"
+FLUTTER_SDK_PATH="/app/flutter_sdk"
+FLUTTER_VERSION="3.22.1"
+FLUTTER_ARCHIVE="flutter_linux_${FLUTTER_VERSION}-stable.tar.xz"
+FLUTTER_URL="https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/${FLUTTER_ARCHIVE}"
+
+# Check if the Flutter SDK is installed, and if not, install it.
+if [ ! -d "$FLUTTER_SDK_PATH" ] || [ ! -f "$FLUTTER_SDK_PATH/bin/flutter" ]; then
+    echo "Flutter SDK not found. Installing Flutter v${FLUTTER_VERSION}..."
+    # Clean up any previous failed attempts
+    rm -rf "$FLUTTER_SDK_PATH" /tmp/flutter
+
+    # Download and extract to a temporary location
+    mkdir -p /tmp
+    wget -qO- "${FLUTTER_URL}" | tar -xJ -C /tmp
+
+    # Move the SDK to the final destination
+    mv /tmp/flutter "$FLUTTER_SDK_PATH"
+
+    echo "Flutter SDK installed in ${FLUTTER_SDK_PATH}"
 fi
 
-if [ -n "$FLUTTER_SDK_PATH" ] && [ -d "$FLUTTER_SDK_PATH" ]; then
-    export PATH="$FLUTTER_SDK_PATH/bin:$PATH"
-    echo "Flutter SDK path set to $FLUTTER_SDK_PATH"
-else
-    echo "WARNING: Flutter SDK not found in common locations."
-    echo "Attempting to find flutter in the PATH..."
-    if command -v flutter &> /dev/null; then
-        echo "Found flutter in PATH. Proceeding."
-    else
-        echo "ERROR: Flutter SDK not found. Please ensure it is installed and accessible."
-        exit 1
-    fi
+export PATH="$FLUTTER_SDK_PATH/bin:$PATH"
+echo "Flutter SDK path set to $FLUTTER_SDK_PATH"
+
+# Verify that the flutter command is available
+if ! command -v flutter &> /dev/null; then
+    echo "ERROR: Flutter command not found after setup."
+    exit 1
 fi
