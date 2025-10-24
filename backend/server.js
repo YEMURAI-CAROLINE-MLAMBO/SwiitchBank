@@ -22,6 +22,10 @@ async function startServer() {
       logger.info(`Swiitch Bank API Server running on port ${port}`);
       // Initialize WebSocket server
       startWebSocketServer(server);
+
+      // Start the cron service
+      import cronService from './src/services/cronService.js';
+      cronService.start();
     });
 
     process.on('uncaughtException', (err) => {
