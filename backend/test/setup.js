@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: './.env.test' });
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { beforeAll, afterAll, afterEach } from '@jest/globals';

@@ -176,6 +176,10 @@ class HighCapacitySophiaService {
   _generateHash(data) {
     return crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
   }
+
+  async sendNotification(message) {
+    logger.info(`Sophia Notification: ${message}`);
+  }
 }
 
 export default new HighCapacitySophiaService();
