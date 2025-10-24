@@ -48,6 +48,8 @@ import settingsRoutes from './routes/settings.js';
 app.use('/api/referral', referralRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/tickets', ticketRoutes);
+import swiitchPartyRoutes from './routes/swiitchPartyRoutes.js';
+app.use('/api/swiitch-party', swiitchPartyRoutes);
 
 // Health check with branding
 app.get('/api/health', (req, res) => {
