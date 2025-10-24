@@ -19,6 +19,9 @@ import CheckoutPage from './pages/CheckoutPage';
 import MoonPayPage from './pages/MoonPayPage';
 import SecurityDashboard from './components/SecurityDashboard';
 import ExecutionDashboard from './components/ExecutionDashboard';
+import Marketplace from './pages/SwiitchParty/Marketplace';
+import FunderDashboard from './pages/SwiitchParty/FunderDashboard';
+import BorrowerDashboard from './pages/SwiitchParty/BorrowerDashboard';
 
 function App() {
   const [onboardingComplete, setOnboardingComplete] = useState(false);
@@ -43,6 +46,9 @@ function App() {
               <Route path="create-ticket" element={<CreateTicketPage />} />
               <Route path="checkout" element={<CheckoutPage />} />
               <Route path="moonpay" element={<MoonPayPage />} />
+              <Route path="swiitch-party/marketplace" element={<Marketplace />} />
+              <Route path="swiitch-party/funder-dashboard" element={<FunderDashboard />} />
+              <Route path="swiitch-party/borrower-dashboard" element={<BorrowerDashboard />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
