@@ -50,6 +50,8 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/tickets', ticketRoutes);
 import swiitchPartyRoutes from './routes/swiitchPartyRoutes.js';
 app.use('/api/swiitch-party', swiitchPartyRoutes);
+import marqetaRoutes from './routes/marqeta.js';
+app.use('/api/marqeta', marqetaRoutes);
 
 // Health check with branding
 app.get('/api/health', (req, res) => {

@@ -1,5 +1,6 @@
 import express from 'express';
 import { getSupportedCurrenciesController, getQuoteController } from '../controllers/moonpayController.js';
+import { handleWebhook } from '../services/moonpayService.js';
 import auth from '../middleware/auth.js';
 
 const router = express.Router();
@@ -70,5 +71,11 @@ router.get('/currencies', getSupportedCurrenciesController);
  *         description: Internal server error
  */
 router.get('/quote', getQuoteController);
+
+router.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  // Forward to the service for handling
+  handleWebhook(req, res);
+});
+
 
 export default router;

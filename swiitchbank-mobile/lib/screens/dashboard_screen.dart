@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:swiitchbank/services/apple_pay_service.dart';
 
 class DashboardScreen extends StatelessWidget {
+  final ApplePayService _applePayService = ApplePayService();
 
   Widget _buildDashboardContent(BuildContext context) { // Pass context
     return Center(
@@ -17,6 +19,23 @@ class DashboardScreen extends StatelessWidget {
             },
             style: ElevatedButton.styleFrom(
               primary: const Color(0xFF00C9A7), // Richmont Teal
+              onPrimary: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.apple),
+            label: const Text('Pay with Apple Pay'),
+            onPressed: () async {
+              final token = await _applePayService.startApplePay();
+              if (token != null) {
+                // Send the token to your backend for processing
+                print("Apple Pay Token: $token");
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.black,
               onPrimary: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
             ),

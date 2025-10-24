@@ -6,11 +6,14 @@
 
 # This script automatically detects and sets up the Flutter SDK path.
 
-# Attempt to find the Flutter SDK in a common location
-if [ -d "/app/flutter_sdk" ]; then
-    FLUTTER_SDK_PATH="/app/flutter_sdk"
-elif [ -d "$HOME/flutter_sdk" ]; then
-    FLUTTER_SDK_PATH="$HOME/flutter_sdk"
+FLUTTER_SDK_PATH="flutter_sdk"
+
+if [ ! -d "$FLUTTER_SDK_PATH" ]; then
+  echo "Flutter SDK not found. Cloning from GitHub..."
+  git clone https://github.com/flutter/flutter.git "$FLUTTER_SDK_PATH"
+  cd "$FLUTTER_SDK_PATH"
+  git checkout stable
+  cd -
 fi
 
 if [ -n "$FLUTTER_SDK_PATH" ] && [ -d "$FLUTTER_SDK_PATH" ]; then

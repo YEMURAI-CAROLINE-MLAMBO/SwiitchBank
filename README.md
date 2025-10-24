@@ -1,8 +1,8 @@
 # SwiitchBank - Anywhere Anytime
 
-![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)
+![Version](https://img.shields.io/badge/Version-1.1.0-blue.svg)
 ![Platform](https://img.shields.io/badge/Platform-Node.js%20|%20React%20|%20Flutter-brightgreen.svg)
-![Status](https://img.shields.io/badge/Status-Live-green.svg)
+![Status](https://img.shields.io/badge/Status-In%20Development-yellow.svg)
 
 ## Overview
 
@@ -18,6 +18,8 @@ SwiitchBank is a next-generation, AI-powered financial platform designed for a g
 -   **Bidirectional Crypto-Fiat Exchange**: Seamlessly convert between fiat currencies and top-tier cryptocurrencies, enabling both on-ramp and off-ramp functionality.
 -   **Stripe Integration**: Securely process payments using Stripe.
 -   **MoonPay Integration**: Easily purchase cryptocurrency with MoonPay.
+-   **Marqeta Integration**: Issue and manage virtual cards with Marqeta.
+-   **Apple Pay Integration**: Make secure payments using Apple Pay on iOS.
 -   **SwiitchParty P2P Lending**: A peer-to-peer lending marketplace where users can offer and accept loans in multiple currencies.
 -   **Comprehensive Security**: A multi-layered security system featuring AI-driven risk analysis, MFA enforcement, and end-to-end encryption.
 -   **Advanced Financial Modeling**: A powerful backend engine for Monte Carlo simulations, risk analysis, and quantitative financial planning.
@@ -65,7 +67,7 @@ This project uses `.env` files for local development. A master template, `.env.e
 ```bash
 cd backend
 cp ../.env.example .env
-# Open backend/.env and add your development secrets (e.g., MONGODB_URI, GEMINI_API_KEY, STRIPE_SECRET_KEY, MOONPAY_API_KEY)
+# Open backend/.env and add your development secrets (e.g., MONGODB_URI, GEMINI_API_KEY, STRIPE_SECRET_KEY, MOONPAY_API_KEY, MARQETA_API_KEY)
 ```
 
 ### Quick Start

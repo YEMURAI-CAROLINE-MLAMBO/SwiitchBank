@@ -1,4 +1,4 @@
-import { getSupportedCurrencies, getQuote } from '../services/moonpay.js';
+import { getCurrencies, getQuote } from '../services/moonpayService.js';
 
 /**
  * Get a list of supported cryptocurrencies
@@ -8,7 +8,7 @@ import { getSupportedCurrencies, getQuote } from '../services/moonpay.js';
  */
 export const getSupportedCurrenciesController = async (req, res) => {
   try {
-    const currencies = await getSupportedCurrencies();
+    const currencies = await getCurrencies();
     res.status(200).json(currencies);
   } catch (error) {
     res.status(500).json({ error: error.message });

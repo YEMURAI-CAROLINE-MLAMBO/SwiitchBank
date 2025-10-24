@@ -5,4 +5,4 @@ REPO_ROOT="$(dirname "$MOBILE_DIR")"
 
 source "$REPO_ROOT/setup_flutter.sh"
 
-(cd "$MOBILE_DIR" && flutter pub get)
+(cd "$MOBILE_DIR" && "$REPO_ROOT/flutter_sdk/bin/flutter" pub get)

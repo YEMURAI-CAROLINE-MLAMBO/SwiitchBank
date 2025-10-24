@@ -5,14 +5,19 @@ import VirtualCard from '../models/VirtualCard.js';
 import User from '../models/User.js';
 import logger from '../utils/logger.js';
 
-export const processWebhookEvent = async (event) => {
+export const processWebhookEvent = async (req, res) => {
   try {
-    logger.info('Received Marqeta webhook event:', event);
+    const signature = req.headers['x-marqeta-signature'];
+    const body = req.rawBody; // Assuming rawBody is available
+    const secret = process.env.MARQETA_WEBHOOK_SECRET;
 
-    // SECURITY: Implement webhook signature verification here.
-    // If the signature is invalid, return a 401 Unauthorized error.
+    if (!verifySignature(body, signature, secret)) {
+      logger.warn('Invalid Marqeta webhook signature');
+      return res.status(401).send('Invalid signature');
+    }
 
-    const { type, payload } = event;
+    const { type, payload } = req.body;
+    logger.info('Received Marqeta webhook event:', req.body);
 
     switch (type) {
       case 'transaction.purchase':
@@ -69,4 +74,13 @@ export const processWebhookEvent = async (event) => {
     logger.error('Error processing Marqeta webhook event:', error);
     return { success: false, message: 'Error processing webhook event.' };
   }
+};
+
+import crypto from 'crypto';
+
+const verifySignature = (body, signature, secret) => {
+  // Marqeta's signature verification logic
+  // This is a simplified example. Refer to Marqeta's documentation for the exact implementation.
+  const hmac = crypto.createHmac('sha256', secret).update(body).digest('hex');
+  return hmac === signature;
 };
