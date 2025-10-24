@@ -18,6 +18,7 @@ SwiitchBank is a next-generation, AI-powered financial platform designed for a g
 -   **Bidirectional Crypto-Fiat Exchange**: Seamlessly convert between fiat currencies and top-tier cryptocurrencies, enabling both on-ramp and off-ramp functionality.
 -   **Stripe Integration**: Securely process payments using Stripe.
 -   **MoonPay Integration**: Easily purchase cryptocurrency with MoonPay.
+-   **SwiitchParty P2P Lending**: A peer-to-peer lending marketplace where users can offer and accept loans in multiple currencies.
 -   **Comprehensive Security**: A multi-layered security system featuring AI-driven risk analysis, MFA enforcement, and end-to-end encryption.
 -   **Advanced Financial Modeling**: A powerful backend engine for Monte Carlo simulations, risk analysis, and quantitative financial planning.
 -   **Autonomous Communication System**: An intelligent notification system for user alerts and system-level monitoring.
