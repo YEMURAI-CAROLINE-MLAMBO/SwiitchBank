@@ -104,3 +104,4 @@ flutter_sdk/
 .flutter-plugins
 .flutter-plugins-dependencies
 pubspec.lock
+build/
