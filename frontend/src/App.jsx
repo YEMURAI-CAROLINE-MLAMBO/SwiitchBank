@@ -22,6 +22,7 @@ import ExecutionDashboard from './components/ExecutionDashboard';
 import Marketplace from './pages/SwiitchParty/Marketplace';
 import FunderDashboard from './pages/SwiitchParty/FunderDashboard';
 import BorrowerDashboard from './pages/SwiitchParty/BorrowerDashboard';
+import AboutUsPage from './pages/AboutUsPage';
 
 function App() {
   const [onboardingComplete, setOnboardingComplete] = useState(false);
@@ -49,6 +50,7 @@ function App() {
               <Route path="swiitch-party/marketplace" element={<Marketplace />} />
               <Route path="swiitch-party/funder-dashboard" element={<FunderDashboard />} />
               <Route path="swiitch-party/borrower-dashboard" element={<BorrowerDashboard />} />
+              <Route path="about-us" element={<AboutUsPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
