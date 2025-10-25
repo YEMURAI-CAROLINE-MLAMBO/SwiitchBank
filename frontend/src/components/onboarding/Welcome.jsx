@@ -27,7 +27,7 @@ const Welcome = ({ onGetStarted }) => {
         </div>
 
         <button className="primary-button" onClick={onGetStarted}>
-          Connect Your Accounts
+          Start Tutorial
         </button>
       </div>
     </div>
