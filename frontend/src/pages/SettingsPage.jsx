@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const SettingsPage = () => {
@@ -39,6 +40,9 @@ const SettingsPage = () => {
       </form>
       {error && <div>{error}</div>}
       {success && <div>{success}</div>}
+      <div style={{ marginTop: '20px' }}>
+        <Link to="/terms-and-conditions">Terms and Conditions</Link>
+      </div>
     </div>
   );
 };
