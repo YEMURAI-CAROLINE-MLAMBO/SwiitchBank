@@ -15,8 +15,7 @@ jest.unstable_mockModule('redis', () => ({
 }));
 
 jest.unstable_mockModule('../src/config/database.js', () => ({
-  connectWithRetry: jest.fn(() => Promise.resolve()),
-  createOptimalIndexes: jest.fn(() => Promise.resolve()),
+  default: jest.fn(() => Promise.resolve()),
 }));
 
 jest.unstable_mockModule('../src/models/User.js', () => {
@@ -29,15 +28,21 @@ jest.unstable_mockModule('../src/models/User.js', () => {
   return { default: User };
 });
 
-import app from '../src/app.js';
+const createApp = async () => {
+  const { default: app } = await import('../src/app.js');
+  return app;
+};
+
 const { default: User } = await import('../src/models/User.js');
 
 describe('Auth Endpoints', () => {
+  let app;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    jest.clearAllMocks();
     User.findOne.mockClear();
     User.create.mockClear();
-    jest.clearAllMocks();
+    app = await createApp();
   });
 
   describe('POST /api/auth/register', () => {
@@ -60,7 +65,7 @@ describe('Auth Endpoints', () => {
     });
 
     it('should not register a user with an existing email', async () => {
-       User.findOne.mockResolvedValue({
+      User.findOne.mockResolvedValue({
         _id: 'some-id',
         firstName: 'Test',
         lastName: 'User',
