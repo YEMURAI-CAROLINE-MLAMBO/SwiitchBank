@@ -1,6 +1,9 @@
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
 import logger from '../utils/logger.js';
+import User from '../models/User.js';
+import Transaction from '../models/Transaction.js';
+import HighCapacitySophiaService from './HighCapacitySophiaService.js';
 
 dotenv.config();
 
@@ -37,7 +40,24 @@ export const handleStripeWebhook = async (rawBody, sig) => {
     case 'payment_intent.succeeded':
       const paymentIntent = event.data.object;
       logger.info(`PaymentIntent for ${paymentIntent.amount} was successful!`);
-      // TODO: Fulfill the purchase
+
+      const transaction = new Transaction({
+        user: paymentIntent.metadata.userId,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency,
+        stripePaymentIntentId: paymentIntent.id,
+        status: 'succeeded',
+      });
+      await transaction.save();
+
+      const user = await User.findById(paymentIntent.metadata.userId);
+      if (user) {
+        HighCapacitySophiaService.sendNotification(
+          `Hi ${user.firstName}, your payment of $${paymentIntent.amount / 100} was successful.`
+        );
+      } else {
+        logger.error(`User not found for payment intent: ${paymentIntent.id}`);
+      }
       break;
     default:
       logger.warn(`Unhandled event type ${event.type}`);
