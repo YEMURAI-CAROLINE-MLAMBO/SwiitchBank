@@ -40,17 +40,17 @@ export const getQuote = async (baseCurrencyCode, quoteCurrencyCode, baseCurrency
 export const handleWebhook = (req, res) => {
   const signature = req.headers['moonpay-signature-v2'];
   const timestamp = req.headers['moonpay-timestamp'];
-  const body = req.rawBody; // Assuming rawBody is available
+  const body = req.body;
   const secret = process.env.MOONPAY_WEBHOOK_SECRET;
 
   try {
-    const isValid = verifySignature(body, signature, timestamp, secret);
+    const isValid = verifySignature(body.toString(), signature, timestamp, secret);
     if (!isValid) {
       logger.warn('Invalid MoonPay webhook signature');
       return res.status(401).send('Invalid signature');
     }
 
-    const { type, data } = req.body;
+    const { type, data } = JSON.parse(body.toString());
     logger.info(`Received MoonPay webhook: ${type}`, data);
 
     // Process the webhook event (e.g., update transaction status)

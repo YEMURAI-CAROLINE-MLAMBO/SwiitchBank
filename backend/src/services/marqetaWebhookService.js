@@ -8,16 +8,16 @@ import logger from '../utils/logger.js';
 export const processWebhookEvent = async (req, res) => {
   try {
     const signature = req.headers['x-marqeta-signature'];
-    const body = req.rawBody; // Assuming rawBody is available
+    const body = req.body;
     const secret = process.env.MARQETA_WEBHOOK_SECRET;
 
-    if (!verifySignature(body, signature, secret)) {
+    if (!verifySignature(body.toString(), signature, secret)) {
       logger.warn('Invalid Marqeta webhook signature');
       return res.status(401).send('Invalid signature');
     }
 
-    const { type, payload } = req.body;
-    logger.info('Received Marqeta webhook event:', req.body);
+    const { type, payload } = JSON.parse(body.toString());
+    logger.info('Received Marqeta webhook event:', { type, payload });
 
     switch (type) {
       case 'transaction.purchase':
