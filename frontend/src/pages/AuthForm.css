@@ -1,48 +1,45 @@
-/* Shared Styles for LoginPage.jsx and SignupPage.jsx */
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f7fafc; /* Light Gray Background */
   padding: 2rem;
 }
 
 .auth-form-wrapper {
-  background: white;
+  background: var(--white);
   padding: 3rem;
-  border-radius: 8px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px var(--shadow);
   width: 100%;
-  max-width: 420px;
+  max-width: 450px;
   text-align: center;
 }
 
 .auth-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
-  color: #1A365D; /* Richmont Navy Blue */
-  margin-bottom: 0.5rem;
+  color: var(--text-color);
+  margin-bottom: 1rem;
 }
 
 .auth-subtitle {
-  color: #718096; /* Gray */
-  margin-bottom: 2rem;
+  color: var(--text-color);
+  margin-bottom: 2.5rem;
 }
 
 .auth-error {
-  background-color: #FED7D7;
-  color: #9B2C2C;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
+  background-color: var(--error-color);
+  color: var(--white);
+  padding: 1rem;
+  border-radius: 8px;
   margin-bottom: 1.5rem;
-  font-size: 0.875rem;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .input-group {
@@ -51,62 +48,54 @@
 
 .input-group label {
   display: block;
-  font-weight: 600;
-  color: #2D3748; /* Charcoal Gray */
+  font-weight: 500;
+  color: var(--text-color);
   margin-bottom: 0.5rem;
-  font-size: 0.875rem;
 }
 
 .auth-input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #E2E8F0;
-  border-radius: 6px;
+  padding: 1rem;
+  border: 1px solid var(--gray);
+  border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
 }
 
 .auth-input:focus {
   outline: none;
-  border-color: #00C9A7; /* Sophisticated Teal */
-  box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.3);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.2);
 }
 
 .auth-button {
-  background-color: #1A365D; /* Richmont Navy Blue */
-  color: white;
-  font-weight: 600;
-  padding: 0.875rem;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  color: var(--white);
+  font-weight: 500;
+  padding: 1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.2s;
+  transition: opacity 0.3s ease;
   margin-top: 1rem;
 }
 
 .auth-button:hover:not(:disabled) {
-  background-color: #2D3748; /* Charcoal Gray */
+  opacity: 0.9;
 }
 
 .auth-button:disabled {
-  background-color: #A0AEC0; /* Lighter Gray */
+  background: var(--gray);
   cursor: not-allowed;
 }
 
 .auth-footer {
   margin-top: 2rem;
-  font-size: 0.875rem;
-  color: #4A5568; /* Darker Gray */
+  color: var(--text-color);
 }
 
 .auth-link {
-  color: #00C9A7; /* Sophisticated Teal */
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.auth-link:hover {
-  color: #1A365D; /* Richmont Navy Blue */
+  color: var(--primary-color);
+  font-weight: 500;
 }

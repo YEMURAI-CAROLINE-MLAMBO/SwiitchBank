@@ -15,11 +15,6 @@ class DashboardScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pushNamed(context, '/live');
             },
-            style: ElevatedButton.styleFrom(
-              primary: const Color(0xFF00C9A7), // Richmont Teal
-              onPrimary: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-            ),
           ),
         ],
       ),

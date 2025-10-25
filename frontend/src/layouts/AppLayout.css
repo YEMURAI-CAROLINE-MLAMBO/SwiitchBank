@@ -2,26 +2,27 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--background-color);
 }
 
 .app-header {
-  background-color: #000080; /* Deep navy */
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  padding: 1rem 2rem;
+  box-shadow: 0 4px 6px var(--shadow);
+  color: var(--white);
 }
 
 .app-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 .app-logo {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: bold;
-  color: #fff;
 }
 
 .app-nav ul {
@@ -29,21 +30,18 @@
   margin: 0;
   padding: 0;
   display: flex;
-}
-
-.app-nav li {
-  margin-left: 1rem;
+  gap: 1.5rem;
 }
 
 .app-nav a {
   text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  transition: color 0.3s ease;
+  color: var(--white);
+  font-weight: 500;
+  transition: opacity 0.3s ease;
 }
 
 .app-nav a:hover {
-  color: #0070F3; /* Electric blue */
+  opacity: 0.8;
 }
 
 .app-body {
@@ -54,21 +52,21 @@
 .app-content {
   flex-grow: 1;
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 .sophia-chat {
   width: 350px;
-  border-left: 1px solid var(--border-color);
-  background-color: var(--primary-color);
+  border-left: 1px solid var(--gray);
+  background-color: var(--white);
   display: flex;
   flex-direction: column;
 }
 
 .app-footer {
-  background-color: #000080; /* Deep navy */
-  color: #fff;
-  padding: 1rem;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  color: var(--white);
+  padding: 1.5rem;
   text-align: center;
 }
