@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import DatabaseResilience from '../database/Resilience.js';
+import DatabaseResilience from './Resilience.js';
 
 const databaseConfig = {
   // Connection settings

@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "SwiitchBank backend",
   "type": "module",
-  "main": "server.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node server.js",
-    "server": "nodemon server.js",
+    "start": "node src/app.js",
+    "server": "nodemon src/app.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "author": "",

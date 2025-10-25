@@ -29,7 +29,7 @@ jest.unstable_mockModule('../src/models/User.js', () => {
   return { default: User };
 });
 
-const { default: app } = await import('../src/app.js');
+import app from '../src/app.js';
 const { default: User } = await import('../src/models/User.js');
 
 describe('Auth Endpoints', () => {
