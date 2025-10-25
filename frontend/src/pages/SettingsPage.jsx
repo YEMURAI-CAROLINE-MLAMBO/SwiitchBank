@@ -40,8 +40,10 @@ const SettingsPage = () => {
       </form>
       {error && <div>{error}</div>}
       {success && <div>{success}</div>}
-      <div style={{ marginTop: '20px' }}>
+      <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column' }}>
         <Link to="/terms-and-conditions">Terms and Conditions</Link>
+        <Link to="/terms-of-use">Terms of Use</Link>
+        <Link to="/privacy-policy">Privacy Policy</Link>
       </div>
     </div>
   );

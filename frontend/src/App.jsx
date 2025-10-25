@@ -23,6 +23,9 @@ import Marketplace from './pages/SwiitchParty/Marketplace';
 import FunderDashboard from './pages/SwiitchParty/FunderDashboard';
 import BorrowerDashboard from './pages/SwiitchParty/BorrowerDashboard';
 import AboutUsPage from './pages/AboutUsPage';
+import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
+import TermsOfUsePage from './pages/TermsOfUsePage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 function App() {
   const [onboardingComplete, setOnboardingComplete] = useState(false);
@@ -51,6 +54,9 @@ function App() {
               <Route path="swiitch-party/funder-dashboard" element={<FunderDashboard />} />
               <Route path="swiitch-party/borrower-dashboard" element={<BorrowerDashboard />} />
               <Route path="about-us" element={<AboutUsPage />} />
+              <Route path="terms-and-conditions" element={<TermsAndConditionsPage />} />
+              <Route path="terms-of-use" element={<TermsOfUsePage />} />
+              <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />

@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "title": "Terms of Use",
+  "sections": [
+    {
+      "heading": "Acceptance of Terms",
+      "content": "By accessing or using the SwiitchBank and SwiitchParty services, you agree to be bound by these Terms of Use."
+    },
+    {
+      "heading": "Description of Service",
+      "content": "Our services provide a platform for financial transactions, including but not limited to payments, transfers, and cryptocurrency exchanges. SwiitchParty is a feature that allows for peer-to-peer lending and borrowing."
+    },
+    {
+      "heading": "User Conduct",
+      "content": "You are responsible for all activity that occurs under your account. You agree to abide by all applicable local, state, national, and international laws and regulations."
+    },
+    {
+      "heading": "Disclaimer of Warranties",
+      "content": "The service is provided on an 'as is' and 'as available' basis. We expressly disclaim all warranties of any kind, whether express or implied."
+    }
+  ]
+}
