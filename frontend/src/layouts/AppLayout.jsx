@@ -16,7 +16,7 @@ function AppLayout() {
             <li><Link to="/transactions">Transactions</Link></li>
             <li><Link to="/settings">Settings</Link></li>
             <li><Link to="/swiitch-party/marketplace">SwiitchParty</Link></li>
-            <li><Link to="/about">About Us</Link></li>
+            <li><Link to="/about-us">About Us</Link></li>
             <li><Link to="/login">Login</Link></li>
             <li><Link to="/signup">Signup</Link></li>
             {/* Add more navigation links */}
