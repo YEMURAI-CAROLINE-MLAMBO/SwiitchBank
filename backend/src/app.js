@@ -1,5 +1,5 @@
 import express from 'express';
-import { setupMiddleware } from './middleware/middleware.js';
+import { setupMiddleware } from './middleware/firewall.js';
 import { errors } from 'celebrate';
 import authRoutes from './routes/auth.js';
 import accountRoutes from './routes/accounts.js';
