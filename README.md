@@ -8,11 +8,11 @@
 
 SwiitchBank is a next-generation, AI-powered financial platform designed for a global user base. Our mission is to provide a seamless and intelligent financial experience that is accessible **Anywhere, Anytime**. We bridge traditional finance with digital assets, empowering users with innovative tools to manage their money, grow their wealth, and connect to the global economy.
 
-**Key Value Proposition**: Global financial control in your pocket, powered by intelligent, cross-border financial technology and the sophisticated Richmont brand identity.
+**Key Value Proposition**: Global financial control in your pocket, powered by intelligent, cross-border financial technology.
 
 ## Core Features
 
--   **Richmont Brand Identity**: A sophisticated and professional user experience with a clean, modern design.
+-   **Modern Brand Identity**: A sophisticated and professional user experience with a clean, modern design.
 -   **Sophia-2 AI Assistant**: An advanced AI for deep transaction analysis, personalized financial insights, and real-time advice.
 -   **Multi-Currency Accounts**: Hold, manage, and convert funds in multiple fiat currencies with real-time exchange rates.
 -   **Bidirectional Crypto-Fiat Exchange**: Seamlessly convert between fiat currencies and top-tier cryptocurrencies, enabling both on-ramp and off-ramp functionality.

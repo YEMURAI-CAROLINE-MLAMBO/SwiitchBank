@@ -10,7 +10,7 @@
 .insights-header h2 {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1A365D; /* Richmont Navy Blue */
+  color: var(--text-color);
 }
 
 .insights-header p {
@@ -88,7 +88,7 @@
 }
 
 .insight-actions .primary-action {
-  background-color: #1A365D;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   padding: 0.6rem 1rem;
@@ -112,7 +112,7 @@
 
 .ask-sophia-section h3 {
   font-size: 1.5rem;
-  color: #1A365D;
+  color: var(--text-color);
 }
 
 .ask-sophia-section p {
@@ -196,5 +196,5 @@
 }
 
 .sophia-answer strong {
-  color: #1A365D;
+  color: var(--text-color);
 }

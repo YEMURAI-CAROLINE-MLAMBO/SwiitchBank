@@ -15,7 +15,7 @@
 .card-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1A365D; /* Richmont Navy Blue */
+  color: var(--text-color);
   margin-bottom: 1.5rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid #F1F5F9;
@@ -74,7 +74,7 @@
 .account-balance {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1A365D;
+  color: var(--text-color);
 }
 
 .account-value-base {
@@ -110,7 +110,7 @@
 
 .category-amount {
   font-weight: 600;
-  color: #1A365D;
+  color: var(--text-color);
 }
 
 
@@ -168,7 +168,7 @@
   background-color: #F7FAFC;
   border: 1px solid #E2E8F0;
   border-radius: 6px;
-  color: #1A365D;
+  color: var(--text-color);
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
