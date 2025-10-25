@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "title": "Privacy Policy",
+  "sections": [
+    {
+      "heading": "Information We Collect",
+      "content": "We collect information you provide directly to us, such as when you create an account, as well as information that is automatically collected, such as your IP address."
+    },
+    {
+      "heading": "How We Use Your Information",
+      "content": "We use the information we collect to provide, maintain, and improve our services, as well as to protect ourselves and our users."
+    },
+    {
+      "heading": "Sharing of Information",
+      "content": "We do not share your personal information with third parties except as described in this Privacy Policy."
+    },
+    {
+      "heading": "Your Choices",
+      "content": "You may update, correct, or delete information about you at any time by logging into your account or contacting us."
+    }
+  ]
+}
