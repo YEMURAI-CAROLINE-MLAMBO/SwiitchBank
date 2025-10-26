@@ -17,7 +17,8 @@ import allRoutes from './routes/index.js';
 
 const app = express();
 
-// Setup Middleware
+// Apply express.json() middleware with custom verify function for Stripe webhooks.
+// This must be done before other middleware that needs the parsed body.
 app.use(
   express.json({
     verify: (req, res, buf) => {
@@ -25,6 +26,8 @@ app.use(
     },
   }),
 );
+
+// Apply all other middleware from the firewall configuration.
 setupMiddleware(app);
 
 // API Routes
