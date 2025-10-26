@@ -12,7 +12,6 @@ import ticketRoutes from './ticketRoutes.js';
 import stripeRoutes from './stripe.js';
 import dashboardRoutes from './dashboard.js';
 import userRoutes from './userRoutes.js';
-import settingsRoutes from './settings.js';
 import swiitchPartyRoutes from './swiitchPartyRoutes.js';
 
 const router = express.Router();
@@ -29,7 +28,6 @@ router.use('/payments', paymentRoutes);
 router.use('/stripe', stripeRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/user', userRoutes);
-router.use('/settings', settingsRoutes);
 router.use('/tickets', ticketRoutes);
 router.use('/swiitch-party', swiitchPartyRoutes);
 
