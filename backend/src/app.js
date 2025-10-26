@@ -15,27 +15,8 @@ import connectDatabase from './config/database.js';
 import logger from './utils/logger.js';
 import startWebSocketServer from '../websocket.js';
 import cronService from './services/cronService.js';
-import config from './config/config.js';
-
-// Route imports
-import authRoutes from './routes/auth.js';
-import accountRoutes from './routes/accounts.js';
-import sophiaRoutes from './routes/sophia.js';
-import transactionRoutes from './routes/transactions.js';
-import bridgeRoutes from './routes/bridgeRoutes.js';
-import frameworkRoutes from './routes/framework.js';
-import qrRoutes from './routes/qr.js';
-import exchangeRoutes from './routes/exchangeRoutes.js';
-import paymentRoutes from './routes/payments.js';
-import moonpayRoutes from './routes/moonpay.js';
-import ticketRoutes from './routes/ticketRoutes.js';
-import stripeRoutes from './routes/stripe.js';
-import dashboardRoutes from './routes/dashboard.js';
-import userRoutes from './routes/user.js';
-import referralRoutes from './routes/referral.js';
-import settingsRoutes from './routes/settings.js';
-import swiitchPartyRoutes from './routes/swiitchPartyRoutes.js';
-
+import config from './config/appConfig.js';
+import allRoutes from './routes/index.js';
 
 const app = express();
 
@@ -50,23 +31,7 @@ app.use(
 setupMiddleware(app);
 
 // API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/accounts', accountRoutes);
-app.use('/api/sophia', sophiaRoutes);
-app.use('/api/transactions', transactionRoutes);
-app.use('/api/bridge', bridgeRoutes);
-app.use('/api/framework', frameworkRoutes);
-app.use('/api/v1/qr', qrRoutes);
-app.use('/api/exchange', exchangeRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/moonpay', moonpayRoutes);
-app.use('/api/stripe', stripeRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/referral', referralRoutes);
-app.use('/api/settings', settingsRoutes);
-app.use('/api/tickets', ticketRoutes);
-app.use('/api/swiitch-party', swiitchPartyRoutes);
+app.use('/api', allRoutes);
 
 // Health check with branding
 app.get('/api/health', (req, res) => {
