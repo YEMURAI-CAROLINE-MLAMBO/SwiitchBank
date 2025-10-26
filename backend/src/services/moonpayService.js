@@ -21,3 +21,18 @@ export const getCurrencies = async () => {
     throw new Error('Error getting currencies from MoonPay');
   }
 };
+
+export const getQuote = async (baseCurrencyCode, quoteCurrencyCode, baseCurrencyAmount) => {
+  try {
+    const response = await moonpay.get(`/currencies/${baseCurrencyCode}/quote`, {
+      params: {
+        quoteCurrencyCode,
+        baseCurrencyAmount,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    logger.error('Error getting quote from MoonPay:', error);
+    throw new Error('Error getting quote from MoonPay');
+  }
+};
