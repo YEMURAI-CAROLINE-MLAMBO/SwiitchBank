@@ -3,11 +3,8 @@ import http from 'http';
 
 // NPM dependencies
 import express from 'express';
-import dotenv from 'dotenv';
+import 'dotenv/config.js';
 import { errors } from 'celebrate';
-
-// Load environment variables
-dotenv.config({ path: '../.env' });
 
 // Local modules
 import { setupMiddleware } from './middleware/firewall.js';
