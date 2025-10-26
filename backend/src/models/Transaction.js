@@ -25,10 +25,21 @@ const transactionSchema = new mongoose.Schema(
       enum: ['succeeded', 'failed', 'completed', 'pending'],
       required: true,
     },
-    // Adding other fields from qrController to make the model more generic
-    type: { type: String },
+    type: {
+      type: String,
+      enum: [
+        'deposit',
+        'withdrawal',
+        'transfer',
+        'payment',
+        'tithe',
+        'covenant_seed',
+        'covenant_partnership',
+      ],
+    },
     category: { type: String },
     description: { type: String },
+    recipient: { type: String }, // Added from tithingTransaction
     related_user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',

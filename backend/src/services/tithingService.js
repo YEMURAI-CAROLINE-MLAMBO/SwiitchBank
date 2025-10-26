@@ -1,6 +1,6 @@
 import incomeService from './incomeService.js';
 import notificationService from './notificationService.js';
-import tithingTransactionService from './tithingTransactionService.js';
+import donationService from './donationService.js';
 
 const calculateAndNotifyTithe = async () => {
   const endDate = new Date();
@@ -16,7 +16,7 @@ const calculateAndNotifyTithe = async () => {
     'Kenneth Copeland Ministries'
   );
 
-  await tithingTransactionService.createTransactionRecord({
+  await donationService.createTransactionRecord({
     transactionId: `tithe-${Date.now()}`,
     amount: titheAmount,
     recipient: 'Kenneth Copeland Ministries',
@@ -38,7 +38,7 @@ const calculateAndNotifyCovenantSeed = async () => {
     'Kenneth Copeland Ministries'
   );
 
-  await tithingTransactionService.createTransactionRecord({
+  await donationService.createTransactionRecord({
     transactionId: `covenant-seed-${Date.now()}`,
     amount: covenantSeedAmount,
     recipient: 'Kenneth Copeland Ministries',
@@ -60,7 +60,7 @@ const calculateAndNotifyCovenantPartnership = async () => {
     'Revival Ministries International'
   );
 
-  await tithingTransactionService.createTransactionRecord({
+  await donationService.createTransactionRecord({
     transactionId: `covenant-partnership-${Date.now()}`,
     amount: covenantPartnershipAmount,
     recipient: 'Revival Ministries International',

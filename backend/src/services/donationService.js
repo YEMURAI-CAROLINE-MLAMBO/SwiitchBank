@@ -1,13 +1,13 @@
-import TithingTransaction from '../models/tithingTransaction.js';
+import Transaction from '../models/Transaction.js';
 
 const createTransactionRecord = async (transactionData) => {
-  const transactionRecord = new TithingTransaction(transactionData);
+  const transactionRecord = new Transaction(transactionData);
   await transactionRecord.save();
   return transactionRecord;
 };
 
 const updateTransactionStatus = async (id, status) => {
-  const transaction = await TithingTransaction.findByIdAndUpdate(
+  const transaction = await Transaction.findByIdAndUpdate(
     id,
     { status },
     { new: true }

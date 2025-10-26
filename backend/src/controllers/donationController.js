@@ -1,10 +1,10 @@
-import tithingTransactionService from '../services/tithingTransactionService.js';
+import donationService from '../services/donationService.js';
 
 const updateTransactionStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    const transaction = await tithingTransactionService.updateTransactionStatus(id, status);
+    const transaction = await donationService.updateTransactionStatus(id, status);
     res.status(200).json(transaction);
   } catch (error) {
     res.status(500).json({ message: 'Error updating transaction status.' });
