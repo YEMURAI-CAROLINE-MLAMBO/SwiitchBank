@@ -25,7 +25,7 @@ const tithingTransactionSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['tithe', 'covenant_seed'],
+    enum: ['tithe', 'covenant_seed', 'covenant_partnership'],
     required: true,
   },
 });
