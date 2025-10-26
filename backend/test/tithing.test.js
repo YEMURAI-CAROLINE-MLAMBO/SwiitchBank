@@ -1,9 +1,9 @@
+import { describe, it, expect, jest } from '@jest/globals';
 import cron from 'node-cron';
 import tithingService from '../src/services/tithingService.js';
 import incomeService from '../src/services/incomeService.js';
 import sophiaService from '../src/services/HighCapacitySophiaService.js';
-import tithingTransactionService from '../src/services/tithingTransactionService.js';
-import { jest } from '@jest/globals';
+import donationService from '../src/services/donationService.js';
 
 describe('Tithing Automation', () => {
   it('should schedule the cron jobs correctly', async () => {
@@ -24,7 +24,7 @@ describe('Tithing Service', () => {
   it('should calculate and notify the bi-weekly tithe', async () => {
     const incomeSpy = jest.spyOn(incomeService, 'calculateGrossIncome').mockResolvedValue(100000);
     const sophiaSpy = jest.spyOn(sophiaService, 'sendNotification').mockImplementation(() => {});
-    const transactionSpy = jest.spyOn(tithingTransactionService, 'createTransactionRecord').mockResolvedValue({});
+    const transactionSpy = jest.spyOn(donationService, 'createTransactionRecord').mockResolvedValue({});
 
     await tithingService.calculateAndNotifyTithe();
 
@@ -45,7 +45,7 @@ describe('Tithing Service', () => {
   it('should calculate and notify the annual covenant seed', async () => {
     const incomeSpy = jest.spyOn(incomeService, 'calculateGrossIncome').mockResolvedValue(10000000);
     const sophiaSpy = jest.spyOn(sophiaService, 'sendNotification').mockImplementation(() => {});
-    const transactionSpy = jest.spyOn(tithingTransactionService, 'createTransactionRecord').mockResolvedValue({});
+    const transactionSpy = jest.spyOn(donationService, 'createTransactionRecord').mockResolvedValue({});
 
     await tithingService.calculateAndNotifyCovenantSeed();
 
