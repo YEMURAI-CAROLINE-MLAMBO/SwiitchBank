@@ -1,23 +1,20 @@
 import axios from 'axios';
 
-const moonpayApi = axios.create({
-  baseURL: 'https://api.moonpay.com',
+const moonpay = axios.create({
+  baseURL: 'https://api.moonpay.com/v1',
   headers: {
-    'Authorization': `ApiKey ${process.env.MOONPAY_API_KEY}`
-  }
+    'Content-Type': 'application/json',
+  },
 });
 
 export const getSupportedCurrencies = async () => {
-  const response = await moonpayApi.get('/v3/currencies');
+  const response = await moonpay.get(`/currencies?apiKey=${process.env.MOONPAY_API_KEY}`);
   return response.data;
 };
 
 export const getQuote = async (baseCurrencyCode, quoteCurrencyCode, baseCurrencyAmount) => {
-  const response = await moonpayApi.get(`/v3/currencies/${baseCurrencyCode}/quote`, {
-    params: {
-      quoteCurrencyCode,
-      baseCurrencyAmount
-    }
-  });
+  const response = await moonpay.get(
+    `/currencies/${baseCurrencyCode}/quote?apiKey=${process.env.MOONPAY_API_KEY}&quoteCurrencyCode=${quoteCurrencyCode}&baseCurrencyAmount=${baseCurrencyAmount}`
+  );
   return response.data;
 };
