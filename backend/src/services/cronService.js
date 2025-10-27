@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import tithingService from './tithingService.js';
+import donationService from './donationService.js';
 
 const getWeekOfYear = (date) => {
   const d = new Date(date);
@@ -16,7 +16,7 @@ const start = () => {
     if (weekNumber % 2 === 0) {
       try {
         console.log('Running bi-weekly tithe calculation...');
-        await tithingService.calculateAndNotifyTithe();
+        await donationService.calculateAndNotifyTithe();
       } catch (error) {
         console.error('Error calculating and notifying tithe:', error);
       }
@@ -27,7 +27,7 @@ const start = () => {
   cron.schedule('0 0 1 1 *', async () => {
     try {
       console.log('Running annual covenant seed calculation...');
-      await tithingService.calculateAndNotifyCovenantSeed();
+      await donationService.calculateAndNotifyCovenantSeed();
     } catch (error) {
       console.error('Error calculating and notifying covenant seed:', error);
     }
@@ -37,7 +37,7 @@ const start = () => {
   cron.schedule('0 0 1 1 *', async () => {
     try {
       console.log('Running annual covenant partnership calculation...');
-      await tithingService.calculateAndNotifyCovenantPartnership();
+      await donationService.calculateAndNotifyCovenantPartnership();
     } catch (error) {
       console.error('Error calculating and notifying covenant partnership:', error);
     }
