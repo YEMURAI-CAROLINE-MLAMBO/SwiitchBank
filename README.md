@@ -38,7 +38,9 @@ SwiitchBank is a next-generation, AI-powered financial platform designed for a g
 | **CLI**              | Node.js, Commander.js                             |
 | **Real-time**        | WebSockets                                        |
 
-## Repository Layout
+## Project Architecture
+
+This repository is a monorepo containing several distinct but related projects:
 
 -   **/backend**: The core Node.js/Express API, services, models, and business logic.
 -   **/frontend**: The React web application.
@@ -47,7 +49,7 @@ SwiitchBank is a next-generation, AI-powered financial platform designed for a g
 -   **/cli**: The command-line interface for power users.
 -   **/.env.example**: A master template of all required environment variables.
 
-## Local Development Setup
+## Getting Started
 
 ### Prerequisites
 
@@ -57,41 +59,45 @@ SwiitchBank is a next-generation, AI-powered financial platform designed for a g
 -   Flutter SDK (for mobile development)
 -   MongoDB instance (local or cloud)
 
-### Environment Variables
+### Installation & Setup
 
-This project uses `.env` files for local development. A master template, `.env.example`, is in the root. For each package (`backend/`, `frontend/`, `functions/`, `cli/`), create a `.env` file from the template and fill in the required secrets.
-
-**Example for the backend:**
-```bash
-cd backend
-cp ../.env.example .env
-# Open backend/.env and add your development secrets (e.g., MONGODB_URI, GEMINI_API_KEY, STRIPE_SECRET_KEY, MOONPAY_API_KEY)
-```
-
-### Quick Start
-
-1.  **Clone Repository**:
+1.  **Clone the repository**:
     ```bash
     git clone https://github.com/YEMURAI-CAROLINE-MLAMBO/SwiitchBank.git
     cd SwiitchBank
     ```
 
-2.  **Install All Dependencies**:
+2.  **Set up environment variables**:
+    This project uses `.env` files for local development. A master template, `.env.example`, is in the root. For each package (`backend/`, `frontend/`, `functions/`, `cli/`), create a `.env` file from the template and fill in the required secrets.
+
+    **Example for the backend:**
+    ```bash
+    cd backend
+    cp ../.env.example .env
+    # Open backend/.env and add your development secrets (e.g., MONGODB_URI, GEMINI_API_KEY, STRIPE_SECRET_KEY, MOONPAY_API_KEY)
+    ```
+
+3.  **Install all dependencies**:
+    The `./setup.sh` script will install all necessary dependencies for all projects in the monorepo.
     ```bash
     ./setup.sh
     ```
 
-3.  **Run All Services**:
+## Usage
+
+The following scripts are provided in the root directory for convenience:
+
+-   **To run all services**:
     ```bash
     ./start.sh
     ```
 
-4.  **Stop All Services**:
+-   **To stop all services**:
     ```bash
     ./stop.sh
     ```
 
-5.  **Run All Tests**:
+-   **To run all tests**:
     ```bash
     ./test.sh
     ```
@@ -140,6 +146,19 @@ swiitchbank transactions
 swiitchbank logout
 ```
 
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1.  Fork the repository.
+2.  Create a new branch (`git checkout -b feature/your-feature-name`).
+3.  Make your changes.
+4.  Commit your changes (`git commit -m 'Add some feature'`).
+5.  Push to the branch (`git push origin feature/your-feature-name`).
+6.  Open a pull request.
+
+Please make sure to update tests as appropriate.
+
 ## License
 
-This project is licensed under the terms contained in the LICENSE file.
+This project is licensed under the terms of the LICENSE file.
