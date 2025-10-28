@@ -1,6 +1,11 @@
 import Transaction from '../models/Transaction.js';
+import ModelContextProtocol from '../mcp/protocol.js';
+import transactionRules from '../mcp/rules/transactionRules.js';
+import { CONTEXTS } from '../mcp/contexts.js';
 
-export const getTransactions = async (userId) => {
-  const transactions = await Transaction.find({ user: userId }).sort({ date: -1 });
+const transactionMCP = new ModelContextProtocol(transactionRules);
+
+export const getTransactions = async (user) => {
+  const transactions = await transactionMCP.apply(CONTEXTS.USER_READ, user);
   return transactions;
 };
