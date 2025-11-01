@@ -4,6 +4,7 @@ import CacheService from './CacheService.js';
 import crypto from 'crypto';
 import logger from '../utils/logger.js';
 import AnalysisJob from '../models/AnalysisJob.js'; // A new model to store job results
+import mailslurp from '../config/mailslurp.js';
 
 class HighCapacitySophiaService {
   constructor() {
@@ -74,6 +75,11 @@ class HighCapacitySophiaService {
         completedAt: new Date(),
       });
       logger.info(`Job ${jobId} completed successfully.`);
+      this.sendNotification(
+        process.env.NOTIFICATION_RECIPIENT_EMAIL,
+        `Job ${jobId} completed successfully`,
+        `Job ${jobId} completed successfully. Result: ${JSON.stringify(analysisResult)}`
+      );
     } catch (error) {
       logger.error(`Error processing job ${jobId}:`, error);
       await AnalysisJob.findByIdAndUpdate(jobId, {
@@ -81,6 +87,11 @@ class HighCapacitySophiaService {
         error: error.message,
         completedAt: new Date(),
       });
+      this.sendNotification(
+        process.env.NOTIFICATION_RECIPIENT_EMAIL,
+        `Job ${jobId} failed`,
+        `Error processing job ${jobId}: ${error.message}`
+      );
     }
   }
 
@@ -177,8 +188,24 @@ class HighCapacitySophiaService {
     return crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
   }
 
-  async sendNotification(message) {
+  async sendNotification(recipient, subject, message) {
     logger.info(`Sophia Notification: ${message}`);
+
+    if (!process.env.MAILSLURP_API_KEY || !process.env.MAILSLURP_INBOX_ID) {
+      logger.warn('MailSlurp API key or Inbox ID not configured. Skipping email notification.');
+      return;
+    }
+
+    try {
+      await mailslurp.sendEmail(process.env.MAILSLURP_INBOX_ID, {
+        to: [recipient],
+        subject: subject,
+        body: message,
+      });
+      logger.info('Email notification sent successfully.');
+    } catch (error) {
+      logger.error('Failed to send email notification:', error);
+    }
   }
 }
 
