@@ -34,14 +34,14 @@ const start = () => {
   });
 
   // Schedule the cron job to run on January 1st at midnight.
-  cron.schedule('0 0 1 1 *', async () => {
-    try {
-      console.log('Running annual covenant partnership calculation...');
-      await donationService.calculateAndNotifyCovenantPartnership();
-    } catch (error) {
-      console.error('Error calculating and notifying covenant partnership:', error);
-    }
-  });
+  // cron.schedule('0 0 1 1 *', async () => {
+  //   try {
+  //     console.log('Running annual covenant partnership calculation...');
+  //     await donationService.calculateAndNotifyCovenantPartnership();
+  //   } catch (error) {
+  //     console.error('Error calculating and notifying covenant partnership:', error);
+  //   }
+  // });
 };
 
 export default {

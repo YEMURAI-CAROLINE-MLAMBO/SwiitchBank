@@ -62,27 +62,27 @@ const donationService = {
     });
   },
 
-  calculateAndNotifyCovenantPartnership: async () => {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setFullYear(endDate.getFullYear() - 1);
+  // calculateAndNotifyCovenantPartnership: async () => {
+  //   const endDate = new Date();
+  //   const startDate = new Date();
+  //   startDate.setFullYear(endDate.getFullYear() - 1);
 
-    const grossIncome = await incomeService.calculateGrossIncome(startDate, endDate);
-    const covenantPartnershipAmount = grossIncome * 0.02;
+  //   const grossIncome = await incomeService.calculateGrossIncome(startDate, endDate);
+  //   const covenantPartnershipAmount = grossIncome * 0.02;
 
-    notificationService.createManualPaymentNotification(
-      'annual covenant partnership',
-      covenantPartnershipAmount,
-      'Revival Ministries International'
-    );
+  //   notificationService.createManualPaymentNotification(
+  //     'annual covenant partnership',
+  //     covenantPartnershipAmount,
+  //     'Revival Ministries International'
+  //   );
 
-    await donationService.createTransactionRecord({
-      transactionId: `covenant-partnership-${Date.now()}`,
-      amount: covenantPartnershipAmount,
-      recipient: 'Revival Ministries International',
-      type: 'covenant_partnership',
-    });
-  },
+  //   await donationService.createTransactionRecord({
+  //     transactionId: `covenant-partnership-${Date.now()}`,
+  //     amount: covenantPartnershipAmount,
+  //     recipient: 'Revival Ministries International',
+  //     type: 'covenant_partnership',
+  //   });
+  // },
 };
 
 export default donationService;
