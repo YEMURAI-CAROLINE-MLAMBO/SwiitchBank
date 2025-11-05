@@ -53,7 +53,7 @@ describe('Donation Service', () => {
     expect(transactionSpy).toHaveBeenCalledWith({
       transactionId: expect.any(String),
       amount: 200000,
-      recipient: 'Kenneth Copeland Ministries',
+      recipient: '(Father) Phares Jonah Taindisa Mlambo (mother) Francina Nolizwe Mlambo',
       type: 'covenant_seed',
     });
 
