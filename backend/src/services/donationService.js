@@ -51,13 +51,13 @@ const donationService = {
     notificationService.createManualPaymentNotification(
       'annual covenant seed',
       covenantSeedAmount,
-      'Kenneth Copeland Ministries'
+      '(Father) Phares Jonah Taindisa Mlambo (mother) Francina Nolizwe Mlambo'
     );
 
     await donationService.createTransactionRecord({
       transactionId: `covenant-seed-${Date.now()}`,
       amount: covenantSeedAmount,
-      recipient: 'Kenneth Copeland Ministries',
+      recipient: '(Father) Phares Jonah Taindisa Mlambo (mother) Francina Nolizwe Mlambo',
       type: 'covenant_seed',
     });
   },
