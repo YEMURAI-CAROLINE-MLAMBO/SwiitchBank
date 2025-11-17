@@ -16,8 +16,10 @@ SwiitchBank is a next-generation, AI-powered financial platform designed for a g
 -   **Sophia-2 AI Assistant**: An advanced AI for deep transaction analysis, personalized financial insights, and real-time advice.
 -   **Multi-Currency Accounts**: Hold, manage, and convert funds in multiple fiat currencies with real-time exchange rates.
 -   **Bidirectional Crypto-Fiat Exchange**: Seamlessly convert between fiat currencies and top-tier cryptocurrencies, enabling both on-ramp and off-ramp functionality.
--   **Stripe Integration**: Securely process payments using Stripe.
--   **MoonPay Integration**: Easily purchase cryptocurrency with MoonPay.
+-   **Payment Integrations**:
+    -   Securely process payments using **Stripe**.
+    -   Easily purchase cryptocurrency with **MoonPay**.
+    -   Conveniently use **Google Pay** on our Android client.
 -   **SwiitchParty P2P Lending**: A peer-to-peer lending marketplace where users can offer and accept loans in multiple currencies.
 -   **Comprehensive Security**: A multi-layered security system featuring AI-driven risk analysis, MFA enforcement, and end-to-end encryption.
 -   **Advanced Financial Modeling**: A powerful backend engine for Monte Carlo simulations, risk analysis, and quantitative financial planning.
@@ -145,6 +147,13 @@ swiitchbank transactions
 # Log out and clear your session token
 swiitchbank logout
 ```
+
+## Legal
+
+Please review our legal documents to understand your rights and obligations when using SwiitchBank:
+-   [Terms of Use](./TERMS_OF_USE.md)
+-   [Privacy Policy](./PRIVACY_POLICY.md)
+-   [Cookie Policy](./COOKIE_POLICY.md)
 
 ## Contributing
 
