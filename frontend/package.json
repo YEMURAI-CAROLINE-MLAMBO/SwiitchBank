@@ -5,6 +5,7 @@
   "dependencies": {
     "@stripe/react-stripe-js": "^5.2.0",
     "@stripe/stripe-js": "^8.1.0",
+    "@testing-library/dom": "^10.4.1",
     "axios": "^1.12.2",
     "firebase": "^12.4.0",
     "i18next": "^25.6.2",
@@ -16,7 +17,7 @@
     "react-markdown": "^9.0.1",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.22.3",
-    "react-scripts": "^5.0.1",
+    "react-scripts": "5.0.1",
     "react-toastify": "^11.0.5",
     "react-window": "^2.2.1",
     "sanitize-html": "^2.17.0"

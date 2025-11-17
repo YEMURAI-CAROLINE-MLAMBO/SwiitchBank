@@ -1,88 +1,55 @@
 import Transaction from '../models/Transaction.js';
-import incomeService from './incomeService.js';
 import notificationService from './notificationService.js';
 
-const donationService = {
-  createTransactionRecord: async (transactionData) => {
-    const transactionRecord = new Transaction(transactionData);
-    await transactionRecord.save();
-    return transactionRecord;
-  },
+/**
+ * Creates a new donation transaction record.
+ * This function is designed to be generic to support various types of charitable giving.
+ *
+ * @param {object} donationData - The data for the donation.
+ * @param {number} donationData.amount - The amount of the donation.
+ * @param {string} donationData.recipient - The recipient of the donation.
+ * @param {string} donationData.type - The type of donation (e.g., 'donation', 'zakat', 'offering').
+ * @param {mongoose.Schema.Types.ObjectId} donationData.user - The user making the donation.
+ * @returns {Promise<Document>} The saved transaction document.
+ */
+const createDonation = async (donationData) => {
+  const { amount, recipient, type, user } = donationData;
 
-  updateTransactionStatus: async (id, status) => {
-    const transaction = await Transaction.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true }
-    );
-    return transaction;
-  },
+  // Create a generic transaction record for the donation
+  const transactionRecord = new Transaction({
+    ...donationData,
+    status: 'completed', // Assuming direct donations are completed on creation
+  });
 
-  calculateAndNotifyTithe: async () => {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - 14);
+  const savedTransaction = await transactionRecord.save();
 
-    const grossIncome = await incomeService.calculateGrossIncome(startDate, endDate);
-    const titheAmount = grossIncome * 0.1;
+  // Send a notification about the donation
+  // The notification message can be customized based on the donation type
+  notificationService.createManualPaymentNotification(
+    `Your ${type} to ${recipient}`,
+    amount,
+    `Thank you for your generous contribution.`
+  );
 
-    notificationService.createManualPaymentNotification(
-      'bi-weekly tithe',
-      titheAmount,
-      'Kenneth Copeland Ministries'
-    );
-
-    await donationService.createTransactionRecord({
-      transactionId: `tithe-${Date.now()}`,
-      amount: titheAmount,
-      recipient: 'Kenneth Copeland Ministries',
-      type: 'tithe',
-    });
-  },
-
-  calculateAndNotifyCovenantSeed: async () => {
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setFullYear(endDate.getFullYear() - 1);
-
-    const grossIncome = await incomeService.calculateGrossIncome(startDate, endDate);
-    const covenantSeedAmount = grossIncome * 0.02;
-
-    notificationService.createManualPaymentNotification(
-      'annual covenant seed',
-      covenantSeedAmount,
-      '(Father) Phares Jonah Taindisa Mlambo (mother) Francina Nolizwe Mlambo'
-    );
-
-    await donationService.createTransactionRecord({
-      transactionId: `covenant-seed-${Date.now()}`,
-      amount: covenantSeedAmount,
-      recipient: '(Father) Phares Jonah Taindisa Mlambo (mother) Francina Nolizwe Mlambo',
-      type: 'covenant_seed',
-    });
-  },
-
-  // calculateAndNotifyCovenantPartnership: async () => {
-  //   const endDate = new Date();
-  //   const startDate = new Date();
-  //   startDate.setFullYear(endDate.getFullYear() - 1);
-
-  //   const grossIncome = await incomeService.calculateGrossIncome(startDate, endDate);
-  //   const covenantPartnershipAmount = grossIncome * 0.02;
-
-  //   notificationService.createManualPaymentNotification(
-  //     'annual covenant partnership',
-  //     covenantPartnershipAmount,
-  //     'Revival Ministries International'
-  //   );
-
-  //   await donationService.createTransactionRecord({
-  //     transactionId: `covenant-partnership-${Date.now()}`,
-  //     amount: covenantPartnershipAmount,
-  //     recipient: 'Revival Ministries International',
-  //     type: 'covenant_partnership',
-  //   });
-  // },
+  return savedTransaction;
 };
 
-export default donationService;
+/**
+ * Updates the status of a specific transaction.
+ *
+ * @param {string} transactionId - The ID of the transaction to update.
+ * @param {string} status - The new status of the transaction.
+ * @returns {Promise<Document|null>} The updated transaction document.
+ */
+const updateTransactionStatus = async (transactionId, status) => {
+  return await Transaction.findByIdAndUpdate(
+    transactionId,
+    { status },
+    { new: true }
+  );
+};
+
+export default {
+  createDonation,
+  updateTransactionStatus,
+};

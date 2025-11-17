@@ -1,64 +1,81 @@
-import { describe, it, expect, jest } from '@jest/globals';
-import cron from 'node-cron';
-import incomeService from '../src/services/incomeService.js';
-import sophiaService from '../src/services/HighCapacitySophiaService.js';
-import donationService from '../src/services/donationService.js';
+import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import mongoose from 'mongoose';
 
-describe('Donation Automation', () => {
-  it('should schedule the cron jobs correctly', async () => {
-    const cronSpy = jest.spyOn(cron, 'schedule').mockImplementation(() => {});
+// Define mocks outside of the describe block. This is crucial for jest.unstable_mockModule.
+const mockSave = jest.fn();
+const mockTransactionConstructor = jest.fn((data) => ({
+  ...data,
+  save: mockSave,
+}));
+mockTransactionConstructor.findByIdAndUpdate = jest.fn();
 
-    // Dynamically import the cronService to ensure the mock is used
-    const cronService = await import('../src/services/cronService.js');
-    cronService.default.start();
+jest.unstable_mockModule('../src/models/Transaction.js', () => ({
+  __esModule: true,
+  default: mockTransactionConstructor,
+}));
 
-    expect(cronSpy).toHaveBeenCalledWith('0 0 * * 0', expect.any(Function));
-    expect(cronSpy).toHaveBeenCalledWith('0 0 1 1 *', expect.any(Function));
-
-    cronSpy.mockRestore();
-  });
-});
+const mockCreateManualPaymentNotification = jest.fn();
+jest.unstable_mockModule('../src/services/notificationService.js', () => ({
+  __esModule: true,
+  default: {
+    createManualPaymentNotification: mockCreateManualPaymentNotification,
+  },
+}));
 
 describe('Donation Service', () => {
-  it('should calculate and notify the bi-weekly tithe', async () => {
-    const incomeSpy = jest.spyOn(incomeService, 'calculateGrossIncome').mockResolvedValue(100000);
-    const sophiaSpy = jest.spyOn(sophiaService, 'sendNotification').mockImplementation(() => {});
-    const transactionSpy = jest.spyOn(donationService, 'createTransactionRecord').mockResolvedValue({});
+  let donationService;
 
-    await donationService.calculateAndNotifyTithe();
+  beforeEach(async () => {
+    // Reset modules to ensure the test runs with fresh mocks each time.
+    jest.resetModules();
+    // Clear mock history before each test.
+    jest.clearAllMocks();
 
-    expect(incomeSpy).toHaveBeenCalled();
-    expect(sophiaSpy).toHaveBeenCalledWith(expect.stringContaining('bi-weekly tithe'));
-    expect(transactionSpy).toHaveBeenCalledWith({
-      transactionId: expect.any(String),
-      amount: 10000,
-      recipient: 'Kenneth Copeland Ministries',
-      type: 'tithe',
-    });
-
-    incomeSpy.mockRestore();
-    sophiaSpy.mockRestore();
-    transactionSpy.mockRestore();
+    // Dynamically import the service *after* mocks are defined and modules are reset.
+    donationService = (await import('../src/services/donationService.js')).default;
   });
 
-  it('should calculate and notify the annual covenant seed', async () => {
-    const incomeSpy = jest.spyOn(incomeService, 'calculateGrossIncome').mockResolvedValue(10000000);
-    const sophiaSpy = jest.spyOn(sophiaService, 'sendNotification').mockImplementation(() => {});
-    const transactionSpy = jest.spyOn(donationService, 'createTransactionRecord').mockResolvedValue({});
+  describe('createDonation', () => {
+    it('should create a donation transaction and send a notification', async () => {
+      const donationData = {
+        amount: 100,
+        recipient: 'Global Aid',
+        type: 'donation',
+        user: new mongoose.Types.ObjectId().toString(),
+        currency: 'USD',
+      };
+      const expectedSavedTransaction = { ...donationData, _id: new mongoose.Types.ObjectId().toString() };
+      mockSave.mockResolvedValue(expectedSavedTransaction);
 
-    await donationService.calculateAndNotifyCovenantSeed();
+      const result = await donationService.createDonation(donationData);
 
-    expect(incomeSpy).toHaveBeenCalled();
-    expect(sophiaSpy).toHaveBeenCalledWith(expect.stringContaining('annual covenant seed'));
-    expect(transactionSpy).toHaveBeenCalledWith({
-      transactionId: expect.any(String),
-      amount: 200000,
-      recipient: '(Father) Phares Jonah Taindisa Mlambo (mother) Francina Nolizwe Mlambo',
-      type: 'covenant_seed',
+      expect(mockTransactionConstructor).toHaveBeenCalledWith(expect.objectContaining(donationData));
+      expect(mockSave).toHaveBeenCalled();
+      expect(mockCreateManualPaymentNotification).toHaveBeenCalledWith(
+        `Your ${donationData.type} to ${donationData.recipient}`,
+        donationData.amount,
+        `Thank you for your generous contribution.`
+      );
+      expect(result).toEqual(expectedSavedTransaction);
     });
+  });
 
-    incomeSpy.mockRestore();
-    sophiaSpy.mockRestore();
-    transactionSpy.mockRestore();
+  describe('updateTransactionStatus', () => {
+    it('should find and update the status of a transaction', async () => {
+      const transactionId = new mongoose.Types.ObjectId().toString();
+      const newStatus = 'completed';
+      const updatedTransaction = { _id: transactionId, status: newStatus };
+
+      mockTransactionConstructor.findByIdAndUpdate.mockResolvedValue(updatedTransaction);
+
+      const result = await donationService.updateTransactionStatus(transactionId, newStatus);
+
+      expect(mockTransactionConstructor.findByIdAndUpdate).toHaveBeenCalledWith(
+        transactionId,
+        { status: newStatus },
+        { new: true }
+      );
+      expect(result).toEqual(updatedTransaction);
+    });
   });
 });

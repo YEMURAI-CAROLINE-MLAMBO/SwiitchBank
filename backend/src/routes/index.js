@@ -15,6 +15,7 @@ import marqetaRoutes from './marqeta.js';
 import dashboardRoutes from './dashboard.js';
 import userRoutes from './userRoutes.js';
 import swiitchPartyRoutes from './swiitchPartyRoutes.js';
+import donationRoutes from './donationRoutes.js';
 
 const router = express.Router();
 
@@ -34,5 +35,6 @@ router.use('/dashboard', dashboardRoutes);
 router.use('/user', userRoutes);
 router.use('/tickets', ticketRoutes);
 router.use('/swiitch-party', swiitchPartyRoutes);
+router.use('/donations', donationRoutes);
 
 export default router;
