@@ -28,6 +28,7 @@ import AboutUsPage from './pages/AboutUsPage';
 import TermsAndConditionsPage from './pages/TermsAndConditionsPage';
 import TermsOfUsePage from './pages/TermsOfUsePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import GivingPage from './pages/GivingPage';
 
 function App() {
   const { i18n } = useTranslation();
@@ -38,6 +39,14 @@ function App() {
     document.documentElement.dir = i18n.dir();
     document.body.classList.toggle('rtl', isRtl);
   }, [i18n, i18n.language]);
+
+  useEffect(() => {
+    // Check if onboarding is marked as complete in localStorage
+    const onboardingStatus = localStorage.getItem('onboardingComplete');
+    if (onboardingStatus === 'true') {
+      setOnboardingComplete(true);
+    }
+  }, []);
 
   return (
     <Router>
@@ -66,6 +75,7 @@ function App() {
               <Route path="terms-and-conditions" element={<TermsAndConditionsPage />} />
               <Route path="terms-of-use" element={<TermsOfUsePage />} />
               <Route path="privacy-policy" element={<PrivacyPolicyPage />} />
+              <Route path="giving" element={<GivingPage />} />
             </Route>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
