@@ -8,7 +8,9 @@ import 'package:swiitchbank/services/auth_service.dart';
 import 'package:swiitchbank/screens/login_screen.dart';
 import 'package:swiitchbank/screens/dashboard_screen.dart';
 import 'package:swiitchbank/screens/welcome_screen.dart';
+import 'package:swiitchbank/providers/locale_provider.dart';
 import 'package:swiitchbank/theme/app_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   // Ensure Flutter bindings are initialized
@@ -18,17 +20,27 @@ Future<void> main() async {
   // Initialize Firebase
   await Firebase.initializeApp();
 
-  runApp(SwiitchBankApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => LocaleProvider(),
+      child: SwiitchBankApp(),
+    ),
+  );
 }
 
 class SwiitchBankApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final localeProvider = Provider.of<LocaleProvider>(context);
+
     return Provider<AuthService>(
       create: (_) => AuthService(),
       child: MaterialApp(
         title: 'SwiitchBank',
         theme: AppTheme.theme,
+        locale: localeProvider.locale,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: AuthWrapper(),
         debugShowCheckedModeBanner: false,
       ),

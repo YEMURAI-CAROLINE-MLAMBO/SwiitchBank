@@ -1,0 +1,49 @@
+{
+  "welcome": {
+    "title": "شريكك المالي الذكي",
+    "subtitle": "رؤية أموالك بوضوح. اتخذ قرارات أكثر ذكاءً.",
+    "feature1": {
+      "title": "نظرة عامة واضحة",
+      "description": "شاهد جميع حساباتك في مكان واحد"
+    },
+    "feature2": {
+      "title": "صوفيا AI",
+      "description": "احصل على نصائح مالية شخصية"
+    },
+    "feature3": {
+      "title": "رؤى ذكية",
+      "description": "افهم أنماط إنفاقك"
+    },
+    "button": "ربط حساباتك"
+  },
+  "connect_bank": {
+    "title": "اربط حسابك البنكي",
+    "subtitle": "اختر البنك الذي تتعامل معه للبدء",
+    "chase": "Chase",
+    "bankofamerica": "Bank of America",
+    "wellsfargo": "Wells Fargo",
+    "capitalone": "Capital One",
+    "button": "يكمل",
+    "connecting": {
+      "title": "جاري الاتصال بالبنك الذي تتعامل معه ...",
+      "subtitle": "قد يستغرق هذا بضع لحظات"
+    },
+    "success": {
+      "title": "تم الاتصال بنجاح!",
+      "subtitle": "حساباتك مرتبطة الآن"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "language_title": "لغة",
+    "change_password_title": "تغيير كلمة المرور",
+    "old_password_label": "كلمة المرور القديمة:",
+    "new_password_label": "كلمة المرور الجديدة:",
+    "change_password_button": "تغيير كلمة المرور",
+    "password_changed_successfully": "تم تغيير كلمة السر بنجاح!",
+    "error_changing_password": "خطأ في تغيير كلمة المرور",
+    "terms_and_conditions": "البنود و الظروف",
+    "terms_of_use": "شروط الاستخدام",
+    "privacy_policy": "سياسة الخصوصية"
+  }
+}

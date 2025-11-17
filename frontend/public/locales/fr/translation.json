@@ -1,0 +1,49 @@
+{
+  "welcome": {
+    "title": "Votre partenaire financier intelligent",
+    "subtitle": "Voyez clairement vos finances. Prenez des décisions plus judicieuses.",
+    "feature1": {
+      "title": "Aperçu clair",
+      "description": "Consultez tous vos comptes en un seul endroit"
+    },
+    "feature2": {
+      "title": "Sophia AI",
+      "description": "Obtenez des conseils financiers personnalisés"
+    },
+    "feature3": {
+      "title": "Informations intelligentes",
+      "description": "Comprenez vos habitudes de dépenses"
+    },
+    "button": "Connectez vos comptes"
+  },
+  "connect_bank": {
+    "title": "Connectez votre banque",
+    "subtitle": "Choisissez votre banque pour commencer",
+    "chase": "Chase",
+    "bankofamerica": "Bank of America",
+    "wellsfargo": "Wells Fargo",
+    "capitalone": "Capital One",
+    "button": "Continuer",
+    "connecting": {
+      "title": "Connexion à votre banque...",
+      "subtitle": "Cela peut prendre quelques instants"
+    },
+    "success": {
+      "title": "Connecté avec succès!",
+      "subtitle": "Vos comptes sont maintenant liés"
+    }
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language_title": "Langue",
+    "change_password_title": "Changer le mot de passe",
+    "old_password_label": "Ancien mot de passe:",
+    "new_password_label": "Nouveau mot de passe:",
+    "change_password_button": "Changer le mot de passe",
+    "password_changed_successfully": "Mot de passe changé avec succès!",
+    "error_changing_password": "Erreur lors du changement de mot de passe",
+    "terms_and_conditions": "Termes et conditions",
+    "terms_of_use": "Conditions d'utilisation",
+    "privacy_policy": "Politique de confidentialité"
+  }
+}

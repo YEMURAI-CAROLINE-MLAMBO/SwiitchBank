@@ -1,0 +1,49 @@
+{
+  "welcome": {
+    "title": "Your Intelligent Financial Partner",
+    "subtitle": "See your finances clearly. Make smarter decisions.",
+    "feature1": {
+      "title": "Clear Overview",
+      "description": "See all your accounts in one place"
+    },
+    "feature2": {
+      "title": "Sophia AI",
+      "description": "Get personalized financial advice"
+    },
+    "feature3": {
+      "title": "Smart Insights",
+      "description": "Understand your spending patterns"
+    },
+    "button": "Connect Your Accounts"
+  },
+  "connect_bank": {
+    "title": "Connect Your Bank",
+    "subtitle": "Choose your bank to get started",
+    "chase": "Chase",
+    "bankofamerica": "Bank of America",
+    "wellsfargo": "Wells Fargo",
+    "capitalone": "Capital One",
+    "button": "Continue",
+    "connecting": {
+      "title": "Connecting to your bank...",
+      "subtitle": "This may take a few moments"
+    },
+    "success": {
+      "title": "Successfully Connected!",
+      "subtitle": "Your accounts are now linked"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language_title": "Language",
+    "change_password_title": "Change Password",
+    "old_password_label": "Old Password:",
+    "new_password_label": "New Password:",
+    "change_password_button": "Change Password",
+    "password_changed_successfully": "Password changed successfully!",
+    "error_changing_password": "Error changing password",
+    "terms_and_conditions": "Terms and Conditions",
+    "terms_of_use": "Terms of Use",
+    "privacy_policy": "Privacy Policy"
+  }
+}

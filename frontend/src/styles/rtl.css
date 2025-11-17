@@ -1,0 +1,5 @@
+/* RTL specific styles */
+body.rtl {
+  direction: rtl;
+  text-align: right;
+}

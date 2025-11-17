@@ -1,33 +1,38 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '../LanguageSelector';
 
 const Welcome = ({ onGetStarted }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="welcome-screen">
       <div className="welcome-content">
+        <LanguageSelector />
         <div className="logo">🧠 SwiitchBank</div>
-        <h1>Your Intelligent Financial Partner</h1>
-        <p>See your finances clearly. Make smarter decisions.</p>
+        <h1>{t('welcome.title')}</h1>
+        <p>{t('welcome.subtitle')}</p>
 
         <div className="feature-cards">
           <div className="feature-card">
             <div className="icon">📊</div>
-            <h3>Clear Overview</h3>
-            <p>See all your accounts in one place</p>
+            <h3>{t('welcome.feature1.title')}</h3>
+            <p>{t('welcome.feature1.description')}</p>
           </div>
           <div className="feature-card">
             <div className="icon">🧠</div>
-            <h3>Sophia AI</h3>
-            <p>Get personalized financial advice</p>
+            <h3>{t('welcome.feature2.title')}</h3>
+            <p>{t('welcome.feature2.description')}</p>
           </div>
           <div className="feature-card">
             <div className="icon">🚀</div>
-            <h3>Smart Insights</h3>
-            <p>Understand your spending patterns</p>
+            <h3>{t('welcome.feature3.title')}</h3>
+            <p>{t('welcome.feature3.description')}</p>
           </div>
         </div>
 
         <button className="primary-button" onClick={onGetStarted}>
-          Connect Your Accounts
+          {t('welcome.button')}
         </button>
       </div>
     </div>
