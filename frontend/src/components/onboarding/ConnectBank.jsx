@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const ConnectBank = ({ onConnected }) => {
+  const { t } = useTranslation();
   const [step, setStep] = useState('select'); // 'select' | 'connecting' | 'success'
   const [selectedBank, setSelectedBank] = useState(null);
 
   const banks = [
-    { id: 'chase', name: 'Chase', logo: '🏦' },
-    { id: 'bankofamerica', name: 'Bank of America', logo: '🏛️' },
-    { id: 'wellsfargo', name: 'Wells Fargo', logo: '💼' },
-    { id: 'capitalone', name: 'Capital One', logo: '💳' }
+    { id: 'chase', name: t('connect_bank.chase'), logo: '🏦' },
+    { id: 'bankofamerica', name: t('connect_bank.bankofamerica'), logo: '🏛️' },
+    { id: 'wellsfargo', name: t('connect_bank.wellsfargo'), logo: '💼' },
+    { id: 'capitalone', name: t('connect_bank.capitalone'), logo: '💳' }
   ];
 
   const connectBank = async (bankId) => {
@@ -24,8 +26,8 @@ const ConnectBank = ({ onConnected }) => {
   if (step === 'select') {
     return (
       <div className="connect-bank">
-        <h2>Connect Your Bank</h2>
-        <p>Choose your bank to get started</p>
+        <h2>{t('connect_bank.title')}</h2>
+        <p>{t('connect_bank.subtitle')}</p>
 
         <div className="bank-grid">
           {banks.map(bank => (
@@ -45,7 +47,7 @@ const ConnectBank = ({ onConnected }) => {
           disabled={!selectedBank}
           onClick={() => connectBank(selectedBank)}
         >
-          Continue
+          {t('connect_bank.button')}
         </button>
       </div>
     );
@@ -55,8 +57,8 @@ const ConnectBank = ({ onConnected }) => {
     return (
       <div className="connecting-screen">
         <div className="spinner"></div>
-        <h3>Connecting to your bank...</h3>
-        <p>This may take a few moments</p>
+        <h3>{t('connect_bank.connecting.title')}</h3>
+        <p>{t('connect_bank.connecting.subtitle')}</p>
       </div>
     );
   }
@@ -64,8 +66,8 @@ const ConnectBank = ({ onConnected }) => {
   return (
     <div className="success-screen">
       <div className="success-icon">✅</div>
-      <h3>Successfully Connected!</h3>
-      <p>Your accounts are now linked</p>
+      <h3>{t('connect_bank.success.title')}</h3>
+      <p>{t('connect_bank.success.subtitle')}</p>
     </div>
   );
 };

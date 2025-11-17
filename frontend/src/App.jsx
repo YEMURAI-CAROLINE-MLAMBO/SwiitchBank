@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './App.css';
+import './styles/rtl.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from './layouts/AppLayout';
 import UnifiedDashboard from './components/Dashboard/UnifiedDashboard';
@@ -28,7 +30,14 @@ import TermsOfUsePage from './pages/TermsOfUsePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 function App() {
+  const { i18n } = useTranslation();
   const [onboardingComplete, setOnboardingComplete] = useState(false);
+
+  useEffect(() => {
+    const isRtl = i18n.dir() === 'rtl';
+    document.documentElement.dir = i18n.dir();
+    document.body.classList.toggle('rtl', isRtl);
+  }, [i18n, i18n.language]);
 
   return (
     <Router>

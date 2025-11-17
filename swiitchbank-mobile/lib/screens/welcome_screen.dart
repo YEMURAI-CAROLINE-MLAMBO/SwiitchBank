@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swiitchbank/screens/dashboard_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:swiitchbank/widgets/language_selector.dart';
 
 class WelcomeScreen extends StatelessWidget {
   @override
@@ -39,7 +41,7 @@ class WelcomeScreen extends StatelessWidget {
 
             // Tagline
             Text(
-              'Anywhere Anytime',
+              AppLocalizations.of(context)!.welcome_tagline,
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.white70,
@@ -48,12 +50,16 @@ class WelcomeScreen extends StatelessWidget {
             SizedBox(height: 40),
 
             // Feature Highlights
-            _buildFeatureRow(Icons.speed, 'Instant Transfers'),
-            _buildFeatureRow(Icons.security, 'Bank-Level Security'),
-            _buildFeatureRow(Icons.language, 'Global Access'),
-            _buildFeatureRow(Icons.psychology, 'AI-Powered Insights'),
+            _buildFeatureRow(context, Icons.speed, AppLocalizations.of(context)!.welcome_feature1),
+            _buildFeatureRow(context, Icons.security, AppLocalizations.of(context)!.welcome_feature2),
+            _buildFeatureRow(context, Icons.language, AppLocalizations.of(context)!.welcome_feature3),
+            _buildFeatureRow(context, Icons.psychology, AppLocalizations.of(context)!.welcome_feature4),
 
             SizedBox(height: 40),
+
+            LanguageSelector(),
+
+            SizedBox(height: 20),
 
             // Get Started Button
             ElevatedButton(
@@ -61,7 +67,7 @@ class WelcomeScreen extends StatelessWidget {
                 Navigator.pushReplacementNamed(context, '/login');
               },
               child: Text(
-                'Get Started',
+                AppLocalizations.of(context)!.welcome_get_started,
                 style: TextStyle(fontSize: 18),
               ),
               style: ElevatedButton.styleFrom(
@@ -74,7 +80,7 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureRow(IconData icon, String text) {
+  Widget _buildFeatureRow(BuildContext context, IconData icon, String text) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(

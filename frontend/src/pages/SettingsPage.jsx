@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+import LanguageSelector from '../components/LanguageSelector';
 
 const SettingsPage = () => {
+  const { t } = useTranslation();
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState(null);
@@ -17,33 +20,37 @@ const SettingsPage = () => {
         oldPassword,
         newPassword,
       });
-      setSuccess('Password changed successfully!');
+      setSuccess(t('settings.password_changed_successfully'));
     } catch (error) {
-      setError('Error changing password');
+      setError(t('settings.error_changing_password'));
     }
   };
 
   return (
     <div>
-      <h1>Settings</h1>
+      <h1>{t('settings.title')}</h1>
+      <div>
+        <h2>{t('settings.language_title')}</h2>
+        <LanguageSelector />
+      </div>
       <form onSubmit={handleChangePassword}>
-        <h2>Change Password</h2>
+        <h2>{t('settings.change_password_title')}</h2>
         <div>
-          <label>Old Password:</label>
+          <label>{t('settings.old_password_label')}</label>
           <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
         </div>
         <div>
-          <label>New Password:</label>
+          <label>{t('settings.new_password_label')}</label>
           <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
         </div>
-        <button type="submit">Change Password</button>
+        <button type="submit">{t('settings.change_password_button')}</button>
       </form>
       {error && <div>{error}</div>}
       {success && <div>{success}</div>}
       <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column' }}>
-        <Link to="/terms-and-conditions">Terms and Conditions</Link>
-        <Link to="/terms-of-use">Terms of Use</Link>
-        <Link to="/privacy-policy">Privacy Policy</Link>
+        <Link to="/terms-and-conditions">{t('settings.terms_and_conditions')}</Link>
+        <Link to="/terms-of-use">{t('settings.terms_of_use')}</Link>
+        <Link to="/privacy-policy">{t('settings.privacy_policy')}</Link>
       </div>
     </div>
   );
