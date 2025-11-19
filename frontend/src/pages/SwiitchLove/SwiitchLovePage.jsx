@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
-import './GivingPage.css';
+import { useAuth } from '../../context/AuthContext';
+import './SwiitchLovePage.css';
 
-const GivingPage = () => {
+const SwiitchLovePage = () => {
   const [amount, setAmount] = useState('');
   const [recipient, setRecipient] = useState('');
   const [donationType, setDonationType] = useState('donation');
@@ -42,10 +42,10 @@ const GivingPage = () => {
   };
 
   return (
-    <div className="giving-page-container">
-      <h2>Charitable Giving</h2>
-      <p>Make a one-time donation to a cause or organization of your choice.</p>
-      <form onSubmit={handleDonate} className="giving-form">
+    <div className="swiitch-love-page-container">
+      <h2>SwiitchLove</h2>
+      <p>Spread the love. Make a one-time donation to a cause or organization of your choice.</p>
+      <form onSubmit={handleDonate} className="swiitch-love-form">
         <div className="form-group">
           <label htmlFor="amount">Amount</label>
           <input
@@ -82,4 +82,4 @@ const GivingPage = () => {
   );
 };
 
-export default GivingPage;
+export default SwiitchLovePage;
