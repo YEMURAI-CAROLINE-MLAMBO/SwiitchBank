@@ -13,11 +13,14 @@ import notificationService from './notificationService.js';
  * @returns {Promise<Document>} The saved transaction document.
  */
 const createDonation = async (donationData) => {
-  const { amount, recipient, type, user } = donationData;
+  const { amount, recipient, type, user, givingType, subCategory, donation } = donationData;
 
   // Create a generic transaction record for the donation
   const transactionRecord = new Transaction({
     ...donationData,
+    givingType,
+    subCategory,
+    donation,
     status: 'completed', // Assuming direct donations are completed on creation
   });
 
