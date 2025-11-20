@@ -71,6 +71,7 @@
   },
   "overrides": {
     "svgo": "4.0.0",
-    "postcss": "8.4.31"
+    "postcss": "8.4.31",
+    "typescript": "4.9.5"
   }
 }
