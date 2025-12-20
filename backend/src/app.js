@@ -14,8 +14,19 @@ import startWebSocketServer from '../websocket.js';
 import cronService from './services/cronService.js';
 import config from './config/appConfig.js';
 import allRoutes from './routes/index.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
+
+// Ensure the uploads directory exists
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
 
 // Apply express.json() middleware with custom verify function for Stripe webhooks.
 // This must be done before other middleware that needs the parsed body.
