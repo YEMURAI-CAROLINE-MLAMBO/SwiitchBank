@@ -15,6 +15,7 @@ function AppLayout() {
             <li><Link to="/cards">Cards</Link></li>
             <li><Link to="/transactions">Transactions</Link></li>
             <li><Link to="/swiitch-love">SwiitchLove</Link></li>
+            <li><Link to="/swiitch-safe">SwiitchSafe</Link></li>
             <li><Link to="/settings">Settings</Link></li>
             <li><Link to="/swiitch-party/marketplace">SwiitchParty</Link></li>
             <li><Link to="/about-us">About Us</Link></li>
